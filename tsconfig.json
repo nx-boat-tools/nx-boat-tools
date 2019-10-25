@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "lib": [
+        "es2018",
+        "dom"
+      ],
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "strict": true,
+      "sourceMap": false,
+      "declaration": true,
+      "target": "es6",
+      "esModuleInterop": true,
+      "resolveJsonModule": true
+    },
+    "include": [
+      "schematics/**/*",
+      "builders/**/*"
+    ],
+    "exclude": [
+      "schematics/*/files/**/*"
+    ]
+  }
+  

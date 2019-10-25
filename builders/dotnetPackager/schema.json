@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "title": "Multi-Builder Target Options",
+    "description": "Multi-builder target options for Build Architect.",
+    "type": "object",
+    "properties": {
+      "srcPath": {
+        "type": "string",
+        "description": "The location of the .Net Core .csproj or .sln file for the project"
+      },
+      "outputPath": {
+        "type": "string",
+        "description": "Where to save the build output"
+      },
+      "runtimeID": {
+        "type": "string",
+        "description": "The target .Net Core RID"
+      },
+      "selfContained": {
+        "type": "boolean",
+        "description": "Whether or not the build output should contain the .Net Core Runtime"
+      },
+      "configMap": {
+        "type": "object",
+        "description": "Maps an Angular CLI configuration with a .Net Core configuration"
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "srcPath",
+      "outputPath"
+    ]
+  }
+  

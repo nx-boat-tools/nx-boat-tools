@@ -1,0 +1,63 @@
+{
+    "defaultSeverity": "error",
+    "extends": [],
+    "jsRules": {},
+    "rules": {
+        "adjacent-overload-signatures": true,
+        "member-access": [true, "check-accessor", "check-parameter-property"],
+        "member-ordering": [true, { "order": "statics-first" }],
+        "no-reference": true,
+        "no-var-requires": true,
+        "only-arrow-functions": [true, "allow-declarations"],
+        "ban-comma-operator": true,
+        "arrow-return-shorthand": true,
+        "array-type": [true, "generic"],
+        "prefer-readonly": true,
+        "prefer-const": [true, { "destructuring": "all" }],
+        "unnecessary-constructor": true,
+        "triple-equals": true,
+        "static-this": true,
+        "prefer-conditional-expression": true,
+        "no-var-keyword": true,
+        "no-switch-case-fall-through": true,
+        "no-invalid-this": true,
+        "no-implicit-dependencies": [true, "dev"],
+        "no-floating-promises": true,
+        "no-eval": true,
+        "no-empty": true,
+        "no-duplicate-switch-case": true,
+        "no-duplicate-super": true,
+        "no-console": {
+            "severity": "warning"
+        },
+        "curly": true,
+        "trailing-comma": [
+            true,
+            {
+                "multiline": {
+                    "objects": "never",
+                    "arrays": "never",
+                    "functions": "never"
+                },
+                "esSpecCompliant": true
+            }
+        ],
+        "semicolon": [true, "always"],
+        "quotemark": [true, "single", "jsx-double", "avoid-escape"],
+        "no-irregular-whitespace": true,
+        "no-trailing-whitespace": true,
+        "no-consecutive-blank-lines": true,
+        "eofline": true,
+        "prefer-template": [true, "allow-single-concat"],
+        "prefer-switch": true,
+        "ordered-imports": true,
+        "object-literal-key-quotes": [true, "consistent-as-needed"],
+        "no-unnecessary-callback-wrapper": true,
+        "no-angle-bracket-type-assertion": true,
+        "file-name-casing": [true, "camel-case"],
+        "class-name": true,
+        "binary-expression-operand-order": true,
+        "max-classes-per-file": false
+    },
+    "rulesDirectory": []
+}

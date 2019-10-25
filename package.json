@@ -1,0 +1,47 @@
+{
+  "name": "dotnet-schematics",
+  "version": "0.0.1",
+  "author": "Killian Hale",
+  "license": "MIT",
+  "private": false,
+  "schematics": "./collection.json",
+  "builders": "./builders.json",
+  "scripts": {
+    "build": "yarn lint:fix && yarn lint && yarn compile",
+    "compile": "tsc -p tsconfig.json",
+    "lint:fix": "tslint -p tsconfig.json --fix --quiet",
+    "lint": "tslint -p tsconfig.json"
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "guid-typescript": "^1.0.9",
+    "minimist": "^1.2.0",
+    "observable-spawn": "^1.0.0",
+    "prettier": "^1.18.2",
+    "rxjs": "^6.5.3",
+    "underscore": "^1.9.1",
+    "xml2js": "^0.4.22",
+    "yargs": "^14.2.0"
+  },
+  "peerDependencies": {
+    "@nrwl/workspace": "^8.6.0",
+    "common-schematics": "^0.0.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/architect": "^0.803.7",
+    "@angular-devkit/core": "8.3.3",
+    "@angular-devkit/schematics": "8.3.3",
+    "@angular-devkit/schematics-cli": "^0.803.6",
+    "@nrwl/workspace": "^8.6.0",
+    "@types/fs-extra": "^8.0.0",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^12.7.9",
+    "@types/prettier": "^1.18.3",
+    "@types/underscore": "^1.9.3",
+    "@types/xml2js": "^0.4.5",
+    "@types/yargs": "^13.0.3",
+    "common-schematics": "0.0.3",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  }
+}

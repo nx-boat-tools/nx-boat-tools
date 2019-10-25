@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsMyService",
+  "title": "My Service Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Console application name",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the app?"
+    },
+    "pathPrefix": {
+      "type": "string",
+      "description": "The prefix for the project directory. Used to override the default that's based on the project type."
+    },
+    "directory": {
+      "type": "string",
+      "description": "A directory where the app is placed"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Add tags to the app (used for linting)"
+    },
+    "simpleModuleName": {
+      "type": "boolean",
+      "description": "Determines if directory is added to module and file names"
+    },
+    "ownSolution": {
+      "type": "boolean",
+      "description": "Determines whether or not to use the root .sln file or if a new .sln file should be created for the project"
+    }
+  },
+  "required": ["name"]
+}
