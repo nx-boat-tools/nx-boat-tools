@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/schema",
-    "title": ".Net Packer Target Options",
-    "description": ".Net Packer target options for Build Architect.",
+    "title": ".Net Cleaner Target Options",
+    "description": ".Net Cleaner target options for Build Architect.",
     "type": "object",
     "properties": {
       "srcPath": {

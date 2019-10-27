@@ -7,7 +7,6 @@ interface DotnetRunnerOptions extends JsonObject {
     csprojPath: string;
     outputPath: string;
     runtimeID: string;
-    selfContained: boolean;
     configMap: JsonObject;
     launchProfile: string;
   }
@@ -20,7 +19,6 @@ export default createBuilder<DotnetRunnerOptions>(
             srcPath: options.csprojPath,
             outputPath: options.outputPath,
             runtimeID: options.runtimeID,
-            selfContained: options.selfContained,
             configMap: options.configMap,
             action: 'run',
             additionalArgs,

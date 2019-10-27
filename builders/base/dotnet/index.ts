@@ -16,17 +16,17 @@ export interface DotnetOptions {
   srcPath: string;
   outputPath: string;
   runtimeID: string;
-  selfContained: boolean;
   configMap: JsonObject;
   updateVersion: boolean;
 }
 
-const validActions: Array<string> = ['build', 'pack', 'publish', 'run'];
+const validActions: Array<string> = ['build', 'pack', 'publish', 'run', 'clean'];
 const actionVerbs: { [key: string]: string } = {
   build: 'Building',
   pack: 'Packing',
   publish: 'Publishing',
-  run: 'Running'
+  run: 'Running',
+  clean: 'Cleaning'
 };
 
 export function runDotnetCommand$(options: DotnetOptions, context: BuilderContext): Observable<BuilderOutput> {
@@ -65,7 +65,6 @@ export function runDotnetCommand$(options: DotnetOptions, context: BuilderContex
   } else {
     args.push(`${csprojPath}`);
     args.push(`--output ${outputPath}`);
-    args.push(options.selfContained === true ? '--self-contained' : '');
   }
 
   const config = (options.configMap !== undefined && cliConfig !== undefined ? options.configMap[cliConfig] : undefined) || cliConfig;

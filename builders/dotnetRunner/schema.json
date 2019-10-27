@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/schema",
-    "title": "Multi-Builder Target Options",
-    "description": "Multi-builder target options for Build Architect.",
+    "title": ".Net Builder Target Options",
+    "description": ".Net Builder target options for Build Architect.",
     "type": "object",
     "properties": {
       "csprojPath": {
@@ -16,10 +16,6 @@
         "type": "string",
         "description": "The target .Net Core RID"
       },
-      "selfContained": {
-        "type": "boolean",
-        "description": "Whether or not the build output should contain the .Net Core Runtime"
-      },
       "configMap": {
         "type": "object",
         "description": "Maps an Angular CLI configuration with a .Net Core configuration"
@@ -29,7 +25,7 @@
         "description": "The name of the launch profile to use when launching the application"
       }
     },
-    "additionalProperties": true,
+    "additionalProperties": false,
     "required": [
       "csprojPath",
       "outputPath"

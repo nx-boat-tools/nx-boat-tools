@@ -7,14 +7,20 @@ interface DotnetBuilderOptions extends JsonObject {
     srcPath: string;
     outputPath: string;
     runtimeID: string;
-    selfContained: boolean;
     configMap: JsonObject;
+    selfContained: boolean;
   }
 
 export default createBuilder<DotnetBuilderOptions>(
     (options: DotnetBuilderOptions, context: BuilderContext): Promise<BuilderOutput> => {
+        const additionalArgs = options.selfContained === true ? '--self-containted' : '';
+
         const dotnetOptions = {
-            ...options,
+            srcPath: options.csprojPath,
+            outputPath: options.outputPath,
+            runtimeID: options.runtimeID,
+            configMap: options.configMap,
+            additionalArgs,
             action: 'publish',
             updateVersion: true
         } as DotnetOptions;

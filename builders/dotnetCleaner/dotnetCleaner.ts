@@ -3,19 +3,18 @@ import { JsonObject } from '@angular-devkit/core';
 
 import { DotnetOptions, runDotnetCommand$ } from '../base/dotnet';
 
-interface DotnetPackagerOptions extends JsonObject {
+interface DotnetCleanerOptions extends JsonObject {
     srcPath: string;
     outputPath: string;
     runtimeID: string;
     configMap: JsonObject;
   }
 
-export default createBuilder<DotnetPackagerOptions>(
-    (options: DotnetPackagerOptions, context: BuilderContext): Promise<BuilderOutput> => {
+export default createBuilder<DotnetCleanerOptions>(
+    (options: DotnetCleanerOptions, context: BuilderContext): Promise<BuilderOutput> => {
         const dotnetOptions = {
             ...options,
-            action: 'pack',
-            additionalArgs: '--no-build',
+            action: 'clean',
             updateVersion: false
         } as DotnetOptions;
 

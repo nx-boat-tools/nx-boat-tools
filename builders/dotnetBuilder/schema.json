@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/schema",
-    "title": "Multi-Builder Target Options",
-    "description": "Multi-builder target options for Build Architect.",
+    "title": ".Net Builder Target Options",
+    "description": ".Net Builder target options for Build Architect.",
     "type": "object",
     "properties": {
       "srcPath": {
@@ -25,7 +25,7 @@
         "description": "Maps an Angular CLI configuration with a .Net Core configuration"
       }
     },
-    "additionalProperties": true,
+    "additionalProperties": false,
     "required": [
       "srcPath",
       "outputPath"

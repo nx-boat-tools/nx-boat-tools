@@ -15,6 +15,11 @@
       "implementation": "./builders/dotnetRunner/dotnetRunner",
       "schema": "./builders/dotnetRunner/schema.json",
       "description": "Run a .Net Core project."
+    },
+    "clean-dotnet": {
+      "implementation": "./builders/dotnetCleaner/dotnetCleaner",
+      "schema": "./builders/dotnetCleaner/schema.json",
+      "description": "Clean a .Net Core project."
     }
   }
 }

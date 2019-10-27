@@ -277,7 +277,22 @@ export function addProject(options: NormalizedDotnetOptions): Rule {
       options: {
         srcPath,
         outputPath,
-        selfContained: false,
+        configMap: {
+          dev: 'Develop',
+          prod: 'Release'
+        }
+      },
+      configurations: {
+        dev: {},
+        prod: {}
+      }
+    };
+
+    architect.clean = {
+      builder: 'dotnet-schematics:clean-dotnet',
+      options: {
+        srcPath,
+        outputPath,
         configMap: {
           dev: 'Develop',
           prod: 'Release'
@@ -295,7 +310,6 @@ export function addProject(options: NormalizedDotnetOptions): Rule {
         options: {
             csprojPath,
             outputPath,
-            selfContained: false,
             configMap: {
             dev: 'Develop',
             prod: 'Release'
