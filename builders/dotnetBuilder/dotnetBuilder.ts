@@ -16,7 +16,7 @@ export default createBuilder<DotnetBuilderOptions>(
         const additionalArgs = options.selfContained === true ? '--self-containted' : '';
 
         const dotnetOptions = {
-            srcPath: options.csprojPath,
+            srcPath: options.srcPath,
             outputPath: options.outputPath,
             runtimeID: options.runtimeID,
             configMap: options.configMap,
