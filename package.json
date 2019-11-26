@@ -12,6 +12,14 @@
     "lint:fix": "tslint -p tsconfig.json --fix --quiet",
     "lint": "tslint -p tsconfig.json"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matholum/npm-dotnet-schematics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matholum/npm-dotnet-schematics/issues"
+  },
+  "homepage": "https://github.com/matholum/npm-dotnet-schematics#readme",
   "dependencies": {
     "fs-extra": "^8.1.0",
     "guid-typescript": "^1.0.9",
@@ -24,15 +32,15 @@
     "yargs": "^14.2.0"
   },
   "peerDependencies": {
-    "@nrwl/workspace": "^8.6.0",
-    "common-schematics": "^0.0.4"
+    "@nrwl/workspace": "8.7.1",
+    "common-schematics": "^0.0.5"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "^0.803.7",
+    "@angular-devkit/architect": "0.803.3",
     "@angular-devkit/core": "8.3.3",
     "@angular-devkit/schematics": "8.3.3",
-    "@angular-devkit/schematics-cli": "^0.803.6",
-    "@nrwl/workspace": "^8.6.0",
+    "@angular-devkit/schematics-cli": "0.803.3",
+    "@nrwl/workspace": "8.7.1",
     "@types/fs-extra": "^8.0.0",
     "@types/minimist": "^1.2.0",
     "@types/node": "^12.7.9",
@@ -40,7 +48,7 @@
     "@types/underscore": "^1.9.3",
     "@types/xml2js": "^0.4.5",
     "@types/yargs": "^13.0.3",
-    "common-schematics": "0.0.4",
+    "common-schematics": "0.0.5",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"
   }

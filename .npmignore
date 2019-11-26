@@ -5,6 +5,7 @@ docker/
 
 makefile
 tsconfig.json
+tslint.json
 *.ts
 !*.d.ts
 

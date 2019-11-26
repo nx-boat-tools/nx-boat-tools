@@ -1,4 +1,3 @@
-import { getVersion } from 'common-schematics/utils/versionBuilder';
 import * as fs from 'fs-extra';
 import { spawn$ } from 'observable-spawn';
 import * as path from 'path';
@@ -75,7 +74,7 @@ export function runDotnetCommand$(options: DotnetOptions, context: BuilderContex
 
   const argString = _.without(args, '').join(' ');
 
-  return from(updateCsprojFile(csprojPath, options.updateVersion, context)).pipe(
+  return from(updateCsprojFile(csprojPath, outputPath,  options.updateVersion, context)).pipe(
     tap(() => console.log(`${actionVerbs[options.action]} .Net Project '${projectName}'...\n`)),
     concat(spawn$(`dotnet ${options.action} ${argString}`)),
     map(() => ({ success: true } as BuilderOutput))
@@ -112,10 +111,10 @@ async function getAllProjectsFromSolution(csprojPath: string, context: BuilderCo
   return projectLines;
 }
 
-async function updateCsprojFile(csprojPath: string, updateVersion: boolean, context: BuilderContext): Promise<void> {
+async function updateCsprojFile(csprojPath: string, outputPath: string, updateVersion: boolean, context: BuilderContext): Promise<void> {
   const projPaths = await getAllProjectsFromSolution(csprojPath, context);
 
-  for (let x=0; x<projPaths.length; x++) {
+  for (let x = 0; x < projPaths.length; x++) {
     const currentProjPath = projPaths[x];
 
     console.log(`Updating csproj file '${currentProjPath}'...`);
@@ -135,8 +134,13 @@ async function updateCsprojFile(csprojPath: string, updateVersion: boolean, cont
     };
 
     if (updateVersion) {
-      const projPath = currentProjPath.substring(0, currentProjPath.lastIndexOf(path.basename(currentProjPath)));
-      const version = getVersion(context.workspaceRoot, projPath);
+      const versionPath = path.join(outputPath, 'VERSION');
+
+      if(!fs.existsSync(versionPath)) {
+        throw new Error(`Unable to detect version. No VERSION file found at '${versionPath}'!`);
+      }
+
+      const version = fs.readFileSync(versionPath).toString();
 
       console.log(`Updating version to ${version} for csproj file '${currentProjPath}'...`);
 

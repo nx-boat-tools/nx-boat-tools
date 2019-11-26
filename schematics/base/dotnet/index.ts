@@ -245,13 +245,25 @@ export function addProject(options: NormalizedDotnetOptions): Rule {
       builder: 'common-schematics:multi-builder',
       options: {
         ...runner,
-        targets: ['buildDotnet']
+        targets: ['version', 'buildDotnet']
       },
       configurations: {
         dev: {},
         prod: {
             additionalTargets: ['package']
         }
+      }
+    };
+
+    architect.version = {
+      builder: 'common-schematics:set-build-version',
+      options: {
+        projectPath: options.projectRoot,
+        outputPath
+      },
+      configurations: {
+        dev: {},
+        prod: {}
       }
     };
 
