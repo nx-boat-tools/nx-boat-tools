@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "projects": {
+    "dotnet": {
+      "root": "packages/dotnet",
+      "sourceRoot": "packages/dotnet/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/dotnet/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/dotnet"],
+          "options": {
+            "jestConfig": "packages/dotnet/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/dotnet",
+            "tsConfig": "packages/dotnet/tsconfig.lib.json",
+            "packageJson": "packages/dotnet/package.json",
+            "main": "packages/dotnet/src/index.ts",
+            "assets": [
+              "packages/dotnet/*.md",
+              {
+                "input": "./packages/dotnet/src",
+                "glob": "**/!(*.ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/dotnet/src",
+                "glob": "**/*.d.ts",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/dotnet",
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/dotnet",
+                "glob": "executors.json",
+                "output": "."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "dotnet-e2e": {
+      "root": "e2e/dotnet-e2e",
+      "projectType": "application",
+      "sourceRoot": "e2e/dotnet-e2e/src",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/nx-plugin:e2e",
+          "options": {
+            "target": "dotnet:build",
+            "jestConfig": "e2e/dotnet-e2e/jest.config.js"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  }
+}

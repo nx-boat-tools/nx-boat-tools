@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "projects": {
+    "dotnet-console": {
+      "root": "packages/dotnet-console",
+      "sourceRoot": "packages/dotnet-console/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/dotnet-console/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/dotnet-console"],
+          "options": {
+            "jestConfig": "packages/dotnet-console/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/dotnet-console",
+            "tsConfig": "packages/dotnet-console/tsconfig.lib.json",
+            "packageJson": "packages/dotnet-console/package.json",
+            "main": "packages/dotnet-console/src/index.ts",
+            "assets": [
+              "packages/dotnet-console/*.md",
+              {
+                "input": "./packages/dotnet-console/src",
+                "glob": "**/!(*.ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/dotnet-console/src",
+                "glob": "**/*.d.ts",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/dotnet-console",
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/dotnet-console",
+                "glob": "executors.json",
+                "output": "."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "dotnet-console-e2e": {
+      "root": "e2e/dotnet-console-e2e",
+      "projectType": "application",
+      "sourceRoot": "e2e/dotnet-console-e2e/src",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/nx-plugin:e2e",
+          "options": {
+            "target": "dotnet-console:build",
+            "jestConfig": "e2e/dotnet-console-e2e/jest.config.js"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  }
+}

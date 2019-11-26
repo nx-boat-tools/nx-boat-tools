@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "dotnet",
+  "version": "0.0.1",
+  "generators": {
+    "dotnet": {
+      "factory": "./src/generators/dotnet/generator",
+      "schema": "./src/generators/dotnet/schema.json",
+      "description": "dotnet generator"
+    }
+  }
+}
