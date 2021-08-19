@@ -1,0 +1,8 @@
+﻿using System;
+
+namespace <%= className %>
+{
+    public class Class1
+    {
+    }
+}
