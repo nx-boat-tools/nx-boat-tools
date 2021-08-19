@@ -63,7 +63,7 @@ export default async function (tree: Tree, options: CommonGeneratorSchema) {
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
-        executor: '@src/common:build',
+        executor: '@nx-boat-tools/common:build',
       },
     },
     tags: normalizedOptions.parsedTags,

@@ -6,8 +6,7 @@ import {
   names,
   offsetFromRoot,
   Tree,
-  ProjectType,
-  addDependenciesToPackageJson
+  ProjectType
 } from '@nrwl/devkit';
 import * as path from 'path';
 import { Guid } from 'guid-typescript';
@@ -197,7 +196,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     ? {}
     : {
       run: {
-        executor: '@src/dotnet:run',
+        executor: '@nx-boat-tools/dotnet:run',
         options: {
           ...dotnetOptions
         },
@@ -207,16 +206,13 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
         }
       },
     }
-  addDependenciesToPackageJson(tree, {}, {
-    '@src/common': 'file:/Users/matholum/Repos/npm-dotnet-schematics/src/dist/packages/common'
-  });
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
     projectType: normalizedOptions.nxProjectType,
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
-        executor: '@src/common:chain-execute',
+        executor: '@nx-boat-tools/common:chain-execute',
         options: {
           targets: [
             'version',
@@ -233,7 +229,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
         }
       },
       buildDotnet: {
-        executor: '@src/dotnet:build',
+        executor: '@nx-boat-tools/dotnet:build',
         options: {
           ...dotnetOptions,
           updateVersion: true
@@ -244,7 +240,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
         }
       },
       clean: {
-        executor: '@src/dotnet:clean',
+        executor: '@nx-boat-tools/dotnet:clean',
         options: {
           ...dotnetOptions
         },
@@ -254,7 +250,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
         }
       },
       package: {
-        executor: '@src/dotnet:package',
+        executor: '@nx-boat-tools/dotnet:package',
         options: {
           ...dotnetOptions
         },
@@ -265,7 +261,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
       },
       ...runTarget,
       version: {
-        executor: '@src/common:set-version',
+        executor: '@nx-boat-tools/common:set-version',
         options: {
           projectPath: normalizedOptions.projectRoot,
           outputPath: normalizedOptions.projectDistPath

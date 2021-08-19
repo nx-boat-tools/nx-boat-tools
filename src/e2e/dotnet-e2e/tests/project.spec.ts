@@ -12,9 +12,9 @@ import * as minimist from 'minimist';
 import _ = require('underscore');
 
 function copyProjectDependencies() {
-  ensureNxProject('@src/dotnet', 'dist/packages/dotnet');
+  ensureNxProject('@nx-boat-tools/dotnet', 'dist/packages/dotnet');
 
-  // patchPackageJsonForPlugin('@src/common', 'dist/packages/common');
+  // patchPackageJsonForPlugin('@nx-boat-tools/common', 'dist/packages/common');
   // runPackageManagerInstall();
 }
 
@@ -30,12 +30,12 @@ function logIfVerbose(message?: any, ...optionalParams: any[]) {
 describe('dotnet e2e', () => {
   it.only('should create project', async () => {
     const plugin = uniq('project');
-    ensureNxProject('@src/dotnet', 'dist/packages/dotnet');
+    ensureNxProject('@nx-boat-tools/dotnet', 'dist/packages/dotnet');
 
-    patchPackageJsonForPlugin('@src/common', 'dist/packages/common');
+    patchPackageJsonForPlugin('@nx-boat-tools/common', 'dist/packages/common');
     runPackageManagerInstall();
 
-    await runNxCommandAsync(`generate @src/dotnet:project ${plugin} --projectType console`);
+    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:project ${plugin} --projectType console`);
 
     const result = await runNxCommandAsync(`build ${plugin} --configuration=dev`);
 
@@ -48,7 +48,7 @@ describe('dotnet e2e', () => {
   
   it('should create classlib', async () => {
     const plugin = uniq('classlib');
-    await runNxCommandAsync(`generate @src/dotnet:classlib ${plugin}`);
+    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:classlib ${plugin}`);
 
     const result = await runNxCommandAsync(`build ${plugin} --configuration=prod`);
 
@@ -61,7 +61,7 @@ describe('dotnet e2e', () => {
   
   it('should create console', async () => {
     const plugin = uniq('console');
-    await runNxCommandAsync(`generate @src/dotnet:console ${plugin}`);
+    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:console ${plugin}`);
 
     const result = await runNxCommandAsync(`build ${plugin} --configuration=prod`);
 
@@ -74,7 +74,7 @@ describe('dotnet e2e', () => {
   
   it('should create webapi', async () => {
     const plugin = uniq('webapi');
-    await runNxCommandAsync(`generate @src/dotnet:webapi ${plugin}`);
+    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:webapi ${plugin}`);
 
     const result = await runNxCommandAsync(`build ${plugin} --configuration=prod`);
 
@@ -89,7 +89,7 @@ describe('dotnet e2e', () => {
     it('should create root sln when false', async () => {
       const plugin = uniq('dotnet');
       await runNxCommandAsync(
-        `generate @src/dotnet:project ${plugin} --projectType console`
+        `generate @nx-boat-tools/dotnet:project ${plugin} --projectType console`
       );
       const _names = names(plugin);
       expect(() =>
@@ -103,7 +103,7 @@ describe('dotnet e2e', () => {
     it('should create project sln when true', async () => {
       const plugin = uniq('dotnet');
       await runNxCommandAsync(
-        `generate @src/dotnet:project ${plugin} --projectType console --ownSolution`
+        `generate @nx-boat-tools/dotnet:project ${plugin} --projectType console --ownSolution`
       );
       const _names = names(plugin);
       expect(() =>
@@ -118,9 +118,9 @@ describe('dotnet e2e', () => {
   // describe('--directory', () => {
   //   it('should create src in the specified directory', async () => {
   //     const plugin = uniq('dotnet');
-  //     ensureNxProject('@src/dotnet', 'dist/packages/dotnet');
+  //     ensureNxProject('@nx-boat-tools/dotnet', 'dist/packages/dotnet');
   //     await runNxCommandAsync(
-  //       `generate @src/dotnet:dotnet ${plugin} --directory subdir`
+  //       `generate @nx-boat-tools/dotnet:dotnet ${plugin} --directory subdir`
   //     );
   //     expect(() =>
   //       checkFilesExist(`libs/subdir/${plugin}/src/index.ts`)
@@ -131,9 +131,9 @@ describe('dotnet e2e', () => {
   // describe('--tags', () => {
   //   it('should add tags to nx.json', async () => {
   //     const plugin = uniq('dotnet');
-  //     ensureNxProject('@src/dotnet', 'dist/packages/dotnet');
+  //     ensureNxProject('@nx-boat-tools/dotnet', 'dist/packages/dotnet');
   //     await runNxCommandAsync(
-  //       `generate @src/dotnet:dotnet ${plugin} --tags e2etag,e2ePackage`
+  //       `generate @nx-boat-tools/dotnet:dotnet ${plugin} --tags e2etag,e2ePackage`
   //     );
   //     const nxJson = readJson('nx.json');
   //     expect(nxJson.projects[plugin].tags).toEqual(['e2etag', 'e2ePackage']);

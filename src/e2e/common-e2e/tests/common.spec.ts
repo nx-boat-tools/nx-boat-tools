@@ -8,8 +8,8 @@ import {
 describe('common e2e', () => {
   it('should create common', async () => {
     const plugin = uniq('common');
-    ensureNxProject('@src/common', 'dist/packages/common');
-    await runNxCommandAsync(`generate @src/common:common ${plugin}`);
+    ensureNxProject('@nx-boat-tools/common', 'dist/packages/common');
+    await runNxCommandAsync(`generate @nx-boat-tools/common:common ${plugin}`);
 
     const result = await runNxCommandAsync(`build ${plugin}`);
     expect(result.stdout).toContain('Executor ran');
@@ -18,9 +18,9 @@ describe('common e2e', () => {
   describe('--directory', () => {
     it('should create src in the specified directory', async () => {
       const plugin = uniq('common');
-      ensureNxProject('@src/common', 'dist/packages/common');
+      ensureNxProject('@nx-boat-tools/common', 'dist/packages/common');
       await runNxCommandAsync(
-        `generate @src/common:common ${plugin} --directory subdir`
+        `generate @nx-boat-tools/common:common ${plugin} --directory subdir`
       );
       expect(() =>
         checkFilesExist(`libs/subdir/${plugin}/src/index.ts`)
@@ -31,9 +31,9 @@ describe('common e2e', () => {
   describe('--tags', () => {
     it('should add tags to nx.json', async () => {
       const plugin = uniq('common');
-      ensureNxProject('@src/common', 'dist/packages/common');
+      ensureNxProject('@nx-boat-tools/common', 'dist/packages/common');
       await runNxCommandAsync(
-        `generate @src/common:common ${plugin} --tags e2etag,e2ePackage`
+        `generate @nx-boat-tools/common:common ${plugin} --tags e2etag,e2ePackage`
       );
       const nxJson = readJson('nx.json');
       expect(nxJson.projects[plugin].tags).toEqual(['e2etag', 'e2ePackage']);
