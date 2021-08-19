@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Set Version",
+  "description": "set a build version for the project",
+  "type": "object",
+  "properties": {
+    "projectPath": {
+      "type": "string",
+      "description": "The directory containing the project, specifically where a VERSION file may be found"
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "The directory to save the resulting version file"
+    }
+  },
+  "additionalProperties": true,
+  "required": [
+    "outputPath"
+  ]
+}

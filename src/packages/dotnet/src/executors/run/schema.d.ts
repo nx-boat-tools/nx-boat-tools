@@ -1,4 +1,4 @@
-export interface BuildDotnetExecutorSchema {
+export interface RunDotnetExecutorSchema {
     additionalArgs?: string;
     srcPath: string;
     outputPath: string;

@@ -3,10 +3,25 @@
   "name": "dotnet",
   "version": "0.0.1",
   "generators": {
-    "dotnet": {
-      "factory": "./src/generators/dotnet/generator",
-      "schema": "./src/generators/dotnet/schema.json",
-      "description": "dotnet generator"
+    "project": {
+      "factory": "./src/generators/project/generator",
+      "schema": "./src/generators/project/schema.json",
+      "description": "dotnet project generator"
+    },
+    "classlib": {
+      "factory": "./src/generators/classlib/generator",
+      "schema": "./src/generators/classlib/schema.json",
+      "description": "dotnet class library generator"
+    },
+    "console": {
+      "factory": "./src/generators/console/generator",
+      "schema": "./src/generators/console/schema.json",
+      "description": "dotnet console app generator"
+    },
+    "webapi": {
+      "factory": "./src/generators/webapi/generator",
+      "schema": "./src/generators/webapi/schema.json",
+      "description": "dotnet web API generator"
     }
   }
 }
