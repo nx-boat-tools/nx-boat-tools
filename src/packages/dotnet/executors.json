@@ -5,6 +5,26 @@
       "implementation": "./src/executors/build/executor",
       "schema": "./src/executors/build/schema.json",
       "description": "build executor"
+    },
+    "clean": {
+      "implementation": "./src/executors/clean/executor",
+      "schema": "./src/executors/clean/schema.json",
+      "description": "clean executor"
+    },
+    "package": {
+      "implementation": "./src/executors/package/executor",
+      "schema": "./src/executors/package/schema.json",
+      "description": "package executor"
+    },
+    "run": {
+      "implementation": "./src/executors/run/executor",
+      "schema": "./src/executors/run/schema.json",
+      "description": "run executor"
+    },
+    "run-dotnet-command": {
+      "implementation": "./src/executors/run-dotnet-command/executor",
+      "schema": "./src/executors/run-dotnet-command/schema.json",
+      "description": "run a dotnet cli command"
     }
   }
 }

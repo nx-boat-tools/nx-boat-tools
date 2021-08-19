@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "common",
+  "version": "0.0.1",
+  "generators": {
+    "common": {
+      "factory": "./src/generators/common/generator",
+      "schema": "./src/generators/common/schema.json",
+      "description": "common generator"
+    }
+  }
+}

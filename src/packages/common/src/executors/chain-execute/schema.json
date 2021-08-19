@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Chain Executor",
+  "description": "chain executors together as one",
+  "type": "object",
+  "properties": {
+    "targets": {
+      "type": "array",
+      "description": "An array containing the other executors to call."
+    },
+    "additionalTargets": {
+      "type": "array",
+      "description": "An array containing additional builders to call (for configurations)."
+    }
+  },
+  "additionalProperties": true,
+  "required": [
+    "targets"
+  ]
+}

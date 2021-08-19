@@ -1,16 +1,16 @@
 import { ExecutorContext } from '@nrwl/devkit';
-import { BuildDotnetExecutorSchema } from './schema';
+import { PackageDotnetExecutorSchema } from './schema';
 import runDotnetCommand from '../run-dotnet-command/executor';
 import { DotNetCommandExecutorSchema } from '../run-dotnet-command/schema';
 
-export default async function runExecutor(options: BuildDotnetExecutorSchema, context: ExecutorContext) {
+export default async function runExecutor(options: PackageDotnetExecutorSchema, context: ExecutorContext) {
   const dotnetOptions: DotNetCommandExecutorSchema = {
     ...options,
-    action: 'build'
+    action: 'pack'
   }
 
   await runDotnetCommand(dotnetOptions, context);
-
+  
   return {
     success: true,
   };

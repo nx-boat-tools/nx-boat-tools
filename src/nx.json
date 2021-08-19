@@ -27,12 +27,20 @@
     ]
   },
   "projects": {
-    "dotnet": {
+    "common": {
       "tags": []
+    },
+    "common-e2e": {
+      "tags": [],
+      "implicitDependencies": ["common"]
+    },
+    "dotnet": {
+      "tags": [],
+      "implicitDependencies": ["common"]
     },
     "dotnet-e2e": {
       "tags": [],
-      "implicitDependencies": ["dotnet"]
+      "implicitDependencies": ["common","dotnet"]
     }
   },
   "workspaceLayout": {

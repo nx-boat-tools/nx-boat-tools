@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "executors": {
+    "chain-execute": {
+      "implementation": "./src/executors/chain-execute/executor",
+      "schema": "./src/executors/chain-execute/schema.json",
+      "description": "chain executors together as one"
+    },
+    "set-version": {
+      "implementation": "./src/executors/set-version/executor",
+      "schema": "./src/executors/set-version/schema.json",
+      "description": "set a build version"
+    }
+  }
+}

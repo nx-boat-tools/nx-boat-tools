@@ -1,11 +1,10 @@
-import { BuildDotnetExecutorSchema } from './schema';
+import { SetVersionExecutorSchema } from './schema';
 import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
 
-const options: BuildDotnetExecutorSchema = {
-  srcPath: 'apps/my-project',
-  outputPath: 'dist/apps/my-project',
-  updateVersion: false
+const options: SetVersionExecutorSchema = {
+  projectPath: 'apps/my-project',
+  outputPath: 'dist/my-project'
 };
 
 const context: ExecutorContext = {
