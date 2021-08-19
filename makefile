@@ -1,4 +1,4 @@
-TEMPLATES_DIR = ./templates
+TEMPLATES_DIR = ./src/templates
 
 all:
 	make templates;
