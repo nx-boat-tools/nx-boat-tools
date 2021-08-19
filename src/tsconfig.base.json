@@ -15,8 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@src/common": ["packages/common/src/index.ts"],
-      "@src/dotnet": ["packages/dotnet/src/index.ts"]
+      "@nx-boat-tools/common": ["packages/common/src/index.ts"],
+      "@nx-boat-tools/dotnet": ["packages/dotnet/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

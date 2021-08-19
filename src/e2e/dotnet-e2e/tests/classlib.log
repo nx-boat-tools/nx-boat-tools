@@ -9,8 +9,8 @@ import {
 describe('dotnet e2e', () => {
   it('should create classlib', async () => {
     const plugin = uniq('classlib');
-    ensureNxProject('@src/dotnet', 'dist/packages/dotnet');
-    await runNxCommandAsync(`generate @src/dotnet:classlib ${plugin}`);
+    ensureNxProject('@nx-boat-tools/dotnet', 'dist/packages/dotnet');
+    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:classlib ${plugin}`);
 
     const result = await runNxCommandAsync(`build ${plugin}`);
     expect(result.stdout).toContain('Executor ran');
