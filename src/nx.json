@@ -34,13 +34,20 @@
       "tags": [],
       "implicitDependencies": ["common"]
     },
+    "docker": {
+      "tags": []
+    },
+    "docker-e2e": {
+      "tags": [],
+      "implicitDependencies": ["docker"]
+    },
     "dotnet": {
       "tags": [],
       "implicitDependencies": ["common"]
     },
     "dotnet-e2e": {
       "tags": [],
-      "implicitDependencies": ["common","dotnet"]
+      "implicitDependencies": ["common", "dotnet"]
     }
   },
   "workspaceLayout": {

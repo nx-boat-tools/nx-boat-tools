@@ -69,6 +69,74 @@
         }
       }
     },
+    "docker": {
+      "root": "packages/docker",
+      "sourceRoot": "packages/docker/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/docker/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/docker"],
+          "options": {
+            "jestConfig": "packages/docker/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/docker",
+            "tsConfig": "packages/docker/tsconfig.lib.json",
+            "packageJson": "packages/docker/package.json",
+            "main": "packages/docker/src/index.ts",
+            "assets": [
+              "packages/docker/*.md",
+              {
+                "input": "./packages/docker/src",
+                "glob": "**/!(*.ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/docker/src",
+                "glob": "**/*.d.ts",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/docker",
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/docker",
+                "glob": "executors.json",
+                "output": "."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "docker-e2e": {
+      "root": "e2e/docker-e2e",
+      "projectType": "application",
+      "sourceRoot": "e2e/docker-e2e/src",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/nx-plugin:e2e",
+          "options": {
+            "target": "docker:build",
+            "jestConfig": "e2e/docker-e2e/jest.config.js"
+          }
+        }
+      }
+    },
     "dotnet": {
       "root": "packages/dotnet",
       "sourceRoot": "packages/dotnet/src",
