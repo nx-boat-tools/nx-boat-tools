@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "executors": {
+    "build": {
+      "implementation": "./src/executors/build/executor",
+      "schema": "./src/executors/build/schema.json",
+      "description": "build executor"
+    },
+    "copyFiles": {
+      "implementation": "./src/executors/copyFiles/executor",
+      "schema": "./src/executors/copyFiles/schema.json",
+      "description": "Copy Docker Files executor"
+    },
+    "publish": {
+      "implementation": "./src/executors/publish/executor",
+      "schema": "./src/executors/publish/schema.json",
+      "description": "Publish Docker image executor"
+    },
+    "run": {
+      "implementation": "./src/executors/run/executor",
+      "schema": "./src/executors/run/schema.json",
+      "description": "Run Docker image executor"
+    }
+  }
+}
