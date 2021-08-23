@@ -27,7 +27,7 @@ export async function spawnAsync(command: string, args?: any): Promise<string> {
     let output = `> ${cmd} ${cmd_args.join(' ')}\n\n`;
     process.stdout.write(output);
 
-    const child = spawnSync(cmd, cmd_args, { shell: true })
+    const child = spawnSync(cmd, cmd_args, { shell: true, stdio: 'inherit' })
 
     return Promise.resolve(child.output.join('\n'))
 }

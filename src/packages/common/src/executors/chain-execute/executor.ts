@@ -1,4 +1,4 @@
-import { ExecutorContext, parseTargetString, runExecutor } from '@nrwl/devkit';
+import { ExecutorContext, runExecutor } from '@nrwl/devkit';
 import * as _ from 'underscore';
 
 import { BuildExecutorSchema } from './schema';
