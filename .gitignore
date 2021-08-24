@@ -4,7 +4,11 @@
 node_modules
 
 *.js
+!jest.config.js
+!jest.preset.js
 *.d.ts
 !**/schema.d.ts
 
 **/templates/**/files
+
+local-test
