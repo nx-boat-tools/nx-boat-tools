@@ -6,7 +6,10 @@ import { DockerGeneratorSchema } from './schema';
 
 describe('docker generator', () => {
   let appTree: Tree;
-  const options: DockerGeneratorSchema = { name: 'test' };
+  const options: DockerGeneratorSchema = { 
+    name: 'test',
+    dockerRepoOrUser: 'myusername'
+  };
 
   beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();
