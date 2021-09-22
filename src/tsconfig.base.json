@@ -17,7 +17,8 @@
     "paths": {
       "@nx-boat-tools/common": ["packages/common/src/index.ts"],
       "@nx-boat-tools/docker": ["packages/docker/src/index.ts"],
-      "@nx-boat-tools/dotnet": ["packages/dotnet/src/index.ts"]
+      "@nx-boat-tools/dotnet": ["packages/dotnet/src/index.ts"],
+      "@nx-boat-tools/helm": ["packages/helm/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

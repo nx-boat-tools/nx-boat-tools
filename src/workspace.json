@@ -204,6 +204,79 @@
           }
         }
       }
+    },
+    "helm": {
+      "root": "packages/helm",
+      "sourceRoot": "packages/helm/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/helm/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/helm"],
+          "options": {
+            "jestConfig": "packages/helm/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/helm",
+            "tsConfig": "packages/helm/tsconfig.lib.json",
+            "packageJson": "packages/helm/package.json",
+            "main": "packages/helm/src/index.ts",
+            "assets": [
+              "packages/helm/*.md",
+              {
+                "input": "./packages/helm/src",
+                "glob": "**/!(*.ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/helm/src",
+                "glob": "**/*.d.ts",
+                "output": "./src"
+              },
+              {
+                "input": "./packages/helm",
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/helm",
+                "glob": "executors.json",
+                "output": "."
+              },
+              {
+                "input": "templates/helm/files",
+                "glob": "**/!(makefile)",
+                "output": "./templates/helm"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "helm-e2e": {
+      "root": "e2e/helm-e2e",
+      "projectType": "application",
+      "sourceRoot": "e2e/helm-e2e/src",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/nx-plugin:e2e",
+          "options": {
+            "target": "helm:build",
+            "jestConfig": "e2e/helm-e2e/jest.config.js"
+          }
+        }
+      }
     }
   },
   "cli": {
