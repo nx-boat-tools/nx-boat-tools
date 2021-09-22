@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "helm",
+  "version": "0.0.1",
+  "generators": {
+    "helm-local": {
+      "factory": "./src/generators/helm-local/generator",
+      "schema": "./src/generators/helm-local/schema.json",
+      "description": "helm-local generator"
+    },
+    "helm-repo": {
+      "factory": "./src/generators/helm-repo/generator",
+      "schema": "./src/generators/helm-repo/schema.json",
+      "description": "helm-repo generator"
+    }
+  }
+}

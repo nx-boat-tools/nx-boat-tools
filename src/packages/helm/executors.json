@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "executors": {
+    "copyValues": {
+      "implementation": "./src/executors/copyValues/executor",
+      "schema": "./src/executors/copyValues/schema.json",
+      "description": "copyValues executor"
+    },
+    "package": {
+      "implementation": "./src/executors/package/executor",
+      "schema": "./src/executors/package/schema.json",
+      "description": "package executor"
+    }
+  }
+}

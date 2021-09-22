@@ -11,6 +11,6 @@ default:
 
 	for f in $$(find "$(out-dir)" -type f); do mv "$$f" "$${f}.template"; done;
 	for f in $$(find "$(out-dir)" ! -name "$(project-name)"); do mv "$$f" "$${f//$(project-name)/__className__}"; done;
-	for f in $$(find "$(out-dir)" -type f); do sed -i.bak 's/$(project-name)/\<\%\= className \%\>/g' "$$f"; done;
+	for f in $$(find "$(out-dir)" -type f); do sed -i.bak 's/$(project-name)/\<\%\= name \%\>/g' "$$f"; done;
 
 	for f in $$(find "$(out-dir)" -type f -name "*.bak"); do rm -rf $$f; done;

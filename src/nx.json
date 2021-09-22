@@ -48,6 +48,13 @@
     "dotnet-e2e": {
       "tags": [],
       "implicitDependencies": ["common", "dotnet"]
+    },
+    "helm": {
+      "tags": []
+    },
+    "helm-e2e": {
+      "tags": [],
+      "implicitDependencies": ["helm"]
     }
   },
   "workspaceLayout": {
