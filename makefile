@@ -1,9 +1,6 @@
 TEMPLATES_DIR = ./src/templates
 
-all:
-	make templates;
-	make schematics;
-schematics:
-	yarn build;
+build:
+	make -C src
 templates:
 	$(foreach file, $(wildcard $(TEMPLATES_DIR)/*), [ "$(file)" != './templates/base' ] && (make -C $(file));)
