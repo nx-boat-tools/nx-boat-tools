@@ -4,7 +4,7 @@ name: Merge
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main,develop ]
 
 jobs:
   version:
@@ -23,12 +23,12 @@ jobs:
         run: |
           VER=$(cat RELEASE_VERSION)
           echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
-      - name: Create Release
+      - name: Create release
         env:
           ARTIFACTS_DIR: ./dist/artifacts
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           hub release create $(find "$(ARTIFACTS_DIR)" -type d -maxdepth 1 ! -name "artifacts" -printf "-a %p ") -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
-      - name: Update Versions
-        run: make version
+      # - name: Update versions
+      #   run: make version
