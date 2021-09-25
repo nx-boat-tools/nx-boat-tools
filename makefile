@@ -15,10 +15,10 @@ build:
 	npm ci
 	npx nx affected:build --base=$(base_ref)
 artifacts:
-	# mkdir -p $(ARTIFACTS_DIR)
+	mkdir -p $(ARTIFACTS_DIR)
 
-	# npm ci
-	# npx nx affected:build --base=$(base_ref)
+	npm ci
+	npx nx affected:build --base=$(base_ref)
 
 	$(eval current_version = $(shell npm pkg get version))
 	
