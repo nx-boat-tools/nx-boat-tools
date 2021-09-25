@@ -15,22 +15,20 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
-      - name: Update Versions
-        run: make version
+      - name: Create build artifacts
+        run: make artifacts
+        env:
+          base_ref: origin/${{ github.base_ref }}
       - name: Set variables
         run: |
           VER=$(cat RELEASE_VERSION)
           echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body: |
-            Changes in this Release
-            - Add changes
-          draft: true
-          prerelease: false
+          ARTIFACTS_DIR: ./dist/artifacts
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          hub release create $(find "$(ARTIFACTS_DIR)" -type d -maxdepth 1 ! -name "artifacts" -printf "-a %p ") -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
+      - name: Update Versions
+        run: make version
