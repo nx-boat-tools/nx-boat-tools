@@ -40,6 +40,6 @@ version:
 
 	git add .
 	git commit -m 'Incrementing version to $(new_version)';
-	git push
+	git push origin
 templates:
 	$(foreach file, $(wildcard $(TEMPLATES_DIR)/*), [ "$(file)" != './templates/base' ] && (make -C $(file));)
