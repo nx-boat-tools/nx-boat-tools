@@ -1,0 +1,43 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Merge
+
+on:
+  push:
+    branches: [ main,develop ]
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Hub CLI
+        run: |
+          wget -q -O- \
+          https://github.com/github/hub/releases/download/v2.12.8/hub-linux-amd64-2.12.8.tgz  | \
+          tar xz --strip-components=1 --wildcards '*/bin/hub'
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Create build artifacts
+        run: |
+          make artifacts
+          make version
+        env:
+          base_ref: origin/${{ github.base_ref }}
+      - name: Set variables
+        run: |
+          VER=$(cat RELEASE_VERSION)
+          echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
+      - name: Create release
+        env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          ARTIFACTS_DIR: ./dist/artifacts
+        run: |
+          hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -d -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
