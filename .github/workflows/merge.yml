@@ -38,6 +38,6 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           ARTIFACTS_DIR: ./dist/artifacts
         run: |
-          hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
+          hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -d -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
       # - name: Update versions
       #   run: make version

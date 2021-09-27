@@ -25,4 +25,4 @@ jobs:
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
-          hub release download "$TAG_NAME" -i "*.zip" && 
+          hub release download "$TAG_NAME" -i "*.zip"
