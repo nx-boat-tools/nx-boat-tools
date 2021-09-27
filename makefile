@@ -15,13 +15,15 @@ build:
 	npm ci
 	npx nx affected:build --base=$(base_ref)
 artifacts:
+	$(eval last_version = $(shell git describe --abbrev=0 --tags))
+	$(eval last_version_hash = $(shell git rev-list -n 1 $(last_version)))
+	$(eval current_version = $(shell npm pkg get version))
+
 	mkdir -p $(ARTIFACTS_DIR)
 
 	npm ci
-	npx nx affected:build --base=$(base_ref)
+	npx nx affected:build --base=$(last_version_hash)
 
-	$(eval current_version = $(shell npm pkg get version))
-	
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do package="$$(basename $$f)_$(current_version).zip"; zip -r $(ARTIFACTS_DIR)/$$package $$f; done;
 	# for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do npm publish $$f --dry-run; done;
 
