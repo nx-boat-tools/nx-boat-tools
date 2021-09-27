@@ -23,7 +23,9 @@ jobs:
           node-version: '16'
           cache: 'npm'
       - name: Create build artifacts
-        run: make artifacts
+        run: |
+          make artifacts
+          make version
         env:
           base_ref: origin/${{ github.base_ref }}
       - name: Set variables
@@ -39,5 +41,3 @@ jobs:
           ARTIFACTS_DIR: ./dist/artifacts
         run: |
           hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -d -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
-      - name: Update versions
-        run: make version
