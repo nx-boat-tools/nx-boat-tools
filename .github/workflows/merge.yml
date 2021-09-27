@@ -4,7 +4,7 @@ name: Merge
 
 on:
   push:
-    branches: [ main,develop ]
+    branches: [ main,develop,gha ]
 
 jobs:
   version:
