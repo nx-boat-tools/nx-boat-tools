@@ -10,6 +10,11 @@ jobs:
   version:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Hub CLI
+        run: |
+          wget -q -O- \
+          https://github.com/github/hub/releases/download/v2.12.8/hub-linux-amd64-2.12.8.tgz  | \
+          tar xz --strip-components=1 --wildcards '*/bin/hub'
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -27,9 +32,11 @@ jobs:
           echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
       - name: Create release
         env:
-          ARTIFACTS_DIR: ./dist/artifacts
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          ARTIFACTS_DIR: ./dist/artifacts
         run: |
           hub release create $(find "$ARTIFACTS_DIR" -type d -maxdepth 1 ! -name "artifacts" -printf "-a %p ") -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
       # - name: Update versions
