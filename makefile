@@ -7,10 +7,6 @@ ifeq ($(base_ref),)
 base_ref := main
 endif
 
-ifeq ($(push_git),)
-base_ref := main
-endif
-
 build:
 	npm ci
 	npx nx affected:build --base=$(base_ref)
