@@ -35,12 +35,12 @@ jobs:
         run: |
           VER=$(cat RELEASE_VERSION)
           echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
-      # - name: Create release
-      #   env:
-      #     GITHUB_USER: ${{ secrets.GITHUB_USER }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
-      #     COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-      #     ARTIFACTS_DIR: ./dist/artifacts
-      #   run: |
-      #     hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -d -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "$RELEASE_VERSION"
+      - name: Create release
+        env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          ARTIFACTS_DIR: ./dist/artifacts
+        run: |
+          hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -d -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "v$RELEASE_VERSION"

@@ -23,7 +23,11 @@ jobs:
           cache: 'npm'
       - name: Get release assets
         env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.event.release.tag_name }}
+          PACKAGES_DIST_DIR: ./dist/packages
         run: |
           hub release download "$TAG_NAME" -i "*.zip"
-          for f in $$(find . -type f -name "*.zip"); do unzip -q $$f; done;
+          for f in $(find . -type f -name "*.zip"); do unzip -q $f; done;
+          for f in $(find "$PACKAGES_DIST_DIR" -type d -maxdepth 1 ! -name "packages"); do npm publish $f --dry-run; done;

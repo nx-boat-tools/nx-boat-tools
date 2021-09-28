@@ -21,8 +21,7 @@ artifacts:
 	npx nx affected:build --base=$(last_version_hash)
 
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
-	# for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do npm publish $$f --dry-run; done;
-
+	
 	echo $(current_version) >> RELEASE_VERSION
 version:
 	npm ci;
