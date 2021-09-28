@@ -32,6 +32,7 @@ version:
 
 	git tag v$(current_version);
 	git push origin v$(current_version)
+	git checkout develop
 
 	for f in $$(find "$(PACKAGES_DIR)" -type d -maxdepth 1 ! -name "packages"); do cd $$f; npm version $(new_version) --commit-hooks=false --git-tag-version=false; cd ../..; done;
 	
@@ -39,9 +40,6 @@ version:
 
 	git add .
 	git commit -m 'Bumping version to $(new_version)';
-	git push -u origin main
-	git checkout develop
-	git merge --ff-only main
-	git push -u origin_kh develop
+	git push -u origin develop
 templates:
 	$(foreach file, $(wildcard $(TEMPLATES_DIR)/*), [ "$(file)" != './templates/base' ] && (make -C $(file));)
