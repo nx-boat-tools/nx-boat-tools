@@ -26,7 +26,7 @@ jobs:
           git config --global user.email "hale.killian@gmail.com"
           git config --global user.name "Killian Hale"
           make artifacts
-          make version
+          make version tag=true commit=true commit-branch=develop
         env:
           base_ref: origin/${{ github.base_ref }}
       - name: Set variables
