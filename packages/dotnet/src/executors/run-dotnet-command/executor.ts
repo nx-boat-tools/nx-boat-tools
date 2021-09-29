@@ -8,16 +8,25 @@ import { getAllProjectsFromSolution } from '../../utilities/slnFileHelper';
 
 import { DotNetCommandExecutorSchema } from './schema';
 
-const validActions: Array<string> = ['build', 'pack', 'publish', 'run', 'clean'];
+const validActions: Array<string> = [
+  'build',
+  'pack',
+  'publish',
+  'run',
+  'clean',
+];
 const actionVerbs: { [key: string]: string } = {
   build: '🔨 Building',
   pack: '📦 Packing',
   publish: '📤 Publishing',
   run: '👟 Running',
-  clean: '🗑 Cleaning'
+  clean: '🗑 Cleaning',
 };
 
-function getAllProjects(dotnetProjectPath: string, context: ExecutorContext): Array<string> {
+function getAllProjects(
+  dotnetProjectPath: string,
+  context: ExecutorContext
+): Array<string> {
   if (dotnetProjectPath.endsWith('.csproj')) {
     return [dotnetProjectPath];
   }
@@ -25,16 +34,26 @@ function getAllProjects(dotnetProjectPath: string, context: ExecutorContext): Ar
   const slnBuffer = readFileSync(dotnetProjectPath);
 
   if (slnBuffer === null) {
-    throw new Error(`Unable to read the dotnet project file specified, '${dotnetProjectPath}'`);
+    throw new Error(
+      `Unable to read the dotnet project file specified, '${dotnetProjectPath}'`
+    );
   }
 
   const slnContent = slnBuffer.toString();
-  const basePath = dotnetProjectPath.substring(0, dotnetProjectPath.lastIndexOf(path.sep));
+  const basePath = dotnetProjectPath.substring(
+    0,
+    dotnetProjectPath.lastIndexOf(path.sep)
+  );
 
-  return getAllProjectsFromSolution(slnContent, basePath)
+  return getAllProjectsFromSolution(slnContent, basePath);
 }
 
-async function updateCsprojFile(dotnetProjectPath: string, outputPath: string, updateVersion: boolean, context: ExecutorContext): Promise<void> {
+async function updateCsprojFile(
+  dotnetProjectPath: string,
+  outputPath: string,
+  updateVersion: boolean,
+  context: ExecutorContext
+): Promise<void> {
   const projPaths = getAllProjects(dotnetProjectPath, context);
 
   for (let x = 0; x < projPaths.length; x++) {
@@ -45,7 +64,9 @@ async function updateCsprojFile(dotnetProjectPath: string, outputPath: string, u
     const csprojBuffer = readFileSync(currentProjPath);
 
     if (csprojBuffer === null) {
-      throw new Error(`Unable to read the csproj file specified, '${currentProjPath}'`);
+      throw new Error(
+        `Unable to read the csproj file specified, '${currentProjPath}'`
+      );
     }
 
     const parser = new Parser();
@@ -53,14 +74,16 @@ async function updateCsprojFile(dotnetProjectPath: string, outputPath: string, u
 
     let propGroup = {
       ...doc.Project.PropertyGroup[0],
-      IsPackable: true
+      IsPackable: true,
     };
 
     if (updateVersion) {
       const versionPath = path.join(outputPath, 'VERSION');
 
       if (!existsSync(versionPath)) {
-        throw new Error(`Unable to detect version. No VERSION file found at '${versionPath}'!`);
+        throw new Error(
+          `Unable to detect version. No VERSION file found at '${versionPath}'!`
+        );
       }
 
       const version = readFileSync(versionPath).toString();
@@ -70,7 +93,7 @@ async function updateCsprojFile(dotnetProjectPath: string, outputPath: string, u
       propGroup = {
         ...propGroup,
         ReleaseVersion: [version],
-        PackageVersion: [version]
+        PackageVersion: [version],
       };
     }
 
@@ -85,10 +108,14 @@ async function updateCsprojFile(dotnetProjectPath: string, outputPath: string, u
   }
 }
 
-export default async function (options: DotNetCommandExecutorSchema, context: ExecutorContext) {
+export default async function (
+  options: DotNetCommandExecutorSchema,
+  context: ExecutorContext
+) {
   let { srcPath, outputPath } = options;
-  const { action, configMap, runtimeID, updateVersion, additionalArgs } = options;
-  const {root, projectName, configurationName} = context
+  const { action, configMap, runtimeID, updateVersion, additionalArgs } =
+    options;
+  const { root, projectName, configurationName } = context;
 
   srcPath = path.join(root, srcPath);
   outputPath = path.join(root, outputPath);
@@ -98,7 +125,9 @@ export default async function (options: DotNetCommandExecutorSchema, context: Ex
   }
 
   if (srcPath === undefined || srcPath === '') {
-    throw new Error('You must specify the location of the csproj file for the project.');
+    throw new Error(
+      'You must specify the location of the csproj file for the project.'
+    );
   }
 
   if (!_.contains(validActions, action)) {
@@ -113,7 +142,7 @@ export default async function (options: DotNetCommandExecutorSchema, context: Ex
     throw new Error(`Unable to locate src path, '${srcPath}'`);
   }
 
-  if(action == 'build') {
+  if (action == 'build') {
     await updateCsprojFile(srcPath, outputPath, updateVersion, context);
   }
 
@@ -126,8 +155,12 @@ export default async function (options: DotNetCommandExecutorSchema, context: Ex
     args.push(`--output ${outputPath}`);
   }
 
-  const hasConfig = configurationName !== undefined && configMap !== undefined && configMap !== null;
-  const config = (hasConfig ? configMap[configurationName] : undefined) || configurationName;
+  const hasConfig =
+    configurationName !== undefined &&
+    configMap !== undefined &&
+    configMap !== null;
+  const config =
+    (hasConfig ? configMap[configurationName] : undefined) || configurationName;
 
   args.push(!hasConfig ? '' : `--configuration ${config}`);
   args.push(runtimeID === undefined ? '' : `--runtime ${runtimeID}`);
@@ -135,9 +168,11 @@ export default async function (options: DotNetCommandExecutorSchema, context: Ex
 
   const argString = _.without(args, '').join(' ');
 
-  console.log(`${actionVerbs[action]} .Net Project '${context.projectName}'...\n`);
+  console.log(
+    `${actionVerbs[action]} .Net Project '${context.projectName}'...\n`
+  );
   console.log(await spawnAsync(`dotnet ${action} ${argString}`));
-  console.log(`🎉${actionVerbs[action].substring(2)} complete!`)
+  console.log(`🎉${actionVerbs[action].substring(2)} complete!`);
 
-  return { success: true }
+  return { success: true };
 }

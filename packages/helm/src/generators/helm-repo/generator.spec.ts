@@ -11,8 +11,8 @@ describe('helm generator', () => {
     buildPath: './dist/apps/test',
     environments: '',
     repository: 'bitnami',
-    chart: 'mysql'
-   };
+    chart: 'mysql',
+  };
 
   beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();

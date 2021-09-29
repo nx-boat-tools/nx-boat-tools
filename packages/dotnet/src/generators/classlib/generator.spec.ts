@@ -6,9 +6,9 @@ import { ClassLibraryGeneratorSchema } from './schema';
 
 describe('dotnet generator', () => {
   let appTree: Tree;
-  const options: ClassLibraryGeneratorSchema = { 
+  const options: ClassLibraryGeneratorSchema = {
     name: 'test',
-    ownSolution: false
+    ownSolution: false,
   };
 
   beforeEach(() => {

@@ -6,9 +6,9 @@ import { ConsoleAppGeneratorSchema } from './schema';
 
 describe('dotnet generator', () => {
   let appTree: Tree;
-  const options: ConsoleAppGeneratorSchema = { 
+  const options: ConsoleAppGeneratorSchema = {
     name: 'test',
-    ownSolution: false
+    ownSolution: false,
   };
 
   beforeEach(() => {

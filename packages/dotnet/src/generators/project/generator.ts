@@ -6,13 +6,16 @@ import {
   names,
   offsetFromRoot,
   Tree,
-  ProjectType
+  ProjectType,
 } from '@nrwl/devkit';
 import * as path from 'path';
 import { Guid } from 'guid-typescript';
 import * as _ from 'underscore';
 import { DotnetGeneratorSchema } from './schema';
-import { appendGlobalSectionToSolution, appendProjectLinesToSolution } from '../../utilities/slnFileHelper';
+import {
+  appendGlobalSectionToSolution,
+  appendProjectLinesToSolution,
+} from '../../utilities/slnFileHelper';
 
 interface NormalizedSchema extends DotnetGeneratorSchema {
   projectName: string;
@@ -44,13 +47,16 @@ function normalizeOptions(
   tree: Tree,
   options: DotnetGeneratorSchema
 ): NormalizedSchema {
-  const rootDir = tree.root
+  const rootDir = tree.root;
   const name = names(options.name).fileName;
   const projectDirectory = options.directory
     ? `${names(options.directory).fileName}/${name}`
     : name;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getProjectDirectoryPrefix(tree, options.projectType)}/${projectDirectory}`;
+  const projectRoot = `${getProjectDirectoryPrefix(
+    tree,
+    options.projectType
+  )}/${projectDirectory}`;
   const projectDistPath = path.join('dist', projectRoot);
   const projectPathFromSln = !options.ownSolution ? projectRoot + path.sep : '';
   const nxProjectType = getNxProjectType(tree, options.projectType);
@@ -65,7 +71,10 @@ function normalizeOptions(
   const pkgName = pkg.name;
   const pkgVersion = pkg.version;
   const authors = pkg.author !== undefined ? pkg.author : 'John Doe';
-  const description = pkg.description !== undefined ? pkg.description : 'Project Description goes here';
+  const description =
+    pkg.description !== undefined
+      ? pkg.description
+      : 'Project Description goes here';
 
   return {
     ...options,
@@ -80,7 +89,7 @@ function normalizeOptions(
     pkgName,
     pkgVersion,
     authors,
-    description
+    description,
   };
 }
 
@@ -120,7 +129,16 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 }
 
 function addProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
-  const pathParts: Array<string> = ['..', '..', '..', '..', 'templates', `dotnet-${templateOptions.projectType}`, 'files', 'csproj'];
+  const pathParts: Array<string> = [
+    '..',
+    '..',
+    '..',
+    '..',
+    'templates',
+    `dotnet-${templateOptions.projectType}`,
+    'files',
+    'csproj',
+  ];
 
   if (!templateOptions.ownSolution) {
     pathParts.push('__className__');
@@ -135,7 +153,16 @@ function addProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
 }
 
 function addSolutionFiles(tree: Tree, templateOptions: TemplateOptions) {
-  const pathParts: Array<string> = ['..', '..', '..', '..', 'templates', `dotnet-${templateOptions.projectType}`, 'files', `sln`];
+  const pathParts: Array<string> = [
+    '..',
+    '..',
+    '..',
+    '..',
+    'templates',
+    `dotnet-${templateOptions.projectType}`,
+    'files',
+    `sln`,
+  ];
 
   generateFiles(
     tree,
@@ -145,22 +172,33 @@ function addSolutionFiles(tree: Tree, templateOptions: TemplateOptions) {
   );
 }
 
-function moveSolutionFileIfNeeded(tree: Tree, templateOptions: TemplateOptions) {
+function moveSolutionFileIfNeeded(
+  tree: Tree,
+  templateOptions: TemplateOptions
+) {
   if (templateOptions.ownSolution == true) {
     return;
   }
 
   const rootSlnPath = path.join('./', `${templateOptions.pkgName}.sln`);
-  const projectSlnPath = path.join(templateOptions.projectRoot, `${templateOptions.className}.sln`);
+  const projectSlnPath = path.join(
+    templateOptions.projectRoot,
+    `${templateOptions.className}.sln`
+  );
 
   const projectSlnBuffer = tree.read(projectSlnPath);
-  let projectSlnContent = projectSlnBuffer === null ? '' : projectSlnBuffer.toString();
+  let projectSlnContent =
+    projectSlnBuffer === null ? '' : projectSlnBuffer.toString();
 
   projectSlnContent = projectSlnContent.replace(
-    `${templateOptions.className}\\${templateOptions.className}.csproj`, `${templateOptions.className}${path.sep}${templateOptions.className}.csproj`)
+    `${templateOptions.className}\\${templateOptions.className}.csproj`,
+    `${templateOptions.className}${path.sep}${templateOptions.className}.csproj`
+  );
 
   projectSlnContent = projectSlnContent.replace(
-    `${templateOptions.className}${path.sep}${templateOptions.className}.csproj`, `${templateOptions.className}.csproj`)
+    `${templateOptions.className}${path.sep}${templateOptions.className}.csproj`,
+    `${templateOptions.className}.csproj`
+  );
 
   tree.delete(projectSlnPath);
 
@@ -185,27 +223,31 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const dotnetOptions = {
     srcPath: !normalizedOptions.ownSolution
       ? path.join('./', `${normalizedOptions.pkgName}.sln`)
-      : path.join(normalizedOptions.projectRoot, `${normalizedOptions.projectName}.sln`),
+      : path.join(
+          normalizedOptions.projectRoot,
+          `${normalizedOptions.projectName}.sln`
+        ),
     outputPath: normalizedOptions.projectDistPath,
     configMap: {
       dev: 'Debug',
-      prod: 'Release'
-    }
+      prod: 'Release',
+    },
   };
-  const runTarget = normalizedOptions.projectType === 'classlib'
-    ? {}
-    : {
-      run: {
-        executor: '@nx-boat-tools/dotnet:run',
-        options: {
-          ...dotnetOptions
-        },
-        configurations: {
-          dev: {},
-          prod: {}
-        }
-      },
-    }
+  const runTarget =
+    normalizedOptions.projectType === 'classlib'
+      ? {}
+      : {
+          run: {
+            executor: '@nx-boat-tools/dotnet:run',
+            options: {
+              ...dotnetOptions,
+            },
+            configurations: {
+              dev: {},
+              prod: {},
+            },
+          },
+        };
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
     projectType: normalizedOptions.nxProjectType,
@@ -214,63 +256,58 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
       build: {
         executor: '@nx-boat-tools/common:chain-execute',
         options: {
-          targets: [
-            'version',
-            'buildDotnet'
-          ]
+          targets: ['version', 'buildDotnet'],
         },
         configurations: {
           dev: {},
           prod: {
-            additionalTargets: [
-              'package'
-            ]
-          }
-        }
+            additionalTargets: ['package'],
+          },
+        },
       },
       buildDotnet: {
         executor: '@nx-boat-tools/dotnet:build',
         options: {
           ...dotnetOptions,
-          updateVersion: true
+          updateVersion: true,
         },
         configurations: {
           dev: {},
-          prod: {}
-        }
+          prod: {},
+        },
       },
       clean: {
         executor: '@nx-boat-tools/dotnet:clean',
         options: {
-          ...dotnetOptions
+          ...dotnetOptions,
         },
         configurations: {
           dev: {},
-          prod: {}
-        }
+          prod: {},
+        },
       },
       package: {
         executor: '@nx-boat-tools/dotnet:package',
         options: {
-          ...dotnetOptions
+          ...dotnetOptions,
         },
         configurations: {
           dev: {},
-          prod: {}
-        }
+          prod: {},
+        },
       },
       ...runTarget,
       version: {
         executor: '@nx-boat-tools/common:set-version',
         options: {
           projectPath: normalizedOptions.projectRoot,
-          outputPath: normalizedOptions.projectDistPath
+          outputPath: normalizedOptions.projectDistPath,
         },
         configurations: {
           dev: {},
-          prod: {}
-        }
-      }
+          prod: {},
+        },
+      },
     },
     tags: normalizedOptions.parsedTags,
   });

@@ -3,19 +3,19 @@ import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
 
 const options: BuildExecutorSchema = {
-  distPath: './dist/my-project'
+  distPath: './dist/my-project',
 };
 
 const context: ExecutorContext = {
   root: __dirname,
-  projectName: "my-project",
+  projectName: 'my-project',
   targetName: undefined,
   configurationName: undefined,
   target: undefined,
   workspace: undefined,
   cwd: __dirname,
   isVerbose: false,
-}
+};
 
 describe('Build Executor', () => {
   it('can run', async () => {

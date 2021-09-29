@@ -1,4 +1,4 @@
 export interface BuildExecutorSchema {
-    targets: Array<string>
-    additionalTargets?: Array<string>
+  targets: Array<string>;
+  additionalTargets?: Array<string>;
 }

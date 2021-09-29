@@ -1,1 +1,1 @@
-export * from './utilities/spawn'
+export * from './utilities/spawn';

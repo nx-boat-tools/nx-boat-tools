@@ -4,7 +4,10 @@ import { existsSync, copyFileSync } from 'fs';
 import * as path from 'path';
 import { BuildExecutorSchema } from './schema';
 
-export default async function runExecutor(options: BuildExecutorSchema, context: ExecutorContext) {
+export default async function runExecutor(
+  options: BuildExecutorSchema,
+  context: ExecutorContext
+) {
   const tree = new FsTree(context.root, false);
   const projectConfig = readProjectConfiguration(tree, context.projectName);
   const projectDirectory = projectConfig.root;
@@ -16,7 +19,7 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
 
   console.log('\n📁 Copying docker files to the dist folder...');
 
-  if(!existsSync(dockerFilePath)) {
+  if (!existsSync(dockerFilePath)) {
     throw new Error(`${context.projectName} does not have a dockerfile.`);
   }
 
@@ -24,7 +27,7 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
 
   copyFileSync(dockerFilePath, dockerFileDistPath);
 
-  if(existsSync(dockerIgnorePath)) {
+  if (existsSync(dockerIgnorePath)) {
     console.log(`\t📄 ${dockerIgnorePath} -> ${dockerIgnoreDistPath}`);
 
     copyFileSync(dockerIgnorePath, dockerIgnoreDistPath);

@@ -1,4 +1,4 @@
 export interface PackageExecutorSchema {
-    projectHelmPath: string;
-    outputPath: string;
+  projectHelmPath: string;
+  outputPath: string;
 }

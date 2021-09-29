@@ -1,4 +1,10 @@
-import { generateFiles, names, readProjectConfiguration, Tree, updateProjectConfiguration } from '@nrwl/devkit';
+import {
+  generateFiles,
+  names,
+  readProjectConfiguration,
+  Tree,
+  updateProjectConfiguration,
+} from '@nrwl/devkit';
 import _ = require('underscore');
 import * as path from 'path';
 import { HelmLocalGeneratorSchema } from './schema';
@@ -18,10 +24,10 @@ function normalizeOptions(
   const projectConfig = readProjectConfiguration(tree, options.project);
   const projectDistPath = path.join('dist', projectConfig.root);
   const projectHelmPath = path.join(projectConfig.root, 'helm');
-  const environmentsList = options.environments?.split(',') || []
+  const environmentsList = options.environments?.split(',') || [];
 
-  if(environmentsList.length == 0) {
-    environmentsList.push("values");
+  if (environmentsList.length == 0) {
+    environmentsList.push('values');
   }
 
   return {
@@ -29,7 +35,7 @@ function normalizeOptions(
     projectConfig,
     projectDistPath,
     projectHelmPath,
-    environmentsList
+    environmentsList,
   };
 }
 
@@ -42,14 +48,10 @@ export default async function (tree: Tree, options: HelmLocalGeneratorSchema) {
     true
   );
 
-  updateProjectConfiguration(
-    tree,
-    options.project,
-    {
-      ...normalizedOptions.projectConfig,
-      targets: updatedTargets
-    }
-  );
+  updateProjectConfiguration(tree, options.project, {
+    ...normalizedOptions.projectConfig,
+    targets: updatedTargets,
+  });
   addChartFiles(tree, normalizedOptions);
   copyValuesFiles(tree, normalizedOptions);
   //await formatFiles(tree);
@@ -72,15 +74,21 @@ function addChartFiles(tree: Tree, options: NormalizedSchema) {
 }
 
 function copyValuesFiles(tree: Tree, options: NormalizedSchema) {
-  if(options.createValues != true) return;
-  
+  if (options.createValues != true) return;
+
   const projectConfig = options.projectConfig;
-  const chartValuesFile = path.join(options.projectConfig.root, 'helm', 'chart', 'values.yaml');
+  const chartValuesFile = path.join(
+    options.projectConfig.root,
+    'helm',
+    'chart',
+    'values.yaml'
+  );
 
   const values = tree.read(chartValuesFile).toString();
 
-  _.each(options.environmentsList, environment => {
-    const filename = environment === 'values' ? 'values' : `values-${environment}.yaml`;
+  _.each(options.environmentsList, (environment) => {
+    const filename =
+      environment === 'values' ? 'values' : `values-${environment}.yaml`;
     const valuesPath = path.join(projectConfig.root, 'helm', filename);
 
     tree.write(valuesPath, values);
