@@ -1,6 +1,7 @@
-import { PackageDotnetExecutorSchema } from './schema';
-import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
+
+import executor from './executor';
+import { PackageDotnetExecutorSchema } from './schema';
 
 const options: PackageDotnetExecutorSchema = {
   srcPath: 'apps/my-project',

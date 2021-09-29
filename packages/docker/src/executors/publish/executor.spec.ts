@@ -1,6 +1,7 @@
-import { PublishExecutorSchema } from './schema';
-import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
+
+import executor from './executor';
+import { PublishExecutorSchema } from './schema';
 
 const options: PublishExecutorSchema = {
   buildPath: './apps/my-project',

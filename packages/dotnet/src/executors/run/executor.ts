@@ -1,7 +1,8 @@
 import { ExecutorContext } from '@nrwl/devkit';
-import { RunDotnetExecutorSchema } from './schema';
+
 import runDotnetCommand from '../run-dotnet-command/executor';
 import { DotNetCommandExecutorSchema } from '../run-dotnet-command/schema';
+import { RunDotnetExecutorSchema } from './schema';
 
 export default async function runExecutor(
   options: RunDotnetExecutorSchema,

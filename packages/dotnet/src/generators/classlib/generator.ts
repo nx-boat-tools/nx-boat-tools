@@ -1,6 +1,7 @@
 import { Tree } from '@nrwl/devkit';
-import { ClassLibraryGeneratorSchema } from './schema';
+
 import dotnetGenerator from '../project/generator';
+import { ClassLibraryGeneratorSchema } from './schema';
 import { DotnetGeneratorSchema } from '../project/schema';
 
 export default async function (

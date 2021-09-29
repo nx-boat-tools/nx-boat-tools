@@ -1,7 +1,8 @@
-import { ExecutorContext } from '@nrwl/devkit';
-import { spawnAsync } from '@nx-boat-tools/common';
-import { existsSync, readFileSync, mkdirSync } from 'fs';
 import * as path from 'path';
+import { ExecutorContext } from '@nrwl/devkit';
+import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { spawnAsync } from '@nx-boat-tools/common';
+
 import { PackageExecutorSchema } from './schema';
 
 export default async function runExecutor(

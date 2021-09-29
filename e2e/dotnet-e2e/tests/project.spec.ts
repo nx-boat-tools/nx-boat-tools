@@ -1,4 +1,4 @@
-import { names } from '@nrwl/devkit';
+import * as minimist from 'minimist';
 import {
   checkFilesExist,
   ensureNxProject,
@@ -8,7 +8,8 @@ import {
   runPackageManagerInstall,
   uniq,
 } from '@nrwl/nx-plugin/testing';
-import * as minimist from 'minimist';
+import { names } from '@nrwl/devkit';
+
 import _ = require('underscore');
 
 function copyProjectDependencies() {

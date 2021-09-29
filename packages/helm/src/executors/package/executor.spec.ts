@@ -1,6 +1,7 @@
-import { PackageExecutorSchema } from './schema';
-import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
+
+import executor from './executor';
+import { PackageExecutorSchema } from './schema';
 
 const options: PackageExecutorSchema = {
   projectHelmPath: './apps/my-project/helm',

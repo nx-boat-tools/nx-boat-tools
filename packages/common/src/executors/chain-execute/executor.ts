@@ -1,5 +1,5 @@
-import { ExecutorContext, runExecutor } from '@nrwl/devkit';
 import * as _ from 'underscore';
+import { ExecutorContext, runExecutor } from '@nrwl/devkit';
 
 import { BuildExecutorSchema } from './schema';
 

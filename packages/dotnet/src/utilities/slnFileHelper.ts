@@ -1,5 +1,5 @@
-import * as path from 'path';
 import * as _ from 'underscore';
+import * as path from 'path';
 
 export function getAllProjectsFromSolution(
   slnContent: string,

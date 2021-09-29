@@ -1,15 +1,16 @@
+import * as path from 'path';
+import { Guid } from 'guid-typescript';
 import {
+  ProjectType,
+  Tree,
   addProjectConfiguration,
   formatFiles,
   generateFiles,
   getWorkspaceLayout,
   names,
   offsetFromRoot,
-  Tree,
-  ProjectType,
 } from '@nrwl/devkit';
-import * as path from 'path';
-import { Guid } from 'guid-typescript';
+
 import { DotnetGeneratorSchema } from './schema';
 import {
   appendGlobalSectionToSolution,

@@ -1,13 +1,14 @@
+import * as path from 'path';
 import {
+  Tree,
   addProjectConfiguration,
   formatFiles,
   generateFiles,
   getWorkspaceLayout,
   names,
   offsetFromRoot,
-  Tree,
 } from '@nrwl/devkit';
-import * as path from 'path';
+
 import { CommonGeneratorSchema } from './schema';
 
 interface NormalizedSchema extends CommonGeneratorSchema {

@@ -1,6 +1,7 @@
 import { Tree } from '@nrwl/devkit';
-import { ConsoleAppGeneratorSchema } from './schema';
+
 import dotnetGenerator from '../project/generator';
+import { ConsoleAppGeneratorSchema } from './schema';
 import { DotnetGeneratorSchema } from '../project/schema';
 
 export default async function (tree: Tree, options: ConsoleAppGeneratorSchema) {

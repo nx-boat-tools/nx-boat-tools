@@ -1,6 +1,6 @@
-import { ExecutorContext, readJsonFile } from '@nrwl/devkit';
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
+import { ExecutorContext, readJsonFile } from '@nrwl/devkit';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 import { SetVersionExecutorSchema } from './schema';
 

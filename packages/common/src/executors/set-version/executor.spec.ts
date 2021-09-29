@@ -1,6 +1,7 @@
-import { SetVersionExecutorSchema } from './schema';
-import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
+
+import executor from './executor';
+import { SetVersionExecutorSchema } from './schema';
 
 const options: SetVersionExecutorSchema = {
   projectPath: 'apps/my-project',
