@@ -1,17 +1,10 @@
-import {
-  ExecutorContext,
-  parseTargetString,
-  readJson,
-  readJsonFile,
-  runExecutor,
-} from '@nrwl/devkit';
+import { ExecutorContext, readJsonFile } from '@nrwl/devkit';
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
-import * as _ from 'underscore';
 
 import { SetVersionExecutorSchema } from './schema';
 
-function getRootVersion(rootDir: string = '.'): string | undefined {
+function getRootVersion(rootDir = '.'): string | undefined {
   const pkgPath: string = path.join(rootDir, 'package.json');
 
   if (!existsSync(pkgPath)) {
@@ -49,7 +42,7 @@ function appendBuildVersion(version: string) {
   const today = new Date();
   const versionSegments = version.split('.').length;
 
-  let versionSuffix: string = '';
+  let versionSuffix = '';
 
   if (versionSegments < 4) {
     const iso = today.toISOString();
@@ -95,11 +88,7 @@ export default async function (
   console.log(`\t🏷  Build version detected to be '${version}'.`);
   console.log(`\n💾 Saving VERSION file for build at ${outputPath}...`);
 
-  try {
-    mkdirSync(outputPath, { recursive: true });
-    writeFileSync(outputFile, version);
-    return { success: true };
-  } catch (err) {
-    throw err;
-  }
+  mkdirSync(outputPath, { recursive: true });
+  writeFileSync(outputFile, version);
+  return { success: true };
 }

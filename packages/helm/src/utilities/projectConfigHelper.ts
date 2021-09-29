@@ -1,12 +1,19 @@
+import {
+  ProjectConfiguration,
+  NxJsonProjectConfiguration,
+  TargetConfiguration,
+} from '@nrwl/devkit';
 import path = require('path');
 import _ = require('underscore');
 
 export function getHelmAppendedBuildTargets(
   projectDistPath: string,
   projectHelmPath: string,
-  projectConfig: any,
-  addPackageTarget: boolean = false
-): any {
+  projectConfig: ProjectConfiguration & NxJsonProjectConfiguration,
+  addPackageTarget = false
+): { [targetName: string]: TargetConfiguration } {
+  const build = 'build';
+  const buildSrc = 'buildSrc';
   const copyHelmValues = 'copyHelmValues';
   const packageHelmChart = 'packageHelmChart';
 
@@ -31,16 +38,16 @@ export function getHelmAppendedBuildTargets(
     };
   }
 
-  if (targets.build?.executor === '@nx-boat-tools/common:chain-execute') {
-    if (!targets.build.options.targets.includes(copyHelmValues)) {
-      targets.build.options.targets.push(copyHelmValues);
+  if (targets[build]?.executor === '@nx-boat-tools/common:chain-execute') {
+    if (!targets[build].options.targets.includes(copyHelmValues)) {
+      targets[build].options.targets.push(copyHelmValues);
     }
   } else {
-    if (targets.build !== undefined) {
-      targets.buildSrc = targets.build;
+    if (targets[build] !== undefined) {
+      targets[buildSrc] = targets[build];
     }
 
-    targets.build = {
+    targets[build] = {
       executor: '@nx-boat-tools/common:chain-execute',
       options: {
         targets: ['buildSrc', copyHelmValues],
@@ -49,11 +56,11 @@ export function getHelmAppendedBuildTargets(
   }
 
   if (addPackageTarget) {
-    targets.build.options.additionalTargets =
-      targets.build.options.additionalTargets || [];
+    targets[build].options.additionalTargets =
+      targets[build].options.additionalTargets || [];
 
-    if (!targets.build.options.additionalTargets.includes(packageHelmChart)) {
-      targets.build.options.additionalTargets.push(packageHelmChart);
+    if (!targets[build].options.additionalTargets.includes(packageHelmChart)) {
+      targets[build].options.additionalTargets.push(packageHelmChart);
     }
   }
 

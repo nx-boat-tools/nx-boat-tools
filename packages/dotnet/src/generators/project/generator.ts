@@ -10,7 +10,6 @@ import {
 } from '@nrwl/devkit';
 import * as path from 'path';
 import { Guid } from 'guid-typescript';
-import * as _ from 'underscore';
 import { DotnetGeneratorSchema } from './schema';
 import {
   appendGlobalSectionToSolution,

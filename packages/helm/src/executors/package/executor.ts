@@ -2,7 +2,6 @@ import { ExecutorContext } from '@nrwl/devkit';
 import { spawnAsync } from '@nx-boat-tools/common';
 import { existsSync, readFileSync, mkdirSync } from 'fs';
 import * as path from 'path';
-import * as _ from 'underscore';
 import { PackageExecutorSchema } from './schema';
 
 export default async function runExecutor(

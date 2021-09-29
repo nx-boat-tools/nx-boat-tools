@@ -1,5 +1,4 @@
 import { Tree } from '@nrwl/devkit';
-import * as _ from 'underscore';
 import { WebApiGeneratorSchema } from './schema';
 import dotnetGenerator from '../project/generator';
 import { DotnetGeneratorSchema } from '../project/schema';

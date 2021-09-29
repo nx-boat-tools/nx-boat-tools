@@ -4,6 +4,8 @@ import {
   readProjectConfiguration,
   Tree,
   updateProjectConfiguration,
+  ProjectConfiguration,
+  NxJsonProjectConfiguration,
 } from '@nrwl/devkit';
 import _ = require('underscore');
 import * as path from 'path';
@@ -11,7 +13,7 @@ import { HelmLocalGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
 
 interface NormalizedSchema extends HelmLocalGeneratorSchema {
-  projectConfig: any;
+  projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
   projectDistPath: string;
   projectHelmPath: string;
   environmentsList: string[];

@@ -24,7 +24,11 @@ export default async function runExecutor(
     mounts = _.invert(mounts);
   }
 
-  const createDockerArgs = (obj: any, argName: string, delimeter: string) => {
+  const createDockerArgs = (
+    obj: { [keyName: string]: string },
+    argName: string,
+    delimeter: string
+  ) => {
     return _.map(
       _.keys(obj),
       (key: string) =>

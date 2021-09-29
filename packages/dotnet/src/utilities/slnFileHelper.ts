@@ -6,7 +6,7 @@ export function getAllProjectsFromSolution(
   basePath: string
 ): Array<string> {
   const projectLineRegex = /\nProject\(/g;
-  const projLinePathRegex = /\"(.*)\".*\"(.*)\".*\"(.*)\"/g;
+  const projLinePathRegex = /"(.*)".*"(.*)".*"(.*)"/g;
 
   let projectLines = slnContent.split(projectLineRegex);
   projectLines.shift();
