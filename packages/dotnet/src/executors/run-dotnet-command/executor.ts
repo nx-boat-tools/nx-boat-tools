@@ -23,10 +23,7 @@ const actionVerbs: { [key: string]: string } = {
   clean: '🗑 Cleaning',
 };
 
-function getAllProjects(
-  dotnetProjectPath: string,
-  context: ExecutorContext
-): Array<string> {
+function getAllProjects(dotnetProjectPath: string): Array<string> {
   if (dotnetProjectPath.endsWith('.csproj')) {
     return [dotnetProjectPath];
   }

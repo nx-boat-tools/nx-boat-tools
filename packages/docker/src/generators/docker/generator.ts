@@ -5,13 +5,16 @@ import {
   Tree,
   readProjectConfiguration,
   updateProjectConfiguration,
+  ProjectConfiguration,
+  NxJsonProjectConfiguration,
+  TargetConfiguration,
 } from '@nrwl/devkit';
 import * as path from 'path';
 import _ = require('underscore');
 import { DockerGeneratorSchema } from './schema';
 
 interface NormalizedSchema extends DockerGeneratorSchema {
-  projectConfig: any;
+  projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
   projectDistPath: string;
 }
 
@@ -50,11 +53,13 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 
 export default async function (tree: Tree, options: DockerGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
+  const build = 'build';
+  const buildSrc = 'buildSrc';
   const copyTargetName = getCopyTargetName(
     normalizedOptions.projectConfig.targets
   );
 
-  const mounts: any = {};
+  const mounts: { [targetName: string]: string } = {};
   mounts[normalizedOptions.projectDistPath] = '/usr/share/nginx/html';
 
   const targets = {
@@ -90,16 +95,16 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
   };
 
   if (copyTargetName !== 'build') {
-    if (targets.build?.executor === '@nx-boat-tools/common:chain-execute') {
-      if (!targets.build.options.targets.includes(copyTargetName)) {
-        targets.build.options.targets.push(copyTargetName);
+    if (targets[build]?.executor === '@nx-boat-tools/common:chain-execute') {
+      if (!targets[build].options.targets.includes(copyTargetName)) {
+        targets[build].options.targets.push(copyTargetName);
       }
     } else {
-      if (targets.build !== undefined) {
-        targets.buildSrc = targets.build;
+      if (targets[build] !== undefined) {
+        targets[buildSrc] = targets[build];
       }
 
-      targets.build = {
+      targets[build] = {
         executor: '@nx-boat-tools/common:chain-execute',
         options: {
           targets: ['buildSrc', copyTargetName],
@@ -121,7 +126,9 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
   await formatFiles(tree);
 }
 
-function getCopyTargetName(targets: any): string {
+function getCopyTargetName(targets: {
+  [targetName: string]: TargetConfiguration;
+}): string {
   const build = 'build';
   const copyDockerFiles = 'copyDockerFiles';
   const targetKeys = _.keys(targets);
