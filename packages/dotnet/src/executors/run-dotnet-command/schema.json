@@ -15,7 +15,5 @@
     }
   },
   "additionalProperties": true,
-  "required": [
-    "outputPath"
-  ]
+  "required": ["outputPath"]
 }

@@ -15,7 +15,5 @@
     }
   },
   "additionalProperties": true,
-  "required": [
-    "targets"
-  ]
+  "required": ["targets"]
 }

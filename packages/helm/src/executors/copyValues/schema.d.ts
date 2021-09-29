@@ -1,4 +1,4 @@
 export interface BuildExecutorSchema {
-    projectHelmPath: string;
-    outputPath: string;
+  projectHelmPath: string;
+  outputPath: string;
 }

@@ -10,8 +10,8 @@ describe('helm generator', () => {
     project: 'test',
     buildPath: './dist/apps/test',
     createValues: true,
-    environments: ''
-   };
+    environments: '',
+  };
 
   beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();

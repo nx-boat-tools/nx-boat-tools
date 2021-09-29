@@ -6,9 +6,9 @@ import { WebApiGeneratorSchema } from './schema';
 
 describe('dotnet generator', () => {
   let appTree: Tree;
-  const options: WebApiGeneratorSchema = { 
+  const options: WebApiGeneratorSchema = {
     name: 'test',
-    ownSolution: false
+    ownSolution: false,
   };
 
   beforeEach(() => {

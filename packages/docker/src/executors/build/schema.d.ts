@@ -1,3 +1,3 @@
 export interface BuildExecutorSchema {
-    buildPath: string;
+  buildPath: string;
 }

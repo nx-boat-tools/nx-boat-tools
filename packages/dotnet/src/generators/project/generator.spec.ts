@@ -6,11 +6,11 @@ import { DotnetGeneratorSchema } from './schema';
 
 describe('dotnet generator', () => {
   let appTree: Tree;
-  const options: DotnetGeneratorSchema = { 
+  const options: DotnetGeneratorSchema = {
     name: 'test',
     projectType: 'classlib',
     simpleModuleName: false,
-    ownSolution: false
+    ownSolution: false,
   };
 
   beforeEach(() => {

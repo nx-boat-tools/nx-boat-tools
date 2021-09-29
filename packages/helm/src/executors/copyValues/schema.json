@@ -14,5 +14,5 @@
       "description": "The directory to save the resulting version file"
     }
   },
-  "required": ["projectHelmPath","outputPath"]
+  "required": ["projectHelmPath", "outputPath"]
 }

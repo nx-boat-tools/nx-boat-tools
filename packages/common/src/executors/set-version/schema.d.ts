@@ -1,4 +1,4 @@
 export interface SetVersionExecutorSchema {
-    projectPath: string;
-    outputPath: string;
+  projectPath: string;
+  outputPath: string;
 }

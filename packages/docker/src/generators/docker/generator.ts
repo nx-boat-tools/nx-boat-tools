@@ -4,7 +4,7 @@ import {
   names,
   Tree,
   readProjectConfiguration,
-  updateProjectConfiguration
+  updateProjectConfiguration,
 } from '@nrwl/devkit';
 import * as path from 'path';
 import _ = require('underscore');
@@ -29,7 +29,7 @@ function normalizeOptions(
   return {
     ...options,
     projectConfig,
-    projectDistPath
+    projectDistPath,
   };
 }
 
@@ -50,7 +50,9 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 
 export default async function (tree: Tree, options: DockerGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
-  const copyTargetName = getCopyTargetName(normalizedOptions.projectConfig.targets);
+  const copyTargetName = getCopyTargetName(
+    normalizedOptions.projectConfig.targets
+  );
 
   const mounts: any = {};
   mounts[normalizedOptions.projectDistPath] = '/usr/share/nginx/html';
@@ -60,65 +62,61 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
     buildDockerImage: {
       executor: '@nx-boat-tools/docker:build',
       options: {
-        buildPath: normalizedOptions.projectDistPath
-      }
+        buildPath: normalizedOptions.projectDistPath,
+      },
     },
     publishDockerImage: {
       executor: '@nx-boat-tools/docker:publish',
       options: {
         buildPath: normalizedOptions.projectDistPath,
-        dockerRepoOrUser: normalizedOptions.dockerRepoOrUser
-      }
+        dockerRepoOrUser: normalizedOptions.dockerRepoOrUser,
+      },
     },
     runDockerImage: {
       executor: '@nx-boat-tools/docker:run',
       options: {
         ports: {
-          8080: 80
+          8080: 80,
         },
-        mounts
-      }
-    }
+        mounts,
+      },
+    },
   };
   targets[copyTargetName] = {
     executor: '@nx-boat-tools/docker:copyFiles',
     options: {
       distPath: normalizedOptions.projectDistPath,
-    }
+    },
   };
 
-  if(copyTargetName !== 'build') {
-    if(targets.build?.executor === '@nx-boat-tools/common:chain-execute') {
-      if(!targets.build.options.targets.includes(copyTargetName)) {
+  if (copyTargetName !== 'build') {
+    if (targets.build?.executor === '@nx-boat-tools/common:chain-execute') {
+      if (!targets.build.options.targets.includes(copyTargetName)) {
         targets.build.options.targets.push(copyTargetName);
       }
     } else {
-      if(targets.build !== undefined) {
+      if (targets.build !== undefined) {
         targets.buildSrc = targets.build;
       }
 
       targets.build = {
         executor: '@nx-boat-tools/common:chain-execute',
         options: {
-          targets: [
-            'buildSrc',
-            copyTargetName
-          ]
-        }
-      }
+          targets: ['buildSrc', copyTargetName],
+        },
+      };
     }
   }
 
   const sortetTargetKeys = _.keys(targets).sort();
 
-  updateProjectConfiguration(
-    tree,
-    options.name,
-    {
-      ...normalizedOptions.projectConfig,
-      targets: _.object(sortetTargetKeys, sortetTargetKeys.map(key => targets[key]))
-    }
-  )
+  updateProjectConfiguration(tree, options.name, {
+    ...normalizedOptions.projectConfig,
+    targets: _.object(
+      sortetTargetKeys,
+      sortetTargetKeys.map((key) => targets[key])
+    ),
+  });
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
 }
@@ -128,7 +126,7 @@ function getCopyTargetName(targets: any): string {
   const copyDockerFiles = 'copyDockerFiles';
   const targetKeys = _.keys(targets);
 
-  if(targetKeys.includes(copyDockerFiles)) return copyDockerFiles;
+  if (targetKeys.includes(copyDockerFiles)) return copyDockerFiles;
 
   const containsBuild = _.keys(targets).includes(build);
 

@@ -6,7 +6,7 @@ import {
   readJson,
   runNxCommandAsync,
   runPackageManagerInstall,
-  uniq
+  uniq,
 } from '@nrwl/nx-plugin/testing';
 import * as minimist from 'minimist';
 import _ = require('underscore');
@@ -20,9 +20,11 @@ function copyProjectDependencies() {
 
 function logIfVerbose(message?: any, ...optionalParams: any[]) {
   const args = minimist(process.argv);
-  const verbose = _.keys(args).includes('verbose') ? args['verbose'] == true : false;
+  const verbose = _.keys(args).includes('verbose')
+    ? args['verbose'] == true
+    : false;
 
-  if(verbose) {
+  if (verbose) {
     console.log(message, ...optionalParams);
   }
 }
@@ -35,50 +37,62 @@ describe('dotnet e2e', () => {
     patchPackageJsonForPlugin('@nx-boat-tools/common', 'dist/packages/common');
     runPackageManagerInstall();
 
-    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:project ${plugin} --projectType console`);
+    await runNxCommandAsync(
+      `generate @nx-boat-tools/dotnet:project ${plugin} --projectType console`
+    );
 
-    const result = await runNxCommandAsync(`build ${plugin} --configuration=dev`);
+    const result = await runNxCommandAsync(
+      `build ${plugin} --configuration=dev`
+    );
 
-    logIfVerbose(result.stdout)
+    logIfVerbose(result.stdout);
 
     expect(result.stdout).toContain('Saving VERSION file for build');
     expect(result.stdout).toContain('Building complete!');
     expect(result.stdout).not.toContain('Packing complete!');
   }, 120000);
-  
+
   it('should create classlib', async () => {
     const plugin = uniq('classlib');
-    await runNxCommandAsync(`generate @nx-boat-tools/dotnet:classlib ${plugin}`);
+    await runNxCommandAsync(
+      `generate @nx-boat-tools/dotnet:classlib ${plugin}`
+    );
 
-    const result = await runNxCommandAsync(`build ${plugin} --configuration=prod`);
+    const result = await runNxCommandAsync(
+      `build ${plugin} --configuration=prod`
+    );
 
-    logIfVerbose(result.stdout)
+    logIfVerbose(result.stdout);
 
     expect(result.stdout).toContain('Saving VERSION file for build');
     expect(result.stdout).toContain('Building complete!');
     expect(result.stdout).toContain('Packing complete!');
   }, 120000);
-  
+
   it('should create console', async () => {
     const plugin = uniq('console');
     await runNxCommandAsync(`generate @nx-boat-tools/dotnet:console ${plugin}`);
 
-    const result = await runNxCommandAsync(`build ${plugin} --configuration=prod`);
+    const result = await runNxCommandAsync(
+      `build ${plugin} --configuration=prod`
+    );
 
-    logIfVerbose(result.stdout)
+    logIfVerbose(result.stdout);
 
     expect(result.stdout).toContain('Saving VERSION file for build');
     expect(result.stdout).toContain('Building complete!');
     expect(result.stdout).toContain('Packing complete!');
   }, 120000);
-  
+
   it('should create webapi', async () => {
     const plugin = uniq('webapi');
     await runNxCommandAsync(`generate @nx-boat-tools/dotnet:webapi ${plugin}`);
 
-    const result = await runNxCommandAsync(`build ${plugin} --configuration=prod`);
+    const result = await runNxCommandAsync(
+      `build ${plugin} --configuration=prod`
+    );
 
-    logIfVerbose(result.stdout)
+    logIfVerbose(result.stdout);
 
     expect(result.stdout).toContain('Saving VERSION file for build');
     expect(result.stdout).toContain('Building complete!');
@@ -96,7 +110,7 @@ describe('dotnet e2e', () => {
         checkFilesExist(
           `apps/${_names.propertyName}/${_names.className}.csproj`,
           `proj.sln`
-          )
+        )
       ).not.toThrow();
     }, 120000);
 

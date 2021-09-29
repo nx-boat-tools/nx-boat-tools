@@ -4,10 +4,13 @@ import * as path from 'path';
 import * as _ from 'underscore';
 import { DockerRunExecutorSchema } from './schema';
 
-export default async function runExecutor(options: DockerRunExecutorSchema, context: ExecutorContext) {
+export default async function runExecutor(
+  options: DockerRunExecutorSchema,
+  context: ExecutorContext
+) {
   let { vars, ports, mounts } = options;
   const { projectName } = context;
-  
+
   if (projectName === undefined) {
     throw new Error('No project specified.');
   }
@@ -15,16 +18,20 @@ export default async function runExecutor(options: DockerRunExecutorSchema, cont
   vars = vars !== undefined ? vars : {};
   ports = ports !== undefined ? ports : {};
 
-  if(mounts !== undefined) {
-      mounts = _.invert(mounts);
-      mounts = _.mapObject(mounts, (m: string) => path.join(context.root, m));
-      mounts = _.invert(mounts);
+  if (mounts !== undefined) {
+    mounts = _.invert(mounts);
+    mounts = _.mapObject(mounts, (m: string) => path.join(context.root, m));
+    mounts = _.invert(mounts);
   }
 
   const createDockerArgs = (obj: any, argName: string, delimeter: string) => {
-      return _.map(
-              _.keys(obj), (key: string) => `-${argName} ${key.replace(' ','')}${delimeter}${obj[key].toString().replace(' ','')}`
-          ).join(' ');
+    return _.map(
+      _.keys(obj),
+      (key: string) =>
+        `-${argName} ${key.replace(' ', '')}${delimeter}${obj[key]
+          .toString()
+          .replace(' ', '')}`
+    ).join(' ');
   };
 
   const varsString = createDockerArgs(vars, 'e', '=');

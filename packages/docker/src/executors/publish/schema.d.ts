@@ -1,4 +1,4 @@
 export interface PublishExecutorSchema {
-    buildPath: string;
-    dockerRepoOrUser: string;
+  buildPath: string;
+  dockerRepoOrUser: string;
 }
