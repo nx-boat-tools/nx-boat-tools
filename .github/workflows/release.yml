@@ -32,3 +32,17 @@ jobs:
           for f in $(find . -type f -name "*.zip"); do echo 📦 Unzipping $f...; unzip -q $f; done;
           echo 
           for f in $(find "$PACKAGES_DIST_DIR" -type d -maxdepth 1 ! -name "packages"); do echo 📡 Publishing $f to npm...; npm publish $f --access public; echo; done;
+
+          RELEASE_CONTENTS=$(find "$PACKAGES_DIST_DIR" -type d -maxdepth 1 ! -name "packages"  -printf "- [%p](https://www.npmjs.com/package/@nx-boat-tools/%p/$TAG_NAME)\n")
+          echo "RELEASE_CONTENTS_MESSAGE=$VER" >> $GITHUB_ENV
+
+      - uses: juztcode/gitter-github-action@v1
+        with:
+          room-id: ${{ secrets.GITTER_ROOM_COMMUNITY }}
+          token: ${{ secrets.GITTER_TOKEN_KILLIAN }}
+          text: |
+          \#\# 🚢 Version ${{ github.event.release.tag_name }} was just released!
+          This release contains the following npm packages:
+          $env.RELEASE_CONTENTS_MESSAGE
+
+          [🔗   View the changes on GitHub](${{ github.event.release.html_url }})
