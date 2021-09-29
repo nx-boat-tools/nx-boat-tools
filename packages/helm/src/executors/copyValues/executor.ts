@@ -1,14 +1,16 @@
+import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
 import {
-  existsSync,
   copyFileSync,
-  readdirSync,
+  existsSync,
   lstatSync,
   mkdirSync,
+  readdirSync,
 } from 'fs';
-import * as path from 'path';
-import _ = require('underscore');
+
 import { BuildExecutorSchema } from './schema';
+
+import _ = require('underscore');
 
 export default async function runExecutor(
   options: BuildExecutorSchema,

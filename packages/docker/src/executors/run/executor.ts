@@ -1,7 +1,8 @@
+import * as _ from 'underscore';
+import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
 import { spawnAsync } from '@nx-boat-tools/common';
-import * as path from 'path';
-import * as _ from 'underscore';
+
 import { DockerRunExecutorSchema } from './schema';
 
 export default async function runExecutor(

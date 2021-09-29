@@ -1,5 +1,5 @@
-import { spawnSync } from 'child_process';
 import * as _ from 'underscore';
+import { spawnSync } from 'child_process';
 
 export async function spawnAsync(
   command: string,

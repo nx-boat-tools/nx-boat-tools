@@ -1,12 +1,12 @@
-import { ExecutorContext } from '@nrwl/devkit';
-import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { spawnAsync } from '@nx-boat-tools/common';
-import * as path from 'path';
 import * as _ from 'underscore';
+import * as path from 'path';
 import { Builder, Parser } from 'xml2js';
-import { getAllProjectsFromSolution } from '../../utilities/slnFileHelper';
+import { ExecutorContext } from '@nrwl/devkit';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { spawnAsync } from '@nx-boat-tools/common';
 
 import { DotNetCommandExecutorSchema } from './schema';
+import { getAllProjectsFromSolution } from '../../utilities/slnFileHelper';
 
 const validActions: Array<string> = [
   'build',

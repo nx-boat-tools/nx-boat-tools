@@ -1,17 +1,19 @@
+import * as path from 'path';
 import {
+  NxJsonProjectConfiguration,
+  ProjectConfiguration,
+  TargetConfiguration,
+  Tree,
   formatFiles,
   generateFiles,
   names,
-  Tree,
   readProjectConfiguration,
   updateProjectConfiguration,
-  ProjectConfiguration,
-  NxJsonProjectConfiguration,
-  TargetConfiguration,
 } from '@nrwl/devkit';
-import * as path from 'path';
-import _ = require('underscore');
+
 import { DockerGeneratorSchema } from './schema';
+
+import _ = require('underscore');
 
 interface NormalizedSchema extends DockerGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;

@@ -1,6 +1,7 @@
-import { DockerRunExecutorSchema } from './schema';
-import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
+
+import executor from './executor';
+import { DockerRunExecutorSchema } from './schema';
 
 const options: DockerRunExecutorSchema = {
   vars: [],

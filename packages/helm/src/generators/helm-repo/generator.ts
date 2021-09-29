@@ -1,15 +1,17 @@
-import {
-  readProjectConfiguration,
-  Tree,
-  updateProjectConfiguration,
-  ProjectConfiguration,
-  NxJsonProjectConfiguration,
-} from '@nrwl/devkit';
-import _ = require('underscore');
 import * as path from 'path';
-import { HelmRepoGeneratorSchema } from './schema';
+import {
+  NxJsonProjectConfiguration,
+  ProjectConfiguration,
+  Tree,
+  readProjectConfiguration,
+  updateProjectConfiguration,
+} from '@nrwl/devkit';
 import { spawnSync } from 'node:child_process';
+
+import { HelmRepoGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
+
+import _ = require('underscore');
 
 interface NormalizedSchema extends HelmRepoGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;

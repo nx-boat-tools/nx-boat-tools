@@ -1,7 +1,8 @@
+import * as path from 'path';
 import { ExecutorContext, readProjectConfiguration } from '@nrwl/devkit';
 import { FsTree } from '@nrwl/tao/src/shared/tree';
-import { existsSync, copyFileSync } from 'fs';
-import * as path from 'path';
+import { copyFileSync, existsSync } from 'fs';
+
 import { BuildExecutorSchema } from './schema';
 
 export default async function runExecutor(

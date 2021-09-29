@@ -1,6 +1,6 @@
 import {
-  ProjectConfiguration,
   NxJsonProjectConfiguration,
+  ProjectConfiguration,
   TargetConfiguration,
 } from '@nrwl/devkit';
 import path = require('path');

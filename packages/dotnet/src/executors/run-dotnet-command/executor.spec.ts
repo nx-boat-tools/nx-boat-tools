@@ -1,6 +1,7 @@
-import { DotNetCommandExecutorSchema } from './schema';
-import executor from './executor';
 import { ExecutorContext } from '@nrwl/devkit';
+
+import executor from './executor';
+import { DotNetCommandExecutorSchema } from './schema';
 
 const options: DotNetCommandExecutorSchema = {
   action: 'run',
