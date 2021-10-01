@@ -27,8 +27,6 @@ jobs:
           git config --global user.name "Killian Hale"
           make artifacts
           make version tag=true commit=true commit-branch=develop
-        env:
-          base_ref: origin/${{ github.base_ref }}
       - name: Set variables
         run: |
           VER=$(cat RELEASE_VERSION)

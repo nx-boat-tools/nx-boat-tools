@@ -23,7 +23,16 @@
       "type": "string",
       "description": "A directory where the project is placed",
       "alias": "d"
+    },
+    "projectType": {
+      "type": "string",
+      "description": "This identifies what type of project to create. The values should be the same values as what's passed to the TEMPLATE argument of the dotnet new command"
+    },
+    "ownSolution": {
+      "type": "boolean",
+      "description": "When set to true, the project will have its own solution file which will be in the project directory. When set to false, it will be added to a solution file at the workspace root.",
+      "default": false
     }
   },
-  "required": ["name"]
+  "required": ["name","projectType"]
 }

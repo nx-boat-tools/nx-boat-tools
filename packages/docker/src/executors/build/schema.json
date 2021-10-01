@@ -1,9 +1,18 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "title": "Build executor",
+  "title": "Chain executor",
   "description": "",
   "type": "object",
-  "properties": {},
-  "required": []
+  "properties": {
+    "targets": {
+      "type": "array",
+      "description": "An array containing the other executors to call"
+    },
+    "additionalTargets": {
+      "type": "array",
+      "description": "An array containing additional builders to call (for configurations)"
+    }
+  },
+  "required": ["targets"]
 }

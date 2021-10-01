@@ -7,7 +7,6 @@ import { WebApiGeneratorSchema } from './schema';
 export default async function (tree: Tree, options: WebApiGeneratorSchema) {
   const dotnetOptions: DotnetGeneratorSchema = {
     ...options,
-    simpleModuleName: false,
     projectType: 'webapi',
   };
   await dotnetGenerator(tree, dotnetOptions);

@@ -4,6 +4,15 @@
   "title": "Publish executor",
   "description": "",
   "type": "object",
-  "properties": {},
-  "required": []
+  "properties": {
+    "buildPath": {
+      "type": "string",
+      "description": "The path to the project's `dockerfile`"
+    },
+    "dockerRepoOrUser": {
+      "type": "string",
+      "description": "This is the user or repo to publish the image to"
+    }
+  },
+  "required": ["buildPath","dockerRepoOrUser"]
 }

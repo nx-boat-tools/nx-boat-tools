@@ -4,6 +4,11 @@
   "title": "Copy Docker Files executor",
   "description": "",
   "type": "object",
-  "properties": {},
-  "required": []
+  "properties": {
+    "distPath": {
+      "type": "string",
+      "description": "The dist path of the project where the files should be copied to"
+    }
+  },
+  "required": ["distPath"]
 }

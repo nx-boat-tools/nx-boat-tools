@@ -1,4 +1,4 @@
-TEMPLATES_DIR = ./src/templates
+TEMPLATES_DIR = ./templates
 PACKAGES_DIR = ./packages
 PACKAGES_DIST_DIR = ./dist/packages
 ARTIFACTS_DIR = ./dist/artifacts
@@ -8,7 +8,7 @@ define NEWLINE
 
 endef
 
-ifeq ($(base_ref),)
+ifndef base_ref
 base_ref := main
 endif
 
@@ -17,13 +17,14 @@ PUSH_BRANCH = $(commit-branch)
 endif
 
 build:
-	echo $(NEWLINE)🛠 Building affected projects...
+	echo $(NEWLINE)🛠 Building affected projects compared to $(base_ref)...
 
 	npm ci
 	npx nx affected:build --base=$(base_ref)
 format:
-	echo $(NEWLINE)🧼️ Formatting and linting files...
+	echo $(NEWLINE)🧼️ Formatting and linting affected files compared to $(base_ref)...
 
+	npm ci
 	npx nx format:write --base=$(base_ref)
 	npx nx affected:lint --fix --base=$(base_ref)
 

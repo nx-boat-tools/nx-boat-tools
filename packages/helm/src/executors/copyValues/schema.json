@@ -7,11 +7,11 @@
   "properties": {
     "projectHelmPath": {
       "type": "string",
-      "description": "The directory containing the project's helm files may be found"
+      "description": "The path to the helm directory of a project"
     },
     "outputPath": {
       "type": "string",
-      "description": "The directory to save the resulting version file"
+      "description": "The dist path of the project where the values files should be copied to"
     }
   },
   "required": ["projectHelmPath", "outputPath"]

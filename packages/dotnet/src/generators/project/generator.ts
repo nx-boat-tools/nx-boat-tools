@@ -130,9 +130,7 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 
 function addProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
   const pathParts: Array<string> = [
-    '..',
-    '..',
-    '..',
+    __dirname,
     '..',
     'templates',
     `dotnet-${templateOptions.projectType}`,
@@ -154,9 +152,7 @@ function addProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
 
 function addSolutionFiles(tree: Tree, templateOptions: TemplateOptions) {
   const pathParts: Array<string> = [
-    '..',
-    '..',
-    '..',
+    __dirname,
     '..',
     'templates',
     `dotnet-${templateOptions.projectType}`,

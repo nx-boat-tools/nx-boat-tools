@@ -12,18 +12,9 @@
         "$source": "projectName"
       }
     },
-    "buildPath": {
-      "type": "string",
-      "description": "The path of the directory to output the deploy script."
-    },
     "environments": {
       "type": "string",
       "description": "A comma seperated list of environments to add values for."
-    },
-    "createValues": {
-      "type": "boolean",
-      "description": "Whether or not to generate a values.yaml file.",
-      "default": true
     },
     "repository": {
       "type": "string",

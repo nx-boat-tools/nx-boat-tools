@@ -12,17 +12,14 @@
         "$source": "projectName"
       }
     },
-    "buildPath": {
-      "type": "string",
-      "description": "The path of the directory to output the deploy script."
+    "createValues": {
+      "type": "boolean",
+      "description": "Whether or not to copy the values file from the chart to use for deployment.",
+      "default": true
     },
     "environments": {
       "type": "string",
       "description": "A comma seperated list of environments to add values for."
-    },
-    "createValues": {
-      "type": "boolean",
-      "description": "Whether or not to copy the values file from the chart to use for deployment."
     }
   },
   "required": ["project"]

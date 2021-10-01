@@ -24,11 +24,11 @@ function normalizeOptions(
   tree: Tree,
   options: DockerGeneratorSchema
 ): NormalizedSchema {
-  const projectConfig = readProjectConfiguration(tree, options.name);
+  const projectConfig = readProjectConfiguration(tree, options.project);
   const projectDistPath = path.join('dist', projectConfig.root);
 
   if (projectConfig.targets.buildDocker) {
-    throw new Error(`${options.name} already has a buildDocker target.`);
+    throw new Error(`${options.project} already has a buildDocker target.`);
   }
 
   return {
@@ -41,7 +41,7 @@ function normalizeOptions(
 function addFiles(tree: Tree, options: NormalizedSchema) {
   const templateOptions = {
     ...options,
-    ...names(options.name),
+    ...names(options.project),
     dot: '.',
     template: '',
   };
@@ -117,7 +117,7 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
 
   const sortetTargetKeys = _.keys(targets).sort();
 
-  updateProjectConfiguration(tree, options.name, {
+  updateProjectConfiguration(tree, options.project, {
     ...normalizedOptions.projectConfig,
     targets: _.object(
       sortetTargetKeys,
