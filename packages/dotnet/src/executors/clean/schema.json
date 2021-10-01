@@ -4,6 +4,33 @@
   "title": "Clean executor",
   "description": "",
   "type": "object",
-  "properties": {},
-  "required": []
+  "properties": {
+    "srcPath": {
+      "type": "string",
+      "description": "The path to the `csproj` or `sln` file for the project"
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "This maps to the `output` param of the CLI command and is the path to where build output should be created"
+    },
+    "updateVersion": {
+      "type": "boolean",
+      "description": "Whether or not to update the version information in the `csproj` file(s)",
+      "default": true
+    },
+    "runtimeID": {
+      "type": "string",
+      "description": "This maps to the `runtime` param of the CLI command"
+    },
+    "additionalArgs": {
+      "type": "string",
+      "description": "This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options"
+    },
+    "configMap": {
+      "type": "object",
+      "description": "This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command"
+    }
+  },
+  "additionalProperties": true,
+  "required": ["action", "srcPath", "outputPath"]
 }

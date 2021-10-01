@@ -1,0 +1,28 @@
+{
+  "projectName": "nx-boat-tools",
+  "projectOwner": "nx-boat-tools",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "eslint",
+  "contributors": [
+    {
+      "login": "matholum",
+      "name": "Killian Hale",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1494872?v=4",
+      "profile": "https://github.com/matholum",
+      "contributions": [
+        "design",
+        "ideas",
+        "code",
+        "infra",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

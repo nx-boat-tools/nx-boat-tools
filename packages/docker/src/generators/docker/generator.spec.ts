@@ -7,7 +7,7 @@ import { DockerGeneratorSchema } from './schema';
 describe('docker generator', () => {
   let appTree: Tree;
   const options: DockerGeneratorSchema = {
-    name: 'test',
+    project: 'test',
     dockerRepoOrUser: 'myusername',
   };
 

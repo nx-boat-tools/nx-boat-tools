@@ -1,6 +1,4 @@
 export interface DockerGeneratorSchema {
-  name: string;
+  project: string;
   dockerRepoOrUser: string;
-  tags?: string;
-  directory?: string;
 }

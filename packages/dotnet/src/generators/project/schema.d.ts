@@ -3,7 +3,5 @@ export interface DotnetGeneratorSchema {
   tags?: string;
   directory?: string;
   projectType: string;
-  pathPrefix?: string;
-  simpleModuleName: boolean;
   ownSolution: boolean;
 }

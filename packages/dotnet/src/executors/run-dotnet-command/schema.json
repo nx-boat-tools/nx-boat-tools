@@ -1,19 +1,40 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "title": "Set Version",
-  "description": "set a build version for the project",
+  "title": "run dotnet command executor",
+  "description": "",
   "type": "object",
   "properties": {
-    "projectPath": {
+    "action": {
       "type": "string",
-      "description": "The directory containing the project, specifically where a VERSION file may be found"
+      "description": "The underlying dotnet command to run"
+    },
+    "srcPath": {
+      "type": "string",
+      "description": "The path to the `csproj` or `sln` file for the project"
     },
     "outputPath": {
       "type": "string",
-      "description": "The directory to save the resulting version file"
+      "description": "This maps to the `output` param of the CLI command and is the path to where build output should be created"
+    },
+    "updateVersion": {
+      "type": "boolean",
+      "description": "Whether or not to update the version information in the `csproj` file(s)",
+      "default": true
+    },
+    "runtimeID": {
+      "type": "string",
+      "description": "This maps to the `runtime` param of the CLI command"
+    },
+    "additionalArgs": {
+      "type": "string",
+      "description": "This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options"
+    },
+    "configMap": {
+      "type": "object",
+      "description": "This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command"
     }
   },
   "additionalProperties": true,
-  "required": ["outputPath"]
+  "required": ["action", "srcPath", "outputPath"]
 }

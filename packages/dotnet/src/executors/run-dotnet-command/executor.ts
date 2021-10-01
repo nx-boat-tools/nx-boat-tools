@@ -48,10 +48,9 @@ function getAllProjects(dotnetProjectPath: string): Array<string> {
 async function updateCsprojFile(
   dotnetProjectPath: string,
   outputPath: string,
-  updateVersion: boolean,
-  context: ExecutorContext
+  updateVersion: boolean
 ): Promise<void> {
-  const projPaths = getAllProjects(dotnetProjectPath, context);
+  const projPaths = getAllProjects(dotnetProjectPath);
 
   for (let x = 0; x < projPaths.length; x++) {
     const currentProjPath = projPaths[x];
@@ -140,7 +139,7 @@ export default async function (
   }
 
   if (action == 'build') {
-    await updateCsprojFile(srcPath, outputPath, updateVersion, context);
+    await updateCsprojFile(srcPath, outputPath, updateVersion);
   }
 
   const args: Array<string> = [];
