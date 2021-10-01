@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 RELEASE_VERSION
+/templates/*/files
 
 # dependencies
 /node_modules

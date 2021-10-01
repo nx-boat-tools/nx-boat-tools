@@ -1,9 +1,23 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "title": "Build executor",
+  "title": "Run executor",
   "description": "",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "vars": {
+      "type": "object",
+      "description": "This is an object used to create environment variables to pass into the container"
+    },
+    "ports": {
+      "type": "object",
+      "description": "This is an object used to create port mappings to pass into the container"
+    },
+    "mounts": {
+      "type": "object",
+      "description": "This is an object used to create volume mount mappings to pass into the container"
+    }
+  },
+  "additionalProperties": true,
   "required": []
 }

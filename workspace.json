@@ -185,6 +185,11 @@
                 "input": "./packages/dotnet",
                 "glob": "executors.json",
                 "output": "."
+              },
+              {
+                "input": "./templates",
+                "glob": "dotnet-*/**/!(makefile)",
+                "output": "./templates"
               }
             ]
           }

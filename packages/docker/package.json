@@ -5,6 +5,11 @@
   "generators": "./generators.json",
   "executors": "./executors.json",
   "dependencies": {
-    "@nx-boat-tools/common": "0.0.1"
+    "@nrwl/devkit": "12.9.0",
+    "@nrwl/tao": "12.9.0",
+    "@nx-boat-tools/common": "0.0.1",
+    "minimist": "^1.2.5",
+    "tslib": "^2.0.0",
+    "underscore": "^1.13.1"
   }
 }

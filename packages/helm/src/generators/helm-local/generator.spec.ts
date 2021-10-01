@@ -8,7 +8,6 @@ describe('helm generator', () => {
   let appTree: Tree;
   const options: HelmLocalGeneratorSchema = {
     project: 'test',
-    buildPath: './dist/apps/test',
     createValues: true,
     environments: '',
   };

@@ -10,7 +10,6 @@ export default async function (
 ) {
   const dotnetOptions: DotnetGeneratorSchema = {
     ...options,
-    simpleModuleName: false,
     projectType: 'classlib',
   };
   await dotnetGenerator(tree, dotnetOptions);
