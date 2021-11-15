@@ -15,12 +15,13 @@ width="100%" alt="Nx Boat Tools"></p>
 <hr>
 
 # What is Nx Boat Tools?
-...
 
+...
 
 Nx Boat Tools follows the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
 
 # Plugins
+
 - [Common](./packages/common/README.md)
 - [Docker](./packages/docker/README.md)
 - [Dotnet](./packages/dotnet/README.md)
@@ -34,6 +35,7 @@ This project follows the [all-contributors](https://allcontributors.org) specifi
 Contributions of any kind are welcome!
 
 ## Want to help?
+
 If you want to file a bug or submit a PR, read up on our guidelines for contributing and watch this video that will help you get started.
 
 ## Contributors ✨
