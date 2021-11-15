@@ -19,5 +19,5 @@
       "description": "the user or repo to upload the docker image to"
     }
   },
-  "required": ["project","dockerRepoOrUser"]
+  "required": ["project", "dockerRepoOrUser"]
 }

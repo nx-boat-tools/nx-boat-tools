@@ -14,5 +14,5 @@
       "description": "This is the user or repo to publish the image to"
     }
   },
-  "required": ["buildPath","dockerRepoOrUser"]
+  "required": ["buildPath", "dockerRepoOrUser"]
 }

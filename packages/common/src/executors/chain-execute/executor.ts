@@ -1,10 +1,11 @@
 import * as _ from 'underscore';
 import { ExecutorContext, runExecutor } from '@nrwl/devkit';
 
-import { BuildExecutorSchema } from './schema';
+import { ChainExecutorSchema } from './schema';
+import { asyncIteratorToArray } from '../../utilities/iterableHelpers';
 
 export default async function (
-  options: BuildExecutorSchema,
+  options: ChainExecutorSchema,
   context: ExecutorContext
 ) {
   if (context.projectName === undefined) {
@@ -34,7 +35,7 @@ export default async function (
 
         const asyncResults = await runExecutor(
           target,
-          { verbose: true },
+          { verbose: context.isVerbose },
           context
         );
         const results = await asyncIteratorToArray(asyncResults);
@@ -51,14 +52,4 @@ export default async function (
   });
 
   return stack;
-}
-
-async function asyncIteratorToArray<T>(
-  asyncIterator: AsyncIterableIterator<T>
-): Promise<Array<T>> {
-  const results: Array<T> = [];
-
-  for await (const i of asyncIterator) results.push(i);
-
-  return results;
 }

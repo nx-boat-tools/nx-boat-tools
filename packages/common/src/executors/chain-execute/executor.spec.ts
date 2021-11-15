@@ -1,26 +1,131 @@
-import { ExecutorContext } from '@nrwl/devkit';
+import * as devkit from '@nrwl/devkit';
 
 import executor from './executor';
-import { BuildExecutorSchema } from './schema';
+import { ChainExecutorSchema } from './schema';
+import {
+  TargetSummary,
+  createTestExecutorContext,
+} from '../../utilities/executorTestHelpers';
+import { promiseToAsyncIterator } from '../../utilities/iterableHelpers';
 
-const options: BuildExecutorSchema = {
-  targets: ['build'],
-};
+import _ = require('underscore');
 
-const context: ExecutorContext = {
-  root: __dirname,
-  projectName: 'my-project',
-  targetName: undefined,
-  configurationName: undefined,
-  target: undefined,
-  workspace: undefined,
-  cwd: __dirname,
-  isVerbose: false,
-};
+const spy = jest.spyOn(devkit, 'runExecutor');
+const mockedRunExecutor = jest.fn((summary: TargetSummary) => {
+  console.log(
+    `running mocked '${summary.target}' executor for project '${summary.project}' and configuration '${summary.configuration}'`
+  );
 
-describe('Build Executor', () => {
-  it('can run', async () => {
+  const asyncIterable = promiseToAsyncIterator(
+    Promise.resolve({ success: summary.target !== 'fail' })
+  );
+
+  return Promise.resolve(asyncIterable);
+});
+
+describe('Chain Executor', () => {
+  beforeAll(() => {
+    spy.mockImplementation(mockedRunExecutor);
+  });
+
+  afterAll(() => {
+    mockedRunExecutor.mockRestore();
+  });
+
+  afterEach(() => {
+    mockedRunExecutor.mockClear();
+  });
+
+  it('executes all expected targets in order', async () => {
+    const options: ChainExecutorSchema = {
+      targets: ['build', 'test'],
+    };
+    const context = createTestExecutorContext({
+      targetsMap: [
+        { name: 'build', echo: 'hello from build' },
+        { name: 'test', echo: 'hello from test' },
+      ],
+    });
     const output = await executor(options, context);
+
+    const expectedTargets = ['build', 'test'];
+
     expect(output.success).toBe(true);
+    expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
+
+    _.each(mockedRunExecutor.mock.calls, (call: any, i: number) => {
+      const targetArg: TargetSummary = call[0];
+      const contextArg: devkit.ExecutorContext = call[2];
+
+      expect(targetArg.project).toBe('my-project');
+      expect(targetArg.target).toBe(expectedTargets[i]);
+      expect(targetArg.configuration).toBe(undefined);
+
+      expect(contextArg).toBe(context);
+    });
+  });
+
+  it('executes additional targets last', async () => {
+    const options: ChainExecutorSchema = {
+      targets: ['build', 'test'],
+      additionalTargets: ['additional'],
+    };
+    const context = createTestExecutorContext({
+      targetsMap: [
+        { name: 'build', echo: 'hello from build' },
+        { name: 'test', echo: 'hello from test' },
+        { name: 'additional', echo: 'hello from additional' },
+      ],
+    });
+    const output = await executor(options, context);
+
+    const expectedTargets = ['build', 'test', 'additional'];
+
+    expect(output.success).toBe(true);
+    expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
+
+    _.each(mockedRunExecutor.mock.calls, (call: any, i: number) => {
+      const targetArg: TargetSummary = call[0];
+      const contextArg: devkit.ExecutorContext = call[2];
+
+      expect(targetArg.project).toBe('my-project');
+      expect(targetArg.target).toBe(expectedTargets[i]);
+      expect(targetArg.configuration).toBe(undefined);
+
+      expect(contextArg).toBe(context);
+    });
+  });
+
+  it('executes targets with configuration', async () => {
+    const options: ChainExecutorSchema = {
+      targets: ['build', 'test'],
+      additionalTargets: ['additional'],
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [
+        { name: 'build', echo: 'hello from build' },
+        { name: 'test', echo: 'hello from test' },
+        { name: 'additional', echo: 'hello from additional' },
+      ],
+    });
+
+    const output = await executor(options, context);
+
+    const expectedTargets = ['build', 'test', 'additional'];
+
+    expect(output.success).toBe(true);
+    expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
+
+    _.each(mockedRunExecutor.mock.calls, (call: any, i: number) => {
+      const targetArg: TargetSummary = call[0];
+      const contextArg: devkit.ExecutorContext = call[2];
+
+      expect(targetArg.project).toBe('my-project');
+      expect(targetArg.target).toBe(expectedTargets[i]);
+      expect(targetArg.configuration).toBe('prod');
+
+      expect(contextArg).toBe(context);
+    });
   });
 });
