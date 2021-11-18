@@ -31,7 +31,7 @@
     "minimist": "^1.2.5",
     "tslib": "^2.0.0",
     "underscore": "^1.13.1",
-    "xml2js": "^0.4.23"
+    "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
     "@nrwl/cli": "12.9.0",
@@ -46,6 +46,7 @@
     "@types/cross-spawn": "^6.0.2",
     "@types/jest": "27.0.2",
     "@types/minimist": "^1.2.2",
+    "@types/mock-fs": "^4.13.1",
     "@types/node": "16.10.1",
     "@types/underscore": "^1.11.3",
     "@types/xml2js": "^0.4.9",
@@ -56,6 +57,8 @@
     "eslint-config-prettier": "8.3.0",
     "import-sort-style-renke": "^6.0.0",
     "jest": "27.2.2",
+    "jest-each": "^27.3.1",
+    "mock-fs": "^5.1.2",
     "prettier": "^2.4.1",
     "prettier-plugin-import-sort": "^0.0.7",
     "semver": "^7.3.5",

@@ -1,41 +1,38 @@
 import * as devkit from '@nrwl/devkit';
 import {
   TargetSummary,
+  createFakeExecutor,
   createTestExecutorContext,
-  promiseToAsyncIterator,
 } from '@nx-boat-tools/common';
+import { Console } from 'console';
 
 import executor from './executor';
 import { CleanDotnetExecutorSchema } from './schema';
 import { DotNetCommandExecutorSchema } from '../run-dotnet-command/schema';
 
+console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
+
 const spy = jest.spyOn(devkit, 'runExecutor');
-const mockedRunExecutor = jest.fn((summary: TargetSummary) => {
-  console.log(
-    `running mocked '${summary.target}' executor for project '${summary.project}' and configuration '${summary.configuration}'`
-  );
+const mockedRunExecutor = jest.fn(createFakeExecutor());
 
-  const asyncIterable = promiseToAsyncIterator(
-    Promise.resolve({ success: summary.target !== 'fail' })
-  );
-
-  return Promise.resolve(asyncIterable);
-});
-
-describe('Build Executor', () => {
+describe('Dotnet Clean Executor', () => {
   beforeAll(() => {
     spy.mockImplementation(mockedRunExecutor);
   });
 
   afterAll(() => {
     mockedRunExecutor.mockRestore();
+
+    console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
   });
 
   afterEach(() => {
     mockedRunExecutor.mockClear();
+    
+    console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 
-  it('can run', async () => {
+  it('successfully calls run-dotnet-command', async () => {
     const options: CleanDotnetExecutorSchema = {
       srcPath: 'apps/my-project',
       outputPath: 'dist/apps/my-project',

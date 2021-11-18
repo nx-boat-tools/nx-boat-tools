@@ -1,4 +1,7 @@
 import { ExecutorContext } from '@nrwl/devkit';
+
+import { promiseToAsyncIterator } from './iterableHelpers';
+
 import _ = require('underscore');
 
 export type TargetSummary = {
@@ -59,4 +62,18 @@ export function createTestExecutorContext(
   };
 
   return result;
+}
+
+export function createFakeExecutor() {
+  return (summary: TargetSummary) => {
+    console.log(
+      `running mocked '${summary.target}' executor for project '${summary.project}' and configuration '${summary.configuration}'`
+    );
+
+    const asyncIterable = promiseToAsyncIterator(
+      Promise.resolve({ success: summary.target !== 'fail' })
+    );
+
+    return Promise.resolve(asyncIterable);
+  };
 }

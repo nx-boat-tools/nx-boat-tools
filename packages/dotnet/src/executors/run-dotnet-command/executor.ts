@@ -1,7 +1,7 @@
 import * as _ from 'underscore';
 import * as path from 'path';
-import { Builder, Parser } from 'xml2js';
 import { ExecutorContext } from '@nrwl/devkit';
+import { create } from 'xmlbuilder2';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { spawnAsync } from '@nx-boat-tools/common';
 
@@ -26,6 +26,10 @@ const actionVerbs: { [key: string]: string } = {
 function getAllProjects(dotnetProjectPath: string): Array<string> {
   if (dotnetProjectPath.endsWith('.csproj')) {
     return [dotnetProjectPath];
+  } else if (!dotnetProjectPath.endsWith('.sln')) {
+    throw new Error(
+      `The dotnet project file must have an extenstion of '.csproj' or '.sln'`
+    );
   }
 
   const slnBuffer = readFileSync(dotnetProjectPath);
@@ -65,13 +69,15 @@ async function updateCsprojFile(
       );
     }
 
-    const parser = new Parser();
-    const doc = await parser.parseStringPromise(csprojBuffer.toString());
+    let xmlString = csprojBuffer.toString();
+    let xmlDoc = create(xmlString);
+    const doc: any = xmlDoc.end({ format: 'object' });
 
-    let propGroup = {
-      ...doc.Project.PropertyGroup[0],
-      IsPackable: true,
-    };
+    if (_.isArray(doc.Project.PropertyGroup)) {
+      doc.Project.PropertyGroup[0].IsPackable = true;
+    } else {
+      doc.Project.PropertyGroup.IsPackable = true;
+    }
 
     if (updateVersion) {
       const versionPath = path.join(outputPath, 'VERSION');
@@ -86,19 +92,19 @@ async function updateCsprojFile(
 
       console.log(`\t🏷  Updating version to ${version}...`);
 
-      propGroup = {
-        ...propGroup,
-        ReleaseVersion: [version],
-        PackageVersion: [version],
-      };
+      if (_.isArray(doc.Project.PropertyGroup)) {
+        doc.Project.PropertyGroup[0].ReleaseVersion = version;
+        doc.Project.PropertyGroup[0].PackageVersion = version;
+      } else {
+        doc.Project.PropertyGroup.ReleaseVersion = version;
+        doc.Project.PropertyGroup.PackageVersion = version;
+      }
     }
 
-    doc.Project.PropertyGroup[0] = propGroup;
+    xmlDoc = create(doc);
+    xmlString = xmlDoc.end({ prettyPrint: true, headless: true });
 
-    const builder = new Builder();
-    const xml = builder.buildObject(doc);
-
-    writeFileSync(currentProjPath, xml);
+    writeFileSync(currentProjPath, xmlString);
 
     console.log('');
   }
@@ -113,11 +119,12 @@ export default async function (
     options;
   const { root, projectName, configurationName } = context;
 
-  srcPath = path.join(root, srcPath);
-  outputPath = path.join(root, outputPath);
-
   if (projectName === undefined) {
     throw new Error('You must specify a project!');
+  }
+
+  if (!_.contains(validActions, action)) {
+    throw new Error('You must specify a valid action.');
   }
 
   if (srcPath === undefined || srcPath === '') {
@@ -126,13 +133,12 @@ export default async function (
     );
   }
 
-  if (!_.contains(validActions, action)) {
-    throw new Error('You must specify a valid action.');
-  }
-
   if (outputPath === undefined || outputPath === '') {
     throw new Error('You must specify an output path.');
   }
+
+  srcPath = path.join(root, srcPath);
+  outputPath = path.join(root, outputPath);
 
   if (!existsSync(srcPath)) {
     throw new Error(`Unable to locate src path, '${srcPath}'`);

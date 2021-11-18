@@ -1,10 +1,11 @@
-import { ExecutorContext } from '@nrwl/devkit';
+import * as _ from 'underscore';
+import { ExecutorContext, runExecutor } from '@nrwl/devkit';
+import { asyncIteratorToArray } from '@nx-boat-tools/common';
 
-import runDotnetCommand from '../run-dotnet-command/executor';
 import { DotNetCommandExecutorSchema } from '../run-dotnet-command/schema';
 import { PackageDotnetExecutorSchema } from './schema';
 
-export default async function runExecutor(
+export default async function run(
   options: PackageDotnetExecutorSchema,
   context: ExecutorContext
 ) {
@@ -13,9 +14,21 @@ export default async function runExecutor(
     action: 'pack',
   };
 
-  await runDotnetCommand(dotnetOptions, context);
+  const asyncResults = await runExecutor(
+    {
+      project: context.projectName,
+      target: 'run-dotnet-command',
+      configuration: context.configurationName,
+    },
+    dotnetOptions,
+    context
+  );
 
-  return {
-    success: true,
-  };
+  const results = await asyncIteratorToArray(asyncResults);
+
+  const success = _.all(results, (r) => r.success === true);
+
+  if (!success) throw new Error('Executor failed');
+
+  return { success: true };
 }
