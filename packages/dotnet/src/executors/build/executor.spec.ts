@@ -1,10 +1,10 @@
 import * as devkit from '@nrwl/devkit';
+import { Console } from 'console';
 import {
   TargetSummary,
   createFakeExecutor,
   createTestExecutorContext,
 } from '@nx-boat-tools/common';
-import { Console } from 'console';
 
 import executor from './executor';
 import { BuildDotnetExecutorSchema } from './schema';
@@ -28,7 +28,7 @@ describe('Dotnet Build Executor', () => {
 
   afterEach(() => {
     mockedRunExecutor.mockClear();
-    
+
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 

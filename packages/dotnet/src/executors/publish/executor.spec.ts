@@ -1,10 +1,10 @@
 import * as devkit from '@nrwl/devkit';
+import { Console } from 'console';
 import {
   TargetSummary,
   createFakeExecutor,
   createTestExecutorContext,
 } from '@nx-boat-tools/common';
-import { Console } from 'console';
 
 import executor from './executor';
 import { DotNetCommandExecutorSchema } from '../run-dotnet-command/schema';
