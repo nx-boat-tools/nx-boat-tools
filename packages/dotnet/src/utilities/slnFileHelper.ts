@@ -1,21 +1,25 @@
 import * as _ from 'underscore';
 import * as path from 'path';
+import { Guid } from 'guid-typescript';
 
 export function getAllProjectsFromSolution(
   slnContent: string,
   basePath: string
 ): Array<string> {
   const projectLineRegex = /\nProject\(/g;
-  const projLinePathRegex = /"(.*)".*"(.*)".*"(.*)"/g;
+  const projLinePathRegex = /"(.*)".*"(.*)".*"(.*)"/;
 
   let projectLines = slnContent.split(projectLineRegex);
+
   projectLines.shift();
   projectLines = _.map(projectLines, (line) => {
-    const match = projLinePathRegex.exec(line);
+    const match = line.match(projLinePathRegex);
 
     return match === null ? '' : match[2];
   });
+
   projectLines = _.without(projectLines, '');
+  projectLines = _.map(projectLines, (line) => line.replace('\\', path.sep));
   projectLines = _.map(projectLines, (line) => path.join(basePath, line));
 
   return projectLines;
@@ -55,4 +59,18 @@ export function appendGlobalSectionToSolution(
   rootParts.splice(2, 0, projectParts[2]);
 
   return rootParts.join('');
+}
+
+export function createTestSlnContent(projectNames: Array<string>): string {
+  const projectLines = _.map(
+    projectNames,
+    (project) =>
+      `Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${project}", "${project}\\${project}.csproj", "{${Guid.create()}}"\nEndProject`
+  );
+
+  return `
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+${projectLines.join('\n')}
+  `;
 }
