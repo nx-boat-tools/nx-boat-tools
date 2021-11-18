@@ -1,4 +1,4 @@
-export interface BuildExecutorSchema {
+export interface HelmCopyValuesExecutorSchema {
   projectHelmPath: string;
   outputPath: string;
 }

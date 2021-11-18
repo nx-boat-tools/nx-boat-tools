@@ -8,20 +8,23 @@ import {
   readdirSync,
 } from 'fs';
 
-import { BuildExecutorSchema } from './schema';
+import { HelmCopyValuesExecutorSchema } from './schema';
 
 import _ = require('underscore');
 
 export default async function runExecutor(
-  options: BuildExecutorSchema,
+  options: HelmCopyValuesExecutorSchema,
   context: ExecutorContext
 ) {
-  const { projectHelmPath, outputPath } = options;
-  const { projectName } = context;
+  let { projectHelmPath, outputPath } = options;
+  const { projectName, root } = context;
+
+  projectHelmPath = path.join(root, projectHelmPath);
+  outputPath = path.join(root, outputPath);
 
   console.log('\n📁 Copying helm values files to the dist folder...');
 
-  if (!existsSync(options.projectHelmPath)) {
+  if (!existsSync(projectHelmPath)) {
     throw new Error(
       `The helm path specified for project ${projectName} does not exist.`
     );

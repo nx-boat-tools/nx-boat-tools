@@ -4,24 +4,14 @@ import executor from './executor';
 import { ChainExecutorSchema } from './schema';
 import {
   TargetSummary,
+  createFakeExecutor,
   createTestExecutorContext,
 } from '../../utilities/executorTestHelpers';
-import { promiseToAsyncIterator } from '../../utilities/iterableHelpers';
 
 import _ = require('underscore');
 
 const spy = jest.spyOn(devkit, 'runExecutor');
-const mockedRunExecutor = jest.fn((summary: TargetSummary) => {
-  console.log(
-    `running mocked '${summary.target}' executor for project '${summary.project}' and configuration '${summary.configuration}'`
-  );
-
-  const asyncIterable = promiseToAsyncIterator(
-    Promise.resolve({ success: summary.target !== 'fail' })
-  );
-
-  return Promise.resolve(asyncIterable);
-});
+const mockedRunExecutor = jest.fn(createFakeExecutor());
 
 describe('Chain Executor', () => {
   beforeAll(() => {

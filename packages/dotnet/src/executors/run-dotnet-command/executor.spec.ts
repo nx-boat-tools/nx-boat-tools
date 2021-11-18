@@ -287,7 +287,9 @@ describe('Run Dotnet Command Executor', () => {
 
     mockFs(fakeFs);
 
-    await executor(options, context);
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
 
     const csproj = readFileSync(
       path.join(context.root, options.srcPath)
@@ -327,7 +329,9 @@ describe('Run Dotnet Command Executor', () => {
 
     mockFs(fakeFs);
 
-    await executor(options, context);
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
 
     const csproj = readFileSync(
       path.join(context.root, options.srcPath)
@@ -433,7 +437,9 @@ describe('Run Dotnet Command Executor', () => {
 
     mockFs(fakeFs);
 
-    await executor(options, context);
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
 
     let csproj = readFileSync(
       path.join(
@@ -512,7 +518,9 @@ describe('Run Dotnet Command Executor', () => {
 
     mockFs(fakeFs);
 
-    await executor(options, context);
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
 
     let csproj = readFileSync(
       path.join(
@@ -565,7 +573,9 @@ describe('Run Dotnet Command Executor', () => {
 
       mockFs(fakeFs);
 
-      await executor(options, context);
+      const output = await executor(options, context);
+
+      expect(output.success).toBe(true);
 
       expect(fn.mock.calls.length).toBe(1);
     }
@@ -596,7 +606,9 @@ describe('Run Dotnet Command Executor', () => {
 
     mockFs(fakeFs);
 
-    await executor(options, context);
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
 
     expect(fn.mock.calls.length).toBe(1);
 
@@ -642,7 +654,9 @@ describe('Run Dotnet Command Executor', () => {
 
       mockFs(fakeFs);
 
-      await executor(options, context);
+      const output = await executor(options, context);
+
+      expect(output.success).toBe(true);
 
       expect(fn.mock.calls.length).toBe(1);
 
@@ -696,7 +710,9 @@ describe('Run Dotnet Command Executor', () => {
 
       mockFs(fakeFs);
 
-      await executor(options, context);
+      const output = await executor(options, context);
+
+      expect(output.success).toBe(true);
 
       expect(fn.mock.calls.length).toBe(1);
 
@@ -738,7 +754,9 @@ describe('Run Dotnet Command Executor', () => {
 
     mockFs(fakeFs);
 
-    await executor(options, context);
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
 
     expect(fn.mock.calls.length).toBe(1);
 
@@ -776,7 +794,9 @@ describe('Run Dotnet Command Executor', () => {
 
       mockFs(fakeFs);
 
-      await executor(options, context);
+      const output = await executor(options, context);
+
+      expect(output.success).toBe(true);
 
       expect(fn.mock.calls.length).toBe(1);
 
