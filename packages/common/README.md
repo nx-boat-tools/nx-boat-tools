@@ -81,12 +81,4 @@ nx run example:build # will also call lint and then buildSrc
 nx run example:build:production # will call lint, then buildSrc, and lastly special
 ```
 
-### `set-version`
-
-🤦  Sorry... the `set-version` executor documentation is still a work in progress
-
 ## ✍️  Generators
-
-### `common`
-
-🤦  Sorry... the `common` generator is still a work in progress
