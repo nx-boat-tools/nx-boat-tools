@@ -1,5 +1,5 @@
 export interface DockerRunExecutorSchema {
-  vars: { [string]: string };
-  ports: { [number]: number };
-  mounts: { [string]: string };
+  vars?: { [string]: string };
+  ports?: { [number]: number };
+  mounts?: { [string]: string };
 }

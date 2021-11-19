@@ -142,8 +142,8 @@ The `docker` plugin does not handle authentication. You will need to do a `docke
 
 | name               | type     | default | description                                                |
 | ------------------ | -------- | ------- | ---------------------------------------------------------- |
-| `buildPath`        | `string` |         | Required. The path to the project's `dockerfile`           |
 | `dockerRepoOrUser` | `string` |         | Required. This is the user or repo to publish the image to |
+| `buildPath`        | `string` |         | The path to the project's `dockerfile`                     |
 
 #### Example:
 

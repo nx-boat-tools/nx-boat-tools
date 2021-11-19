@@ -9,16 +9,23 @@ export default async function runExecutor(
   options: BuildExecutorSchema,
   context: ExecutorContext
 ) {
-  const { buildPath } = options;
-  const { projectName } = context;
-  const dockerFilePath = path.join(options.buildPath, 'dockerfile');
+  let { buildPath } = options;
+  const { projectName, root } = context;
 
   if (projectName === undefined) {
     throw new Error('No project specified.');
   }
 
+  if (buildPath === undefined) {
+    throw new Error('You must specify a build path.');
+  }
+
+  buildPath = path.join(root, buildPath);
+
+  const dockerFilePath = path.join(buildPath, 'dockerfile');
+
   if (!existsSync(buildPath)) {
-    throw new Error('The build path specified cannot be found.');
+    throw new Error(`Unable to locate build path for project, '${buildPath}'`);
   }
 
   if (!existsSync(dockerFilePath)) {
@@ -34,7 +41,7 @@ export default async function runExecutor(
     )
   );
 
-  const versionPath: string = path.join(options.buildPath, 'VERSION');
+  const versionPath: string = path.join(buildPath, 'VERSION');
   const version = existsSync(versionPath)
     ? readFileSync(versionPath).toString()
     : undefined;
