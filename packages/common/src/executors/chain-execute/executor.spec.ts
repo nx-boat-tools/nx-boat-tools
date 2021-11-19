@@ -9,6 +9,9 @@ import {
 } from '../../utilities/executorTestHelpers';
 
 import _ = require('underscore');
+import { Console } from 'console';
+
+console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(devkit, 'runExecutor');
 const mockedRunExecutor = jest.fn(createFakeExecutor());
@@ -22,9 +25,16 @@ describe('Chain Executor', () => {
     mockedRunExecutor.mockRestore();
   });
 
+  beforeEach(() => {
+    console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
+  });
+
   afterEach(() => {
     mockedRunExecutor.mockClear();
+
+    console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
+
 
   it('executes all expected targets in order', async () => {
     const options: ChainExecutorSchema = {
