@@ -19,6 +19,18 @@ export default async function runExecutor(
   let { projectHelmPath, outputPath } = options;
   const { projectName, root } = context;
 
+  if (projectName === undefined) {
+    throw new Error('No project specified.');
+  }
+
+  if (projectHelmPath === undefined || projectHelmPath === '') {
+    throw new Error('You must specify a project helm path.');
+  }
+
+  if (outputPath === undefined || outputPath === '') {
+    throw new Error('You must specify an output path.');
+  }
+
   projectHelmPath = path.join(root, projectHelmPath);
   outputPath = path.join(root, outputPath);
 
@@ -26,7 +38,7 @@ export default async function runExecutor(
 
   if (!existsSync(projectHelmPath)) {
     throw new Error(
-      `The helm path specified for project ${projectName} does not exist.`
+      `Unable to locate helm path for project, '${projectHelmPath}'`
     );
   }
 

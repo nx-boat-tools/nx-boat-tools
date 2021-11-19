@@ -229,7 +229,8 @@
           "outputs": ["coverage/packages/helm"],
           "options": {
             "jestConfig": "packages/helm/jest.config.js",
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "coverage": true
           }
         },
         "build": {

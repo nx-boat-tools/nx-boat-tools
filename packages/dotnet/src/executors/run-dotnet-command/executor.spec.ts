@@ -34,7 +34,6 @@ describe('Run Dotnet Command Executor', () => {
 
   afterAll(() => {
     fn.mockRestore();
-    mockFs.restore();
   });
 
   beforeEach(() => {
@@ -44,6 +43,8 @@ describe('Run Dotnet Command Executor', () => {
   });
 
   afterEach(() => {
+    mockFs.restore();
+
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 

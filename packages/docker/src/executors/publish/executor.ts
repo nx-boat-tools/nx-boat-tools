@@ -9,11 +9,16 @@ export default async function runExecutor(
   options: PublishExecutorSchema,
   context: ExecutorContext
 ) {
-  const { buildPath, dockerRepoOrUser } = options;
-  const { projectName } = context;
+  const { buildPath } = options;
+  const { dockerRepoOrUser } = options;
+  const { projectName, root } = context;
 
   if (projectName === undefined) {
     throw new Error('No project specified.');
+  }
+
+  if (dockerRepoOrUser === undefined || dockerRepoOrUser === '') {
+    throw new Error('You must specify either a docker repo or user.');
   }
 
   console.log(
@@ -28,10 +33,14 @@ export default async function runExecutor(
     await spawnAsync(`docker push ${dockerRepoOrUser}/${projectName}:latest`)
   );
 
-  const versionPath: string = path.join(buildPath, 'VERSION');
-  const version = existsSync(versionPath)
-    ? readFileSync(versionPath).toString()
-    : undefined;
+  let version: string | undefined = undefined;
+
+  if (buildPath !== undefined && buildPath !== '') {
+    const versionPath: string = path.join(root, buildPath, 'VERSION');
+    version = existsSync(versionPath)
+      ? readFileSync(versionPath).toString()
+      : undefined;
+  }
 
   if (version !== undefined) {
     console.log(

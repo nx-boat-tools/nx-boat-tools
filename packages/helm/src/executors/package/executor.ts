@@ -3,14 +3,14 @@ import { ExecutorContext } from '@nrwl/devkit';
 import { existsSync, mkdirSync, readFileSync } from 'fs';
 import { spawnAsync } from '@nx-boat-tools/common';
 
-import { PackageExecutorSchema } from './schema';
+import { HelmPackageExecutorSchema } from './schema';
 
 export default async function runExecutor(
-  options: PackageExecutorSchema,
+  options: HelmPackageExecutorSchema,
   context: ExecutorContext
 ) {
-  const { projectHelmPath, outputPath } = options;
-  const { projectName } = context;
+  let { projectHelmPath, outputPath } = options;
+  const { projectName, root } = context;
 
   if (projectName === undefined) {
     throw new Error('No project specified.');
@@ -20,14 +20,17 @@ export default async function runExecutor(
     throw new Error('You must specify a project helm path.');
   }
 
+  if (outputPath === undefined || outputPath === '') {
+    throw new Error('You must specify an output path.');
+  }
+
+  projectHelmPath = path.join(root, projectHelmPath);
+  outputPath = path.join(root, outputPath);
+
   if (!existsSync(projectHelmPath)) {
     throw new Error(
       `Unable to locate helm path for project, '${projectHelmPath}'`
     );
-  }
-
-  if (outputPath === undefined || outputPath === '') {
-    throw new Error('You must specify an output path.');
   }
 
   mkdirSync(outputPath, { recursive: true });

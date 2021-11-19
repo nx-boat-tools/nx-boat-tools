@@ -1,27 +1,37 @@
 import * as path from 'path';
 import { ExecutorContext, readProjectConfiguration } from '@nrwl/devkit';
-import { FsTree } from '@nrwl/tao/src/shared/tree';
-import { copyFileSync, existsSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync } from 'fs';
 
-import { BuildExecutorSchema } from './schema';
+import { DockerCopyFilesExecutorSchema } from './schema';
 
 export default async function runExecutor(
-  options: BuildExecutorSchema,
+  options: DockerCopyFilesExecutorSchema,
   context: ExecutorContext
 ) {
-  const tree = new FsTree(context.root, false);
-  const projectConfig = readProjectConfiguration(tree, context.projectName);
-  const projectDirectory = projectConfig.root;
+  let { distPath } = options;
+  const { projectName, root } = context;
 
-  const dockerFilePath = path.join(projectDirectory, 'dockerfile');
-  const dockerIgnorePath = path.join(projectDirectory, '.dockerignore');
-  const dockerFileDistPath = path.join(options.distPath, 'dockerfile');
-  const dockerIgnoreDistPath = path.join(options.distPath, '.dockerignore');
+  if (projectName === undefined) {
+    throw new Error('No project specified.');
+  }
+
+  if (distPath === undefined || distPath === '') {
+    throw new Error('You must specify a dist path.');
+  }
+
+  distPath = path.join(root, distPath);
+
+  mkdirSync(distPath, { recursive: true });
+
+  const dockerFilePath = path.join(root, 'dockerfile');
+  const dockerIgnorePath = path.join(root, '.dockerignore');
+  const dockerFileDistPath = path.join(distPath, 'dockerfile');
+  const dockerIgnoreDistPath = path.join(distPath, '.dockerignore');
 
   console.log('\n📁 Copying docker files to the dist folder...');
 
   if (!existsSync(dockerFilePath)) {
-    throw new Error(`${context.projectName} does not have a dockerfile.`);
+    throw new Error(`${projectName} does not have a dockerfile.`);
   }
 
   console.log(`\t📄 ${dockerFilePath} -> ${dockerFileDistPath}`);

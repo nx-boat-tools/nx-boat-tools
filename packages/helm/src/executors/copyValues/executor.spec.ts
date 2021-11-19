@@ -10,16 +10,79 @@ import { HelmCopyValuesExecutorSchema } from './schema';
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 describe('Helm Copy Values Executor', () => {
-  afterAll(() => {
-    mockFs.restore();
-  });
-
   beforeEach(() => {
     console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
   });
 
   afterEach(() => {
+    mockFs.restore();
+
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
+  });
+
+  it('fails when no project specified', async () => {
+    const options: HelmCopyValuesExecutorSchema = {
+      projectHelmPath: 'apps/my-project/helm',
+      outputPath: 'dist/apps/my-project/helm/values',
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    context.projectName = undefined;
+
+    const fakeFs = {};
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    expect(defuse(executor(options, context))).rejects.toThrow(
+      `No project specified.`
+    );
+  });
+
+  it('fails when no project helm directory specified', async () => {
+    const options: HelmCopyValuesExecutorSchema = {
+      projectHelmPath: undefined,
+      outputPath: 'dist/apps/my-project/helm/values',
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const fakeFs = {};
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    expect(defuse(executor(options, context))).rejects.toThrow(
+      `You must specify a project helm path.`
+    );
+  });
+
+  it('fails when no output directory specified', async () => {
+    const options: HelmCopyValuesExecutorSchema = {
+      projectHelmPath: 'apps/my-project/helm',
+      outputPath: undefined,
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const fakeFs = {};
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    expect(defuse(executor(options, context))).rejects.toThrow(
+      `You must specify an output path.`
+    );
   });
 
   it('fails when project helm folder does not exist', async () => {
@@ -39,7 +102,10 @@ describe('Helm Copy Values Executor', () => {
     mockFs(fakeFs);
 
     expect(defuse(executor(options, context))).rejects.toThrow(
-      `The helm path specified for project ${context.projectName} does not exist.`
+      `Unable to locate helm path for project, '${path.join(
+        context.root,
+        options.projectHelmPath
+      )}'`
     );
   });
 
@@ -54,9 +120,7 @@ describe('Helm Copy Values Executor', () => {
     });
 
     const fakeFs = {};
-    fakeFs[path.join(context.root, options.projectHelmPath)] = {
-      // 'values.yaml': '{}'
-    };
+    fakeFs[path.join(context.root, options.projectHelmPath)] = {};
 
     console.log('Mocked fs', fakeFs);
 
