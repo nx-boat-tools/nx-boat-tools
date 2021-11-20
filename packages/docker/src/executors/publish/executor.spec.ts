@@ -95,7 +95,7 @@ describe('Docker Publish Executor', () => {
     });
 
     const fakeFs = {};
-    fakeFs[path.join(context.root, 'apps/my-project')] = {
+    fakeFs[path.join(context.root, 'apps', 'my-project')] = {
       dockerfile: '',
       VERSION: '1.0.0',
     };
