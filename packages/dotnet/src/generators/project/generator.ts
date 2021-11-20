@@ -176,7 +176,7 @@ function moveSolutionFileIfNeeded(
     return;
   }
 
-  const rootSlnPath = path.join('./', `${templateOptions.pkgName}.sln`);
+  const rootSlnPath = path.join('.', `${templateOptions.pkgName}.sln`);
   const projectSlnPath = path.join(
     templateOptions.projectRoot,
     `${templateOptions.className}.sln`
@@ -218,7 +218,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const dotnetOptions = {
     srcPath: !normalizedOptions.ownSolution
-      ? path.join('./', `${normalizedOptions.pkgName}.sln`)
+      ? path.join('.', `${normalizedOptions.pkgName}.sln`)
       : path.join(
           normalizedOptions.projectRoot,
           `${normalizedOptions.projectName}.sln`

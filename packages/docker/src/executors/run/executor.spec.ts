@@ -134,8 +134,8 @@ describe('Docker Run Executor', () => {
     const commandArg: string = firstCall[0];
     const argsArg: string[] = firstCall[1];
 
-    const fullHostPath1 = path.join(context.root, '/my/host/path');
-    const fullHostPath2 = path.join(context.root, '/my/host/config');
+    const fullHostPath1 = path.join(context.root, 'my', 'host', 'path');
+    const fullHostPath2 = path.join(context.root, 'my', 'host', 'config');
 
     expect(commandArg).toBe('docker');
     expect(argsArg[0]).toBe('run');
@@ -176,8 +176,8 @@ describe('Docker Run Executor', () => {
     const commandArg: string = firstCall[0];
     const argsArg: string[] = firstCall[1];
 
-    const fullHostPath1 = path.join(context.root, '/my/host/path');
-    const fullHostPath2 = path.join(context.root, '/my/host/config');
+    const fullHostPath1 = path.join(context.root, 'my', 'host', 'path');
+    const fullHostPath2 = path.join(context.root, 'my', 'host', 'config');
 
     expect(commandArg).toBe('docker');
     expect(argsArg[0]).toBe('run');
