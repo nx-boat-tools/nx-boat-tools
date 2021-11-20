@@ -28,17 +28,7 @@ export function createTestExecutorContext(
     { name: 'build', echo: 'Hello from build' },
   ];
 
-  const targets = _.object(
-    _.map(args.targetsMap, (tm) => tm.name),
-    _.map(args.targetsMap, (tm) => {
-      return {
-        executor: '@nrwl/workspace:run-commands',
-        options: {
-          commands: [{ command: `echo '${tm.echo}'` }],
-        },
-      };
-    })
-  );
+  const targets = createTargetConfig(args.targetsMap);
 
   const result = {
     root: __dirname,
@@ -62,6 +52,22 @@ export function createTestExecutorContext(
   };
 
   return result;
+}
+
+export function createTargetConfig(targetsMap?: { name: string; echo: string }[]) {
+  return targetsMap === undefined
+    ? {}
+    : _.object(
+      _.map(targetsMap, (tm) => tm.name),
+      _.map(targetsMap, (tm) => {
+        return {
+          executor: '@nrwl/workspace:run-commands',
+          options: {
+            commands: [{ command: `echo '${tm.echo}'` }],
+          },
+        };
+      })
+    );
 }
 
 export function createFakeExecutor() {
