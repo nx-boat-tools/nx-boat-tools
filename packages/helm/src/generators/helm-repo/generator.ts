@@ -29,6 +29,10 @@ function normalizeOptions(
   const projectHelmPath = path.join(projectConfig.root, 'helm');
   const environmentsList = options.environments?.split(',') || [];
 
+  if (projectConfig.targets.copyHelmValues) {
+    throw new Error(`${options.project} already has a copyHelmValues target.`);
+  }
+
   if (environmentsList.length == 0) {
     environmentsList.push('values');
   }
@@ -62,15 +66,19 @@ function createValuesFiles(tree: Tree, options: NormalizedSchema) {
 
   const projectConfig = options.projectConfig;
 
-  const command = `helm show values ${options.repository}/${options.chart}`;
+  const args = [
+    'show',
+    'values',
+    `${options.repository}/${options.chart}`
+  ];
 
-  const values = spawnSync(command, undefined, { shell: true }).output.join(
+  const values = spawnSync('helm', args, { shell: true }).output.join(
     '\n'
   );
 
   _.each(options.environmentsList, (environment) => {
     const filename =
-      environment === 'values' ? 'values' : `values-${environment}.yaml`;
+      environment === 'values' ? 'values.yaml' : `values-${environment}.yaml`;
     const valuesPath = path.join(projectConfig.root, 'helm', filename);
 
     tree.write(valuesPath, values);

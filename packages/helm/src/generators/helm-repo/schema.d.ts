@@ -1,6 +1,6 @@
 export interface HelmRepoGeneratorSchema {
   project: string;
-  environments: string;
+  environments?: string;
   repository: string;
   chart: string;
 }
