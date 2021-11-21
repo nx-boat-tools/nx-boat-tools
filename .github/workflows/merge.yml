@@ -25,6 +25,7 @@ jobs:
         run: |
           git config --global user.email "hale.killian@gmail.com"
           git config --global user.name "Killian Hale"
+          make templates -B
           make artifacts
           make version tag=true commit=true commit-branch=develop
       - name: Set variables

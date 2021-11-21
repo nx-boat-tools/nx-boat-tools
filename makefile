@@ -76,4 +76,4 @@ endif
 templates:
 	echo $(NEWLINE)🆕 Refreshing generator file templates...
 
-	$(foreach file, $(wildcard $(TEMPLATES_DIR)/*), [ "$(file)" != './templates/base' ] && (make -C $(file));)
+	$(foreach file, $(wildcard $(TEMPLATES_DIR)/*), [ "$(file)" != './templates/dotnet-base' ] && (make -C $(file));)

@@ -1,4 +1,4 @@
-import * as mockFs from 'mock-fs';
+// import * as mockFs from 'mock-fs';
 import { Tree, readProjectConfiguration, updateProjectConfiguration, addProjectConfiguration, ProjectConfiguration } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import { Console } from 'console';
@@ -9,7 +9,7 @@ import { HelmLocalGeneratorSchema } from './schema';
 import { defuse } from 'packages/common/src/utilities/promiseTestHelpers';
 import { createTargetConfig } from 'packages/common/src/utilities/executorTestHelpers';
 import path = require('path');
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
@@ -23,7 +23,7 @@ describe('helm-local generator', () => {
   });
 
   afterEach(() => {
-    mockFs.restore();
+    // mockFs.restore();
 
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
@@ -335,7 +335,7 @@ describe('helm-local generator', () => {
     await generator(appTree, options);
 
     const helmignorePath = path.join(initialConfig.root, 'helm', 'chart', '.helmignore');
-    const helmignoreTemplate = readFileSync(path.join(__dirname, 'files', 'generated', '.helmignore.template'))
+    const helmignoreTemplate = readFileSync(path.join(__dirname, 'files', 'generated', '__dot__helmignore.template'))
       .toString()
       .replace('<%= name %>', options.project);
 

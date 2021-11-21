@@ -13,6 +13,7 @@ import { HelmLocalGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
 
 import _ = require('underscore');
+import { readdirSync } from 'fs';
 
 interface NormalizedSchema extends HelmLocalGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
@@ -90,8 +91,7 @@ function copyValuesFiles(tree: Tree, options: NormalizedSchema) {
 
   const projectConfig = options.projectConfig;
   const chartValuesFile = path.join(
-    options.projectConfig.root,
-    'helm',
+    options.projectHelmPath,
     'chart',
     'values.yaml'
   );

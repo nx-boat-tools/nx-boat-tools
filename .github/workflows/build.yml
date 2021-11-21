@@ -17,6 +17,7 @@ jobs:
         cache: 'npm'
     - name: Build affected
       run: |
+        make templates -B
         make base_ref=origin/main
     - uses: codecov/codecov-action@v2
       with:
