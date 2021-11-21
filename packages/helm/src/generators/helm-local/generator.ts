@@ -30,6 +30,10 @@ function normalizeOptions(
   const projectHelmPath = path.join(projectConfig.root, 'helm');
   const environmentsList = options.environments?.split(',') || [];
 
+  if (projectConfig.targets.copyHelmValues) {
+    throw new Error(`${options.project} already has a copyHelmValues target.`);
+  }
+
   if (environmentsList.length == 0) {
     environmentsList.push('values');
   }
@@ -64,7 +68,6 @@ export default async function (tree: Tree, options: HelmLocalGeneratorSchema) {
 function addChartFiles(tree: Tree, options: NormalizedSchema) {
   const pathParts: Array<string> = [
     __dirname,
-    '.',
     'files',
     'generated'
   ];
@@ -76,7 +79,7 @@ function addChartFiles(tree: Tree, options: NormalizedSchema) {
   };
   generateFiles(
     tree,
-    path.resolve(path.join(__dirname, ...pathParts)),
+    path.resolve(path.join(...pathParts)),
     path.join(options.projectConfig.root, 'helm', 'chart'),
     templateOptions
   );
@@ -97,7 +100,7 @@ function copyValuesFiles(tree: Tree, options: NormalizedSchema) {
 
   _.each(options.environmentsList, (environment) => {
     const filename =
-      environment === 'values' ? 'values' : `values-${environment}.yaml`;
+      environment === 'values' ? 'values.yaml' : `values-${environment}.yaml`;
     const valuesPath = path.join(projectConfig.root, 'helm', filename);
 
     tree.write(valuesPath, values);
