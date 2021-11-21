@@ -268,7 +268,7 @@ describe('helm-local generator', () => {
     expect(targets[4]).toBe('test');
   });
 
-  it('adds chart.yaml file to project chart directory matching template', async () => {
+  it('adds chart.yaml file to chart files in project helm directory matching template', async () => {
     const options: HelmLocalGeneratorSchema = {
       project: 'my-project',
       createValues: false
@@ -293,7 +293,7 @@ describe('helm-local generator', () => {
     expect(appTree.read(chartPath).toString()).toBe(chartTemplate);
   });
 
-  it('adds values.yaml file to project chart directory matching template', async () => {
+  it('adds values.yaml file to chart files in project helm directory matching template', async () => {
     const options: HelmLocalGeneratorSchema = {
       project: 'my-project',
       createValues: false
@@ -318,7 +318,7 @@ describe('helm-local generator', () => {
     expect(appTree.read(valuesPath).toString()).toBe(valuesTemplate);
   });
 
-  it('adds .helmignore file to project chart directory matching template', async () => {
+  it('adds .helmignore file to chart files in project helm directory matching template', async () => {
     const options: HelmLocalGeneratorSchema = {
       project: 'my-project',
       createValues: false
@@ -343,7 +343,7 @@ describe('helm-local generator', () => {
     expect(appTree.read(helmignorePath).toString()).toBe(helmignoreTemplate);
   });
 
-  it('adds templates directory to project chart directory', async () => {
+  it('adds templates directory to chart files in project helm directory', async () => {
     const options: HelmLocalGeneratorSchema = {
       project: 'my-project',
       createValues: false
