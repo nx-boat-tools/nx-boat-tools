@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, main ]
 
 jobs:
   build:
@@ -18,3 +18,10 @@ jobs:
     - name: Build affected
       run: |
         make base_ref=origin/main
+    - uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./coverage
+        flags: unittests
+        name: ${{ github.ref_name }}
+        commit_parent: ${{ github.sha }}

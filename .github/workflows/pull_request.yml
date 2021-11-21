@@ -24,3 +24,10 @@ jobs:
         git config --global user.name "Killian Hale"
         make format base_ref=$BASE_REF commit=true commit-branch=develop
         make base_ref=$BASE_REF
+    - uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./coverage
+        flags: unittests
+        name: ${{ github.head_ref }}
+        commit_parent: ${{ github.sha }}

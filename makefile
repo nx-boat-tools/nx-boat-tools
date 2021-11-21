@@ -20,7 +20,8 @@ build:
 	echo $(NEWLINE)🛠 Building affected projects compared to $(base_ref)...
 
 	npm ci
-	npx nx affected:build --base=$(base_ref)
+	npx nx affected:build --base=$(base_ref) --parallel=5
+	npx nx affected:test --base=$(base_ref) --parallel=5
 format:
 	echo $(NEWLINE)🧼️ Formatting and linting affected files compared to $(base_ref)...
 
@@ -42,7 +43,7 @@ artifacts:
 	mkdir -p $(ARTIFACTS_DIR)
 
 	npm ci
-	npx nx affected:build --base=$(last_version_hash)
+	npx nx affected:build --base=$(last_version_hash) --parallel=5
 
 	echo
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
