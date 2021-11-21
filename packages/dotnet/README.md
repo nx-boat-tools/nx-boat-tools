@@ -56,7 +56,7 @@ The `run-dotnet-command` is the heart of all of the dotnet executors and is mean
 | `updateVersion`  | `boolean`     | `true`      | Only used when `action` is `build`. See the "Versioning" section below for more details.                                                                                                                                                                                          |
 | `runtimeID`      | `string?`     | `undefined` | This maps to the `runtime` param of the CLI command. For a list of Runtime Identifiers (RIDs), see the [RID catalog](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)                                                                                                    |
 | `additionalArgs` | `string?`     | `undefined` | This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options                                                                                                               |
-| `configMap`      | `JsonObject?` | `undefined` | This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command. The json key represents the Nx configuration and the value is expected to be a string representing the dotnet configuration to use. Ex: `{ dev: "Develop" }` |
+| `configMap`      | `JsonObject?` | `undefined` | This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command. The json key represents the Nx configuration and the value is expected to be a string representing the dotnet configuration to use. Ex: `{ dev: "Debug" }` |
 
 #### Example:
 
