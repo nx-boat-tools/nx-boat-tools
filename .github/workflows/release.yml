@@ -40,9 +40,9 @@ jobs:
         with:
           room-id: ${{ secrets.GITTER_ROOM_COMMUNITY }}
           token: ${{ secrets.GITTER_TOKEN_KILLIAN }}
-          text: |
-          ## 🚢 Version ${{ github.event.release.tag_name }} was just released!
-          This release contains the following npm packages:
-          $env.RELEASE_CONTENTS_MESSAGE
-
-          [🔗   View the changes on GitHub](${{ github.event.release.html_url }})
+          text: |\n
+          ## 🚢 Version ${{ github.event.release.tag_name }} was just released!\n
+          This release contains the following npm packages:\n
+          $env.RELEASE_CONTENTS_MESSAGE\n
+          \n
+          [🔗   View the changes on GitHub](${{ github.event.release.html_url }})\n
