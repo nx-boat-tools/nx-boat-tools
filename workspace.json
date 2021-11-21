@@ -190,8 +190,8 @@
                 "output": "."
               },
               {
-                "input": "./templates",
-                "glob": "dotnet-*/**/!(makefile)",
+                "input": "./packages/dotnet/src/generators",
+                "glob": "**/files/**/*",
                 "output": "./templates"
               }
             ]
@@ -264,9 +264,9 @@
                 "output": "."
               },
               {
-                "input": "templates/helm/files",
-                "glob": "**/!(makefile)",
-                "output": "./templates/helm"
+                "input": "./packages/helm/src/generators",
+                "glob": "**/files/**/*",
+                "output": "./templates"
               }
             ]
           }
