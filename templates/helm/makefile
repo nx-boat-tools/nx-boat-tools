@@ -1,12 +1,15 @@
+ROOT_DIR:=$(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+
 project-name = my-chart
-out-dir = ./files
+out-dir = ../../packages/helm/src/generators/helm-local/files/generated
 
 default:
+	rm -rf $(ROOT_DIR)files
 	rm -rf $(out-dir)
-	helm create my-chart
+	helm create ${project-name}
 
 	mkdir -p $(out-dir)
-	mv ${project-name}/{*,.[^.]*} files/
+	mv ${project-name}/{*,.[^.]*} ${out-dir}/
 	rm -r $(project-name)
 
 	for f in $$(find "$(out-dir)" -type f); do mv "$$f" "$${f}.template"; done;

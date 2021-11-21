@@ -62,7 +62,12 @@ export default async function (tree: Tree, options: HelmLocalGeneratorSchema) {
 }
 
 function addChartFiles(tree: Tree, options: NormalizedSchema) {
-  const pathParts: Array<string> = ['..', '..', '..', 'templates', 'helm'];
+  const pathParts: Array<string> = [
+    __dirname,
+    '.',
+    'files',
+    'generated'
+  ];
   const templateOptions = {
     ...options,
     ...names(options.project),

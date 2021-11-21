@@ -68,7 +68,7 @@ function normalizeOptions(
   const pkgBuffer = tree.read('package.json');
   const pkg = pkgBuffer === null ? {} : JSON.parse(pkgBuffer.toString());
 
-  const pkgName = pkg.name;
+  const pkgName = names(pkg.name).className;
   const pkgVersion = pkg.version;
   const authors = pkg.author !== undefined ? pkg.author : 'John Doe';
   const description =
@@ -132,9 +132,9 @@ function addProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
   const pathParts: Array<string> = [
     __dirname,
     '..',
-    'templates',
-    `dotnet-${templateOptions.projectType}`,
+    templateOptions.projectType,
     'files',
+    'generated',
     'csproj',
   ];
 
@@ -154,9 +154,9 @@ function addSolutionFiles(tree: Tree, templateOptions: TemplateOptions) {
   const pathParts: Array<string> = [
     __dirname,
     '..',
-    'templates',
-    `dotnet-${templateOptions.projectType}`,
+    templateOptions.projectType,
     'files',
+    'generated',
     `sln`,
   ];
 
