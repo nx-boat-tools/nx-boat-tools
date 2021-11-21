@@ -87,7 +87,9 @@
           "outputs": ["coverage/packages/docker"],
           "options": {
             "jestConfig": "packages/docker/jest.config.js",
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "coverage": true,
+            "coverageProvider": ["json", "html"]
           }
         },
         "build": {
@@ -156,7 +158,8 @@
           "options": {
             "jestConfig": "packages/dotnet/jest.config.js",
             "passWithNoTests": true,
-            "coverage": true
+            "coverage": true,
+            "coverageProvider": ["json", "html"]
           }
         },
         "build": {
@@ -192,7 +195,7 @@
               {
                 "input": "./packages/dotnet/src/generators",
                 "glob": "**/files/**/*",
-                "output": "./templates"
+                "output": "./src/generators"
               }
             ]
           }
@@ -230,7 +233,8 @@
           "options": {
             "jestConfig": "packages/helm/jest.config.js",
             "passWithNoTests": true,
-            "coverage": true
+            "coverage": true,
+            "coverageProvider": ["json", "html"]
           }
         },
         "build": {
@@ -266,7 +270,7 @@
               {
                 "input": "./packages/helm/src/generators",
                 "glob": "**/files/**/*",
-                "output": "./templates"
+                "output": "./src/generators"
               }
             ]
           }
