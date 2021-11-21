@@ -22,7 +22,9 @@ describe('Dotnet Build Executor', () => {
 
   afterAll(() => {
     mockedRunExecutor.mockRestore();
+  });
 
+  beforeEach(() => {
     console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
   });
 

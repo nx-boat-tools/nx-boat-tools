@@ -24,8 +24,14 @@ describe('Dotnet Publish Executor', () => {
     mockedRunExecutor.mockRestore();
   });
 
+  beforeEach(() => {
+    console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
+  });
+
   afterEach(() => {
     mockedRunExecutor.mockClear();
+
+    console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 
   it('successfully calls run-dotnet-command', async () => {
