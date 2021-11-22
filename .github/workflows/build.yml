@@ -25,4 +25,5 @@ jobs:
         directory: ./coverage
         flags: unittests
         name: ${{ github.ref_name }}
-        commit_parent: ${{ github.sha }}
+        override_branch: ${{ github.ref_name }}
+        # commit_parent: ${{ github.sha }}

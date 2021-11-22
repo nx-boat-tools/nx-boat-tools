@@ -19,7 +19,7 @@
             "jestConfig": "packages/common/jest.config.js",
             "passWithNoTests": true,
             "coverage": true,
-            "coverageProvider": ["json", "html"]
+            "coverageReporters": ["cobertura"]
           }
         },
         "build": {
@@ -89,7 +89,7 @@
             "jestConfig": "packages/docker/jest.config.js",
             "passWithNoTests": true,
             "coverage": true,
-            "coverageProvider": ["json", "html"]
+            "coverageReporters": ["cobertura"]
           }
         },
         "build": {
@@ -159,7 +159,7 @@
             "jestConfig": "packages/dotnet/jest.config.js",
             "passWithNoTests": true,
             "coverage": true,
-            "coverageProvider": ["json", "html"]
+            "coverageReporters": ["cobertura"]
           }
         },
         "build": {
@@ -234,7 +234,7 @@
             "jestConfig": "packages/helm/jest.config.js",
             "passWithNoTests": true,
             "coverage": true,
-            "coverageProvider": ["json", "html"]
+            "coverageReporters": ["cobertura"]
           }
         },
         "build": {

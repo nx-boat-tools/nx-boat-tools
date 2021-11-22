@@ -36,13 +36,13 @@ jobs:
           RELEASE_CONTENTS=$(find "$PACKAGES_DIST_DIR" -type d -maxdepth 1 ! -name "packages"  -printf "- [%p](https://www.npmjs.com/package/@nx-boat-tools/%p/$TAG_NAME)\n")
           echo "RELEASE_CONTENTS_MESSAGE=$VER" >> $GITHUB_ENV
 
-      - uses: juztcode/gitter-github-action@v1
-        with:
-          room-id: ${{ secrets.GITTER_ROOM_COMMUNITY }}
-          token: ${{ secrets.GITTER_TOKEN_KILLIAN }}
-          text: |\n
-          ## 🚢 Version ${{ github.event.release.tag_name }} was just released!\n
-          This release contains the following npm packages:\n
-          $env.RELEASE_CONTENTS_MESSAGE\n
-          \n
-          [🔗   View the changes on GitHub](${{ github.event.release.html_url }})\n
+      # - uses: juztcode/gitter-github-action@v1
+      #   with:
+      #     room-id: ${{ secrets.GITTER_ROOM_COMMUNITY }}
+      #     token: ${{ secrets.GITTER_TOKEN_KILLIAN }}
+      #     text: |
+      #     ## 🚢 Version ${{ github.event.release.tag_name }} was just released!\n
+      #     This release contains the following npm packages:\n
+      #     ${{ env.RELEASE_CONTENTS_MESSAGE }}\n
+      #     \n
+      #     [🔗   View the changes on GitHub](${{ github.event.release.html_url }})\n
