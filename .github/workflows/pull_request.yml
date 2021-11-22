@@ -23,6 +23,7 @@ jobs:
         git config --global user.email "hale.killian@gmail.com"
         git config --global user.name "Killian Hale"
         make format base_ref=$BASE_REF commit=true commit-branch=develop
+        make templates -B
         make base_ref=$BASE_REF
     - uses: codecov/codecov-action@v2
       with:
