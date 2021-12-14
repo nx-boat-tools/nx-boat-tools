@@ -9,7 +9,7 @@ import {
   createTestExecutorContext,
 } from '../../utilities/executorTestHelpers';
 
-import _ = require('underscore');
+import * as _ from 'underscore';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
