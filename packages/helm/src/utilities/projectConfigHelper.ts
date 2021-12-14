@@ -4,7 +4,7 @@ import {
   TargetConfiguration,
 } from '@nrwl/devkit';
 import path = require('path');
-import _ = require('underscore');
+import * as _ from 'underscore';
 
 export function getHelmAppendedBuildTargets(
   projectDistPath: string,

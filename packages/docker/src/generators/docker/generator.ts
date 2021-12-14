@@ -13,7 +13,7 @@ import {
 
 import { DockerGeneratorSchema } from './schema';
 
-import _ = require('underscore');
+import * as _ from 'underscore';
 
 interface NormalizedSchema extends DockerGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
