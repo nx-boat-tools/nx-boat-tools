@@ -1,0 +1,61 @@
+{
+  "root": "packages/dotnet",
+  "sourceRoot": "packages/dotnet/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/dotnet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/dotnet"],
+      "options": {
+        "jestConfig": "packages/dotnet/jest.config.js",
+        "passWithNoTests": true,
+        "coverage": true,
+        "coverageReporters": ["cobertura"]
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/dotnet",
+        "tsConfig": "packages/dotnet/tsconfig.lib.json",
+        "packageJson": "packages/dotnet/package.json",
+        "main": "packages/dotnet/src/index.ts",
+        "assets": [
+          "packages/dotnet/*.md",
+          {
+            "input": "./packages/dotnet/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/dotnet/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/dotnet",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./packages/dotnet",
+            "glob": "executors.json",
+            "output": "."
+          },
+          {
+            "input": "./packages/dotnet/src/generators",
+            "glob": "**/files/**/*",
+            "output": "./src/generators"
+          }
+        ]
+      }
+    }
+  }
+}
