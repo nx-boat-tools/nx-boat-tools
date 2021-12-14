@@ -1,0 +1,56 @@
+{
+  "root": "packages/docker",
+  "sourceRoot": "packages/docker/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/docker/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/docker"],
+      "options": {
+        "jestConfig": "packages/docker/jest.config.js",
+        "passWithNoTests": true,
+        "coverage": true,
+        "coverageReporters": ["cobertura"]
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/docker",
+        "tsConfig": "packages/docker/tsconfig.lib.json",
+        "packageJson": "packages/docker/package.json",
+        "main": "packages/docker/src/index.ts",
+        "assets": [
+          "packages/docker/*.md",
+          {
+            "input": "./packages/docker/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/docker/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/docker",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./packages/docker",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    }
+  }
+}
