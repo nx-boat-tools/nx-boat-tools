@@ -54,20 +54,22 @@ export function createTestExecutorContext(
   return result;
 }
 
-export function createTargetConfig(targetsMap?: { name: string; echo: string }[]) {
+export function createTargetConfig(
+  targetsMap?: { name: string; echo: string }[]
+) {
   return targetsMap === undefined
     ? {}
     : _.object(
-      _.map(targetsMap, (tm) => tm.name),
-      _.map(targetsMap, (tm) => {
-        return {
-          executor: '@nrwl/workspace:run-commands',
-          options: {
-            commands: [{ command: `echo '${tm.echo}'` }],
-          },
-        };
-      })
-    );
+        _.map(targetsMap, (tm) => tm.name),
+        _.map(targetsMap, (tm) => {
+          return {
+            executor: '@nrwl/workspace:run-commands',
+            options: {
+              commands: [{ command: `echo '${tm.echo}'` }],
+            },
+          };
+        })
+      );
 }
 
 export function createFakeExecutor() {

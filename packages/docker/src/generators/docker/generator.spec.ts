@@ -1,15 +1,21 @@
-import * as mockFs from 'mock-fs';
-import { Tree, readProjectConfiguration, updateProjectConfiguration, addProjectConfiguration, ProjectConfiguration } from '@nrwl/devkit';
-import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
-import { Console } from 'console';
 import * as _ from 'underscore';
+import * as mockFs from 'mock-fs';
+import { Console } from 'console';
+import {
+  ProjectConfiguration,
+  Tree,
+  addProjectConfiguration,
+  readProjectConfiguration,
+  updateProjectConfiguration,
+} from '@nrwl/devkit';
+import { createTargetConfig, defuse } from '@nx-boat-tools/common';
+import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
+import { readFileSync } from 'fs';
 
 import generator from './generator';
 import { DockerGeneratorSchema } from './schema';
-import { defuse } from 'packages/common/src/utilities/promiseTestHelpers';
-import { createTargetConfig } from 'packages/common/src/utilities/executorTestHelpers';
+
 import path = require('path');
-import { readFileSync } from 'fs';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
@@ -34,13 +40,15 @@ describe('docker generator', () => {
       dockerRepoOrUser: 'myusername',
     };
 
-    addProjectConfiguration(appTree, "my-project", {
+    addProjectConfiguration(appTree, 'my-project', {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
+      projectType: 'application',
 
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    })
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    });
 
     expect(defuse(generator(appTree, options))).rejects.toThrow(
       `Cannot find configuration for '${options.project}' in /workspace.json.`
@@ -53,12 +61,14 @@ describe('docker generator', () => {
       dockerRepoOrUser: 'myusername',
     };
 
-    addProjectConfiguration(appTree, "my-project", {
+    addProjectConfiguration(appTree, 'my-project', {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'buildDocker', echo: 'Hello from buildDocker' }])
-    })
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'buildDocker', echo: 'Hello from buildDocker' },
+      ]),
+    });
 
     expect(defuse(generator(appTree, options))).rejects.toThrow(
       `${options.project} already has a buildDocker target.`
@@ -73,19 +83,25 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
 
     expect(config?.targets?.buildDockerImage).toBeDefined();
-    expect(config.targets.buildDockerImage.executor).toBe('@nx-boat-tools/docker:build');
-    expect(config.targets.buildDockerImage.options?.buildPath).toBe(path.join('dist', initialConfig.root));
+    expect(config.targets.buildDockerImage.executor).toBe(
+      '@nx-boat-tools/docker:build'
+    );
+    expect(config.targets.buildDockerImage.options?.buildPath).toBe(
+      path.join('dist', initialConfig.root)
+    );
   });
 
   it('adds publishDockerImage to project config', async () => {
@@ -96,20 +112,28 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
 
     expect(config?.targets?.publishDockerImage).toBeDefined();
-    expect(config.targets.publishDockerImage.executor).toBe('@nx-boat-tools/docker:publish');
-    expect(config.targets.publishDockerImage.options?.buildPath).toBe(path.join('dist', initialConfig.root));
-    expect(config.targets.publishDockerImage.options?.dockerRepoOrUser).toBe(options.dockerRepoOrUser);
+    expect(config.targets.publishDockerImage.executor).toBe(
+      '@nx-boat-tools/docker:publish'
+    );
+    expect(config.targets.publishDockerImage.options?.buildPath).toBe(
+      path.join('dist', initialConfig.root)
+    );
+    expect(config.targets.publishDockerImage.options?.dockerRepoOrUser).toBe(
+      options.dockerRepoOrUser
+    );
   });
 
   it('adds runDockerImage to project config', async () => {
@@ -120,23 +144,29 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
     const distPath = path.join('dist', initialConfig.root);
 
     expect(config?.targets?.runDockerImage).toBeDefined();
-    expect(config.targets.runDockerImage.executor).toBe('@nx-boat-tools/docker:run');
+    expect(config.targets.runDockerImage.executor).toBe(
+      '@nx-boat-tools/docker:run'
+    );
     expect(config.targets.runDockerImage.options?.vars).toBeUndefined();
     expect(config.targets.runDockerImage.options?.ports['8080']).toBe(80);
     expect(config.targets.runDockerImage.options?.mounts).toBeDefined();
-    expect(config.targets.runDockerImage.options?.mounts[distPath]).toBe('/usr/share/nginx/html');
+    expect(config.targets.runDockerImage.options?.mounts[distPath]).toBe(
+      '/usr/share/nginx/html'
+    );
   });
 
   it('adds build to project config when build target does not already exists', async () => {
@@ -147,19 +177,23 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'buildSrc', echo: 'Hello from buildSrc' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'buildSrc', echo: 'Hello from buildSrc' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
     const distPath = path.join('dist', initialConfig.root);
 
     expect(config?.targets?.build).toBeDefined();
-    expect(config.targets.build.executor).toBe('@nx-boat-tools/docker:copyFiles');
+    expect(config.targets.build.executor).toBe(
+      '@nx-boat-tools/docker:copyFiles'
+    );
     expect(config.targets.build.options?.distPath).toBe(distPath);
   });
 
@@ -171,19 +205,23 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
     const distPath = path.join('dist', initialConfig.root);
 
     expect(config?.targets?.copyDockerFiles).toBeDefined();
-    expect(config.targets.copyDockerFiles.executor).toBe('@nx-boat-tools/docker:copyFiles');
+    expect(config.targets.copyDockerFiles.executor).toBe(
+      '@nx-boat-tools/docker:copyFiles'
+    );
     expect(config.targets.copyDockerFiles.options?.distPath).toBe(distPath);
   });
 
@@ -195,20 +233,26 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
 
     expect(config?.targets?.buildSrc).toBeDefined();
-    expect(config.targets.buildSrc.executor).toBe('@nrwl/workspace:run-commands');
+    expect(config.targets.buildSrc.executor).toBe(
+      '@nrwl/workspace:run-commands'
+    );
     expect(config.targets.buildSrc.options?.commands?.length).toBe(1);
-    expect(config.targets.buildSrc.options?.commands[0]?.command).toBe(`echo 'Hello from build'`);
+    expect(config.targets.buildSrc.options?.commands[0]?.command).toBe(
+      `echo 'Hello from build'`
+    );
   });
 
   it('creates chain-execute build target when build already exists (existing build not chain-execute)', async () => {
@@ -219,18 +263,22 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
 
     expect(config?.targets?.build).toBeDefined();
-    expect(config.targets.build.executor).toBe('@nx-boat-tools/common:chain-execute');
+    expect(config.targets.build.executor).toBe(
+      '@nx-boat-tools/common:chain-execute'
+    );
     expect(config.targets.build.options?.targets?.length).toBe(2);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('copyDockerFiles');
@@ -244,29 +292,31 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
+      projectType: 'application',
       targets: {
         ...createTargetConfig([
           { name: 'buildSrc', echo: 'Hello from buildSrc' },
-          { name: 'test', echo: 'Hello from test' }
+          { name: 'test', echo: 'Hello from test' },
         ]),
         build: {
           executor: '@nx-boat-tools/common:chain-execute',
           options: {
-            targets: ['buildSrc', "test"],
-          }
-        }
-      }
-    }
+            targets: ['buildSrc', 'test'],
+          },
+        },
+      },
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
 
     expect(config?.targets?.build).toBeDefined();
-    expect(config.targets.build.executor).toBe('@nx-boat-tools/common:chain-execute');
+    expect(config.targets.build.executor).toBe(
+      '@nx-boat-tools/common:chain-execute'
+    );
     expect(config.targets.build.options?.targets?.length).toBe(3);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('test');
@@ -281,24 +331,24 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
+      projectType: 'application',
       targets: {
         ...createTargetConfig([
           { name: 'test', echo: 'Hello from test' },
-          { name: 'buildSrc', echo: 'Hello from buildSrc' }
+          { name: 'buildSrc', echo: 'Hello from buildSrc' },
         ]),
         build: {
           executor: '@nx-boat-tools/common:chain-execute',
           options: {
-            targets: ['buildSrc', "test"],
-          }
-        }
-      }
-    }
+            targets: ['buildSrc', 'test'],
+          },
+        },
+      },
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
     const targets = _.keys(config?.targets);
@@ -321,16 +371,20 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const projectPath = path.join(initialConfig.root, 'dockerfile');
-    const dockerfileTemplate = readFileSync(path.join(__dirname, 'files', 'dockerfile')).toString();
+    const dockerfileTemplate = readFileSync(
+      path.join(__dirname, 'files', 'dockerfile')
+    ).toString();
 
     expect(appTree.exists(projectPath)).toBe(true);
     expect(appTree.read(projectPath).toString()).toBe(dockerfileTemplate);
@@ -344,16 +398,20 @@ describe('docker generator', () => {
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
       sourceRoot: 'apps/my-project/src',
-      projectType: "application",
-      targets: createTargetConfig([{ name: 'build', echo: 'Hello from build' }])
-    }
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
 
-    addProjectConfiguration(appTree, "my-project", initialConfig)
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
 
-    await generator(appTree, options)
+    await generator(appTree, options);
 
     const projectPath = path.join(initialConfig.root, '.dockerignore');
-    const dockerignoreTemplate = readFileSync(path.join(__dirname, 'files', '__dot__dockerignore')).toString();
+    const dockerignoreTemplate = readFileSync(
+      path.join(__dirname, 'files', '__dot__dockerignore')
+    ).toString();
 
     expect(appTree.exists(projectPath)).toBe(true);
     expect(appTree.read(projectPath).toString()).toBe(dockerignoreTemplate);

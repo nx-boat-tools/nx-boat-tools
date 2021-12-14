@@ -14,7 +14,8 @@
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "parallel": 1
       }
     }
   },
@@ -26,39 +27,11 @@
       }
     ]
   },
-  "projects": {
-    "common": {
-      "tags": []
-    },
-    "common-e2e": {
-      "tags": [],
-      "implicitDependencies": ["common"]
-    },
-    "docker": {
-      "tags": []
-    },
-    "docker-e2e": {
-      "tags": [],
-      "implicitDependencies": ["docker"]
-    },
-    "dotnet": {
-      "tags": [],
-      "implicitDependencies": ["common"]
-    },
-    "dotnet-e2e": {
-      "tags": [],
-      "implicitDependencies": ["common", "dotnet"]
-    },
-    "helm": {
-      "tags": []
-    },
-    "helm-e2e": {
-      "tags": [],
-      "implicitDependencies": ["helm"]
-    }
-  },
   "workspaceLayout": {
     "appsDir": "e2e",
     "libsDir": "packages"
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
   }
 }

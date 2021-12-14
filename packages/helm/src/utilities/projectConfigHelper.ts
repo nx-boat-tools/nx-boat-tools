@@ -15,9 +15,7 @@ export function getHelmAppendedBuildTargets(
   const build = 'build';
   const buildSrc = 'buildSrc';
   const packageHelmChart = 'packageHelmChart';
-  const copyHelmValues = getCopyHelmValuesName(
-    projectConfig.targets
-  );
+  const copyHelmValues = getCopyHelmValuesName(projectConfig.targets);
 
   const targets = projectConfig.targets;
   targets[copyHelmValues] = {

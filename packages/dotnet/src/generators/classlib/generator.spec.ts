@@ -2,19 +2,21 @@ import { Console } from 'console';
 import { Tree } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 
+import * as dotnetProjectGenerator from '../project/generator';
 import generator from './generator';
 import { ClassLibraryGeneratorSchema } from './schema';
 import { DotnetGeneratorSchema } from '../project/schema';
-import * as dotnetProjectGenerator from '../project/generator';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(dotnetProjectGenerator, 'default');
-const mockedRunExecutor = jest.fn((tree: Tree, options: DotnetGeneratorSchema): Promise<void> => {
-  console.log('Called mock dotnet project generator', options)
+const mockedRunExecutor = jest.fn(
+  (tree: Tree, options: DotnetGeneratorSchema): Promise<void> => {
+    console.log('Called mock dotnet project generator', options);
 
-  return Promise.resolve();
-});
+    return Promise.resolve();
+  }
+);
 
 describe('Dotnet classlib Generator', () => {
   let appTree: Tree;
@@ -42,7 +44,7 @@ describe('Dotnet classlib Generator', () => {
   it('successfully calls Dotnet Project Generator', async () => {
     const options: ClassLibraryGeneratorSchema = {
       name: 'my-project',
-      ownSolution: false
+      ownSolution: false,
     };
 
     await generator(appTree, options);

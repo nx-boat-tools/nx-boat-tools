@@ -66,15 +66,9 @@ function createValuesFiles(tree: Tree, options: NormalizedSchema) {
 
   const projectConfig = options.projectConfig;
 
-  const args = [
-    'show',
-    'values',
-    `${options.repository}/${options.chart}`
-  ];
+  const args = ['show', 'values', `${options.repository}/${options.chart}`];
 
-  const values = spawnSync('helm', args, { shell: true }).output.join(
-    '\n'
-  );
+  const values = spawnSync('helm', args, { shell: true }).output.join('\n');
 
   _.each(options.environmentsList, (environment) => {
     const filename =
