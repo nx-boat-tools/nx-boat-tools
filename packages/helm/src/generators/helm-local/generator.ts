@@ -8,12 +8,12 @@ import {
   readProjectConfiguration,
   updateProjectConfiguration,
 } from '@nrwl/devkit';
+import { readdirSync } from 'fs';
 
 import { HelmLocalGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
 
 import _ = require('underscore');
-import { readdirSync } from 'fs';
 
 interface NormalizedSchema extends HelmLocalGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
@@ -67,11 +67,7 @@ export default async function (tree: Tree, options: HelmLocalGeneratorSchema) {
 }
 
 function addChartFiles(tree: Tree, options: NormalizedSchema) {
-  const pathParts: Array<string> = [
-    __dirname,
-    'files',
-    'generated'
-  ];
+  const pathParts: Array<string> = [__dirname, 'files', 'generated'];
   const templateOptions = {
     ...options,
     ...names(options.project),

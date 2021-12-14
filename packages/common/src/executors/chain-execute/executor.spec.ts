@@ -1,4 +1,5 @@
 import * as devkit from '@nrwl/devkit';
+import { Console } from 'console';
 
 import executor from './executor';
 import { ChainExecutorSchema } from './schema';
@@ -9,7 +10,6 @@ import {
 } from '../../utilities/executorTestHelpers';
 
 import _ = require('underscore');
-import { Console } from 'console';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
@@ -34,7 +34,6 @@ describe('Chain Executor', () => {
 
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
-
 
   it('executes all expected targets in order', async () => {
     const options: ChainExecutorSchema = {
