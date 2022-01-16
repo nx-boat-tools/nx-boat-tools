@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import * as path from 'path';
 import {
   NxJsonProjectConfiguration,
@@ -10,8 +11,6 @@ import { spawnSync } from 'node:child_process';
 
 import { HelmRepoGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
-
-import * as _ from 'underscore';
 
 interface NormalizedSchema extends HelmRepoGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;

@@ -1,10 +1,10 @@
+import * as _ from 'underscore';
 import {
   NxJsonProjectConfiguration,
   ProjectConfiguration,
   TargetConfiguration,
 } from '@nrwl/devkit';
 import path = require('path');
-import * as _ from 'underscore';
 
 export function getHelmAppendedBuildTargets(
   projectDistPath: string,

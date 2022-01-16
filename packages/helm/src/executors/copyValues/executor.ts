@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
 import {
@@ -9,8 +10,6 @@ import {
 } from 'fs';
 
 import { HelmCopyValuesExecutorSchema } from './schema';
-
-import * as _ from 'underscore';
 
 export default async function runExecutor(
   options: HelmCopyValuesExecutorSchema,

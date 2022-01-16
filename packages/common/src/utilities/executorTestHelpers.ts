@@ -1,8 +1,7 @@
+import * as _ from 'underscore';
 import { ExecutorContext } from '@nrwl/devkit';
 
 import { promiseToAsyncIterator } from './iterableHelpers';
-
-import * as _  from 'underscore';
 
 export type TargetSummary = {
   project: string;
@@ -39,17 +38,17 @@ export function createTestExecutorContext(
     workspace: {
       version: 2,
       projects: {},
-      npmScope: 'src'
+      npmScope: 'src',
     },
     cwd: __dirname,
-    isVerbose: false
+    isVerbose: false,
   };
 
   result.workspace.projects[args.projectName] = {
     root: `packages/${args.projectName}`,
     sourceRoot: `packages/${args.projectName}/src`,
     projectType: args.projectType,
-    targets: targets
+    targets: targets,
   };
 
   return result;
