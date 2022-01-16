@@ -1,4 +1,3 @@
-import * as _ from 'underscore';
 import * as mockFs from 'mock-fs';
 import each from 'jest-each';
 import { Console } from 'console';
@@ -14,7 +13,7 @@ import { readFileSync } from 'fs';
 
 import generator from './generator';
 import { DotnetGeneratorSchema } from './schema';
-import { getAllProjectsFromSolution } from '../../utilities/slnFileHelper';
+import { readProjectsFromSolutionContent } from '../../utilities/slnFileHelper';
 
 import path = require('path');
 
@@ -88,8 +87,6 @@ describe('dotnet project generator', () => {
         expect(config.targets.buildDotnet.executor).toBe(
           '@nx-boat-tools/dotnet:build'
         );
-
-        expect(config.targets.buildDotnet.options?.updateVersion).toBe(true);
 
         expect(config.targets.buildDotnet.options?.srcPath).toBe(
           `${packageJsonName}.sln`
@@ -183,7 +180,7 @@ describe('dotnet project generator', () => {
           '@nx-boat-tools/common:chain-execute'
         );
         expect(config.targets.build.options?.targets?.length).toBe(2);
-        expect(config.targets.build.options?.targets[0]).toBe('version');
+        expect(config.targets.build.options?.targets[0]).toBe('dotnetVersion');
         expect(config.targets.build.options?.targets[1]).toBe('buildDotnet');
 
         expect(config.targets.build.configurations?.dev).toBeDefined();
@@ -195,6 +192,55 @@ describe('dotnet project generator', () => {
         expect(
           config.targets.build.configurations.prod.additionalTargets[0]
         ).toBe('package');
+      });
+
+      it('adds dotnetVersion to project config', async () => {
+        const options: DotnetGeneratorSchema = {
+          name: 'my-project',
+          projectType: projectType,
+          ownSolution: false,
+        };
+
+        await generator(appTree, options);
+
+        const config = readProjectConfiguration(appTree, 'my-project');
+
+        expect(config?.targets?.dotnetVersion).toBeDefined();
+        expect(config.targets.dotnetVersion.executor).toBe(
+          '@nx-boat-tools/dotnet:version'
+        );
+        expect(config.targets.dotnetVersion.options?.srcPath).toBe(
+          `${packageJsonName}.sln`
+        );
+      });
+
+      it('adds version to project config', async () => {
+        const options: DotnetGeneratorSchema = {
+          name: 'my-project',
+          projectType: projectType,
+          ownSolution: false,
+        };
+
+        await generator(appTree, options);
+
+        const config = readProjectConfiguration(appTree, 'my-project');
+
+        expect(config?.targets?.version).toBeDefined();
+        expect(config.targets.version.executor).toBe(
+          '@jscutlery/semver:version'
+        );
+        expect(config.targets.version.options?.syncVersions).toBeUndefined();
+        expect(config.targets.version.options?.baseBranch).toBeUndefined();
+        expect(config.targets.version.options?.commitMessageFormat).toBe(
+          'chore(${projectName}): release version ${version}'
+        );
+        expect(
+          config.targets.version.options?.postTargets?.length
+        ).toBeDefined();
+        expect(config.targets.version.options?.postTargets.length).toBe(1);
+        expect(config.targets.version.options?.postTargets[0]).toBe(
+          'dotnetVersion'
+        );
       });
 
       it('adds csproj to project (ownSolition false)', async () => {
@@ -251,7 +297,7 @@ describe('dotnet project generator', () => {
 
         expect(appTree.exists(slnPath)).toBe(true);
 
-        const slnProjects = getAllProjectsFromSolution(
+        const slnProjects = readProjectsFromSolutionContent(
           appTree.read(slnPath).toString(),
           ''
         );
@@ -276,7 +322,7 @@ describe('dotnet project generator', () => {
 
         expect(appTree.exists(slnPath)).toBe(true);
 
-        const slnProjects = getAllProjectsFromSolution(
+        const slnProjects = readProjectsFromSolutionContent(
           appTree.read(slnPath).toString(),
           ''
         );
@@ -343,7 +389,7 @@ describe('dotnet project generator', () => {
 
         expect(appTree.exists(slnPath)).toBe(true);
 
-        const slnProjects = getAllProjectsFromSolution(
+        const slnProjects = readProjectsFromSolutionContent(
           appTree.read(slnPath).toString(),
           ''
         );
@@ -369,13 +415,86 @@ describe('dotnet project generator', () => {
 
         expect(appTree.exists(slnPath)).toBe(true);
 
-        const slnProjects = getAllProjectsFromSolution(
+        const slnProjects = readProjectsFromSolutionContent(
           appTree.read(slnPath).toString(),
           ''
         );
 
         expect(slnProjects).toContain(
           path.join(projectNames.className, `${projectNames.className}.csproj`)
+        );
+      });
+
+      it('adds package.json to project with directory', async () => {
+        const options: DotnetGeneratorSchema = {
+          name: 'my-project',
+          directory: 'grouped',
+          projectType: projectType,
+          ownSolution: false,
+        };
+
+        await generator(appTree, options);
+
+        const config = readProjectConfiguration(appTree, 'grouped-my-project');
+        const packageJsonPath = path.join(config.root, 'package.json');
+
+        expect(appTree.exists(packageJsonPath)).toBe(true);
+
+        const packageJsonBuffer = appTree.read(packageJsonPath);
+        const packageJson = JSON.parse(packageJsonBuffer.toString());
+
+        const dotnetPackageJsonBuffer = readFileSync(
+          path.join(__dirname, '..', '..', '..', 'package.json')
+        );
+        const dotnetPackageJson = JSON.parse(
+          dotnetPackageJsonBuffer.toString()
+        );
+
+        expect(packageJson?.name).toBe('my-project');
+
+        expect(packageJson?.devDependencies).toBeDefined();
+        expect(packageJson.devDependencies['@jscutlery/semver']).toBeDefined();
+        expect(
+          packageJson.devDependencies['@nx-boat-tools/dotnet']
+        ).toBeDefined();
+        expect(packageJson.devDependencies['@nx-boat-tools/dotnet']).toBe(
+          dotnetPackageJson.version
+        );
+      });
+
+      it('adds package.json to project', async () => {
+        const options: DotnetGeneratorSchema = {
+          name: 'my-project',
+          projectType: projectType,
+          ownSolution: false,
+        };
+
+        await generator(appTree, options);
+
+        const config = readProjectConfiguration(appTree, 'my-project');
+        const packageJsonPath = path.join(config.root, 'package.json');
+
+        expect(appTree.exists(packageJsonPath)).toBe(true);
+
+        const packageJsonBuffer = appTree.read(packageJsonPath);
+        const packageJson = JSON.parse(packageJsonBuffer.toString());
+
+        const dotnetPackageJsonBuffer = readFileSync(
+          path.join(__dirname, '..', '..', '..', 'package.json')
+        );
+        const dotnetPackageJson = JSON.parse(
+          dotnetPackageJsonBuffer.toString()
+        );
+
+        expect(packageJson?.name).toBe('my-project');
+
+        expect(packageJson?.devDependencies).toBeDefined();
+        expect(packageJson.devDependencies['@jscutlery/semver']).toBeDefined();
+        expect(
+          packageJson.devDependencies['@nx-boat-tools/dotnet']
+        ).toBeDefined();
+        expect(packageJson.devDependencies['@nx-boat-tools/dotnet']).toBe(
+          dotnetPackageJson.version
         );
       });
     }
@@ -468,15 +587,9 @@ describe('dotnet project generator', () => {
 
   each([...libProjectTypes]).describe('projectType %s', (projectType) => {
     let appTree: Tree;
-    let packageJsonName: string;
 
     beforeEach(() => {
       appTree = createTreeWithEmptyWorkspace();
-
-      const packageJson: { name: string } = JSON.parse(
-        appTree.read('package.json').toString()
-      );
-      packageJsonName = names(packageJson.name).className;
 
       console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
     });

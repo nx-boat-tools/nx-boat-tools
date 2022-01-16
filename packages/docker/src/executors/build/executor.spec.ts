@@ -10,7 +10,7 @@ import { BuildExecutorSchema } from './schema';
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn((command, args, options) => {
+const fn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [
@@ -164,7 +164,7 @@ describe('Docker Build Executor', () => {
     expect(argsArg[5]).toBe(path.join(context.root, options.buildPath));
   });
 
-  it('creates an additional Docker CLI tag command with VERSION when present', async () => {
+  it('creates an additional Docker CLI tag command with version when present in package.json', async () => {
     const options: BuildExecutorSchema = {
       buildPath: 'apps/my-project',
     };
@@ -176,7 +176,7 @@ describe('Docker Build Executor', () => {
     const fakeFs = {};
     fakeFs[path.join(context.root, options.buildPath)] = {
       dockerfile: '',
-      VERSION: '1.0.0',
+      'package.json': '{ "version": "1.0.0" }',
     };
 
     console.log('Mocked fs', fakeFs);

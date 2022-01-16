@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "dotnet version executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "srcPath": {
+      "type": "string",
+      "description": "The path to the `csproj` or `sln` file for the project"
+    }
+  },
+  "additionalProperties": true,
+  "required": ["srcPath"]
+}

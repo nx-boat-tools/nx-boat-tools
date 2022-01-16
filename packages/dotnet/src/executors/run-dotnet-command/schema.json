@@ -17,11 +17,6 @@
       "type": "string",
       "description": "This maps to the `output` param of the CLI command and is the path to where build output should be created"
     },
-    "updateVersion": {
-      "type": "boolean",
-      "description": "Whether or not to update the version information in the `csproj` file(s)",
-      "default": true
-    },
     "runtimeID": {
       "type": "string",
       "description": "This maps to the `runtime` param of the CLI command"

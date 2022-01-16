@@ -1,8 +1,37 @@
 import * as _ from 'underscore';
 import * as path from 'path';
 import { Guid } from 'guid-typescript';
+import { readFileSync } from 'fs';
 
-export function getAllProjectsFromSolution(
+export function getAllProjectsFromFile(
+  dotnetProjectPath: string
+): Array<string> {
+  if (dotnetProjectPath.endsWith('.csproj')) {
+    return [dotnetProjectPath];
+  } else if (!dotnetProjectPath.endsWith('.sln')) {
+    throw new Error(
+      `The dotnet project file must have an extenstion of '.csproj' or '.sln'`
+    );
+  }
+
+  const slnBuffer = readFileSync(dotnetProjectPath);
+
+  if (slnBuffer === null) {
+    throw new Error(
+      `Unable to read the dotnet project file specified, '${dotnetProjectPath}'`
+    );
+  }
+
+  const slnContent = slnBuffer.toString();
+  const basePath = dotnetProjectPath.substring(
+    0,
+    dotnetProjectPath.lastIndexOf(path.sep)
+  );
+
+  return readProjectsFromSolutionContent(slnContent, basePath);
+}
+
+export function readProjectsFromSolutionContent(
   slnContent: string,
   basePath: string
 ): Array<string> {
@@ -70,7 +99,9 @@ export function createTestSlnContent(projectNames: Array<string>): string {
 
   return `
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
 ${projectLines.join('\n')}
   `;
 }
