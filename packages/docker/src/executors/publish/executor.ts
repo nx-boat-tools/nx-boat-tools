@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
-import { existsSync, readFileSync } from 'fs';
-import { spawnAsync } from '@nx-boat-tools/common';
+import { getVersionForProject, spawnAsync } from '@nx-boat-tools/common';
 
 import { PublishExecutorSchema } from './schema';
 
@@ -33,14 +32,10 @@ export default async function runExecutor(
     await spawnAsync(`docker push ${dockerRepoOrUser}/${projectName}:latest`)
   );
 
-  let version: string | undefined = undefined;
-
-  if (buildPath !== undefined && buildPath !== '') {
-    const versionPath: string = path.join(root, buildPath, 'VERSION');
-    version = existsSync(versionPath)
-      ? readFileSync(versionPath).toString()
+  const version: string | undefined =
+    buildPath !== undefined && buildPath !== ''
+      ? getVersionForProject(path.join(root, buildPath), false)
       : undefined;
-  }
 
   if (version !== undefined) {
     console.log(

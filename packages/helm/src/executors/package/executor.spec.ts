@@ -3,7 +3,7 @@ import * as mockFs from 'mock-fs';
 import * as path from 'path';
 import { Console } from 'console';
 import { createTestExecutorContext, defuse } from '@nx-boat-tools/common';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync } from 'fs';
 
 import executor from './executor';
 import { HelmPackageExecutorSchema } from './schema';
@@ -11,7 +11,7 @@ import { HelmPackageExecutorSchema } from './schema';
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn((command, args, options) => {
+const fn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [
@@ -196,7 +196,7 @@ describe('Helm Package Executor', () => {
     expect(argsArg[3]).toBe(path.join(context.root, options.outputPath));
   });
 
-  it('uses passes VERSION to Helm CLI command when present', async () => {
+  it('uses passes package.json version to Helm CLI command when present', async () => {
     const options: HelmPackageExecutorSchema = {
       projectHelmPath: 'apps/my-project/helm',
       outputPath: 'dist/apps/my-project/helm/values',
@@ -208,7 +208,8 @@ describe('Helm Package Executor', () => {
 
     const fakeFs = {};
     fakeFs[path.join(context.root, options.projectHelmPath)] = {};
-    fakeFs[path.join(context.root, options.outputPath, 'VERSION')] = '1.0.0';
+    fakeFs[path.join(context.root, 'apps', 'my-project', 'package.json')] =
+      '{ "version": "1.0.0" }';
 
     console.log('Mocked fs', fakeFs);
 

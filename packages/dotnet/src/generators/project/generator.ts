@@ -3,13 +3,17 @@ import { Guid } from 'guid-typescript';
 import {
   ProjectType,
   Tree,
+  addDependenciesToPackageJson,
   addProjectConfiguration,
   formatFiles,
   generateFiles,
   getWorkspaceLayout,
+  installPackagesTask,
   names,
   offsetFromRoot,
 } from '@nrwl/devkit';
+import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
+import { getVersionForProject } from '@nx-boat-tools/common';
 
 import { DotnetGeneratorSchema } from './schema';
 import {
@@ -27,9 +31,7 @@ interface NormalizedSchema extends DotnetGeneratorSchema {
   parsedTags: string[];
   rootDir: string;
   pkgName: string;
-  pkgVersion: string;
-  authors: string;
-  description: string;
+  dotnetPluginVersion: string;
 }
 
 interface TemplateOptions extends NormalizedSchema {
@@ -69,12 +71,8 @@ function normalizeOptions(
   const pkg = pkgBuffer === null ? {} : JSON.parse(pkgBuffer.toString());
 
   const pkgName = names(pkg.name).className;
-  const pkgVersion = pkg.version;
-  const authors = pkg.author !== undefined ? pkg.author : 'John Doe';
-  const description =
-    pkg.description !== undefined
-      ? pkg.description
-      : 'Project Description goes here';
+
+  const dotnetPluginVersion = getDotnetPluginVersion();
 
   return {
     ...options,
@@ -87,10 +85,19 @@ function normalizeOptions(
     nxProjectType,
     parsedTags,
     pkgName,
-    pkgVersion,
-    authors,
-    description,
+    dotnetPluginVersion,
   };
+}
+
+function getDotnetPluginVersion(): string {
+  const dotnetPackageJsonPath = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..'
+  );
+
+  return getVersionForProject(dotnetPackageJsonPath);
 }
 
 function getNxProjectType(tree: Tree, projectType: string): ProjectType {
@@ -123,12 +130,28 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
     projectGuid: Guid.create().toString(),
     template: '',
   };
-  addProjectFiles(tree, templateOptions);
+  addManualProjectFiles(tree, templateOptions);
+  addGeneratedProjectFiles(tree, templateOptions);
   addSolutionFiles(tree, templateOptions);
   moveSolutionFileIfNeeded(tree, templateOptions);
+  addProjectDependencies(tree, templateOptions);
 }
 
-function addProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
+function addManualProjectFiles(tree: Tree, templateOptions: TemplateOptions) {
+  const pathParts: Array<string> = [__dirname, 'files', 'manual'];
+
+  generateFiles(
+    tree,
+    path.join(...pathParts),
+    templateOptions.projectRoot,
+    templateOptions
+  );
+}
+
+function addGeneratedProjectFiles(
+  tree: Tree,
+  templateOptions: TemplateOptions
+) {
   const pathParts: Array<string> = [
     __dirname,
     '..',
@@ -214,8 +237,23 @@ function moveSolutionFileIfNeeded(
   tree.write(rootSlnPath, result);
 }
 
+function addProjectDependencies(tree: Tree, templateOptions: TemplateOptions) {
+  addDependenciesToPackageJson(
+    tree,
+    {},
+    {
+      '@jscutlery/semver': 'latest',
+    },
+    path.join(templateOptions.projectRoot, 'package.json')
+  );
+}
+
 export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
+  const configurations = {
+    dev: {},
+    prod: {},
+  };
   const dotnetOptions = {
     srcPath: !normalizedOptions.ownSolution
       ? path.join('.', `${normalizedOptions.pkgName}.sln`)
@@ -238,12 +276,15 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
             options: {
               ...dotnetOptions,
             },
-            configurations: {
-              dev: {},
-              prod: {},
-            },
+            configurations,
           },
         };
+  const versionTarget = createTarget({
+    syncVersions: false,
+    baseBranch: undefined,
+    commitMessageFormat: 'chore(${projectName}): release version ${version}',
+  });
+  versionTarget.options.postTargets = ['dotnetVersion'];
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
     projectType: normalizedOptions.nxProjectType,
@@ -252,7 +293,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
       build: {
         executor: '@nx-boat-tools/common:chain-execute',
         options: {
-          targets: ['version', 'buildDotnet'],
+          targets: ['dotnetVersion', 'buildDotnet'],
         },
         configurations: {
           dev: {},
@@ -265,21 +306,20 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
         executor: '@nx-boat-tools/dotnet:build',
         options: {
           ...dotnetOptions,
-          updateVersion: true,
         },
-        configurations: {
-          dev: {},
-          prod: {},
-        },
+        configurations,
       },
       clean: {
         executor: '@nx-boat-tools/dotnet:clean',
         options: {
           ...dotnetOptions,
         },
-        configurations: {
-          dev: {},
-          prod: {},
+        configurations,
+      },
+      dotnetVersion: {
+        executor: '@nx-boat-tools/dotnet:version',
+        options: {
+          srcPath: dotnetOptions.srcPath,
         },
       },
       package: {
@@ -287,26 +327,18 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
         options: {
           ...dotnetOptions,
         },
-        configurations: {
-          dev: {},
-          prod: {},
-        },
+        configurations,
       },
       ...runTarget,
-      version: {
-        executor: '@nx-boat-tools/common:set-version',
-        options: {
-          projectPath: normalizedOptions.projectRoot,
-          outputPath: normalizedOptions.projectDistPath,
-        },
-        configurations: {
-          dev: {},
-          prod: {},
-        },
-      },
+      version: versionTarget,
     },
     tags: normalizedOptions.parsedTags,
   });
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
+  installPackagesTask(
+    tree,
+    false,
+    path.join(normalizedOptions.rootDir, normalizedOptions.projectRoot)
+  );
 }

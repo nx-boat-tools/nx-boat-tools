@@ -5,5 +5,4 @@ export interface DotNetCommandExecutorSchema {
   outputPath: string;
   runtimeID?: string;
   configMap?: JsonObject;
-  updateVersion: boolean;
 }

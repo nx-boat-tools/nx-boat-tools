@@ -63,7 +63,6 @@ describe('Dotnet Run Executor', () => {
     expect(optionsArg.action).toBe('run');
     expect(optionsArg.srcPath).toBe('apps/my-project');
     expect(optionsArg.outputPath).toBe('dist/apps/my-project');
-    expect(optionsArg.updateVersion).toBe(false);
     expect(optionsArg.runtimeID).toBe('someRuntime');
     expect(optionsArg.additionalArgs).toBe('--test=true');
     expect(optionsArg.configMap?.dev).toBe('Develop');

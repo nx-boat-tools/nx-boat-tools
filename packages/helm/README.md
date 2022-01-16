@@ -118,7 +118,7 @@ nx package example
 nx run example:package
 ```
 
-Both of the above would result in a chart archive file being created at `dist/apps/example/helm/chart/example-X.X.X.tgz`
+Both of the above would result in a chart archive file being created at `dist/apps/example/helm/chart/example-X.X.X.tgz` where `X.X.X` is the versions specified in the project's `package.json`. If no version exists then the filename would just be `dist/apps/example/helm/chart/example.tgz`
 
 ## ✍️  Generators
 

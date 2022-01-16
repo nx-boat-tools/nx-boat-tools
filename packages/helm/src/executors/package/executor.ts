@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
-import { spawnAsync } from '@nx-boat-tools/common';
+import { existsSync, mkdirSync } from 'fs';
+import { getVersionForProject, spawnAsync } from '@nx-boat-tools/common';
 
 import { HelmPackageExecutorSchema } from './schema';
 
@@ -35,10 +35,11 @@ export default async function runExecutor(
 
   mkdirSync(outputPath, { recursive: true });
 
-  const versionPath: string = path.join(outputPath, 'VERSION');
-  const version = existsSync(versionPath)
-    ? readFileSync(versionPath).toString()
-    : undefined;
+  const projectPath: string = path.join(
+    root,
+    context.workspace.projects[projectName].root
+  );
+  const version = getVersionForProject(projectPath, false);
 
   let args = `-d ${outputPath}`;
 
