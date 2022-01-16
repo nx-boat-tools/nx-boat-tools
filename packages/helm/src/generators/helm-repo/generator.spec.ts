@@ -21,11 +21,11 @@ console = new Console(process.stdout, process.stderr); //mockFs messes with the 
 const fakeValues = 'test: This is a fake values file';
 
 const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn(() => {
+const fn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [fakeValues],
-    stdout: '',
+    stdout: `Mock spawnSync (Command: '${command}', Args: '${args.join(' ')}')\n`,
     stderr: '',
     status: 0,
     signal: null,

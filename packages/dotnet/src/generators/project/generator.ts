@@ -94,8 +94,7 @@ function getDotnetPluginVersion(): string {
     __dirname,
     '..',
     '..',
-    '..',
-    'package.json'
+    '..'
   );
 
   return getVersionForProject(dotnetPackageJsonPath);
