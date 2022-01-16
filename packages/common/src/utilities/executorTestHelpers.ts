@@ -44,9 +44,11 @@ export function createTestExecutorContext(
     isVerbose: false,
   };
 
+  const prefix = args.projectType == 'library' ? 'libs' : 'apps';
+
   result.workspace.projects[args.projectName] = {
-    root: `packages/${args.projectName}`,
-    sourceRoot: `packages/${args.projectName}/src`,
+    root: `${prefix}/${args.projectName}`,
+    sourceRoot: `${prefix}/${args.projectName}/src`,
     projectType: args.projectType,
     targets: targets,
   };

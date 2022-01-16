@@ -53,7 +53,6 @@ The `run-dotnet-command` is the heart of all of the dotnet executors and is mean
 | `action`         | `string`      |             | Required. The underlying dotnet command to run. Supported values include: `build`, `pack`, `publish`, `run`, `clean`                                                                                                                                                            |
 | `srcPath`        | `string`      |             | Required. The path to the `csproj` or `sln` file for the project                                                                                                                                                                                                                |
 | `outputPath`     | `string`      |             | Required. This maps to the `output` param of the CLI command and is the path to where build output should be created                                                                                                                                                            |
-| `updateVersion`  | `boolean`     | `true`      | Only used when `action` is `build`. See the "Versioning" section below for more details.                                                                                                                                                                                        |
 | `runtimeID`      | `string?`     | `undefined` | This maps to the `runtime` param of the CLI command. For a list of Runtime Identifiers (RIDs), see the [RID catalog](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)                                                                                                  |
 | `additionalArgs` | `string?`     | `undefined` | This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options                                                                                                             |
 | `configMap`      | `JsonObject?` | `undefined` | This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command. The json key represents the Nx configuration and the value is expected to be a string representing the dotnet configuration to use. Ex: `{ dev: "Debug" }` |
@@ -84,11 +83,9 @@ export default async function runExecutor(
 
 #### Versioning:
 
-🚧  This needs to be refactored  🚧
+🚧  This needs to be updated  🚧
 
-Currently, when running with `action` set to `build` and `updateVersion` set to `true`, the `ReleaseVersion` and `PackageVersion` properties in the project's `csproj` file gets updated to what's in the `VERSION` file for the project located in the `outputPath`. This means that the `@nx-boat-tools/common:set-version` executor has to have executed before building a dotnet project when using the `updateVersion` flag.
-
-Instead, we can have it pull the version from a `package.json` and generate one when generating all dotnet projects. We can then pull the `csproj` version update funtionality into its own `version` executor. To wrap it all up, we can add the community `semver` plugin to the generated projects and pass the `versionDotnet` target in the postTargets of the `version` target configuration.
+Version pulls the version from the project's `package.json` which is generated when generating all dotnet projects. We can then pull the `csproj` version update funtionality into its own `version` executor. To wrap it all up, we can add the community `semver` plugin to the generated projects and pass the `versionDotnet` target in the postTargets of the `version` target configuration.
 
 ### `build`
 
@@ -96,14 +93,13 @@ The `build` executor reflects calling the `dotnet build` command with the dotnet
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                   |
-| ---------------- | ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `updateVersion`  | `boolean`     |             | Required. This is passed to the `updateVersion` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)          |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
+| name             | type          | default     | description                                                                                                                |
+| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -126,8 +122,7 @@ The following workspace configuration illustrates a possible dotnet `build` targ
             "configMap": {
               "dev": "Debug",
               "prod": "Release"
-            },
-            "updateVersion": false
+            }
           },
           "configurations": {
             "dev": {},
@@ -174,14 +169,13 @@ The `clean` executor reflects calling the `dotnet clean` command with the dotnet
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                   |
-| ---------------- | ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `updateVersion`  | `boolean`     |             | Required. This is passed to the `updateVersion` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)          |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
+| name             | type          | default     | description                                                                                                                |
+| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -255,14 +249,13 @@ The `csproj` file(s) will be updated to set the `IsPackable` property to `true`.
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                   |
-| ---------------- | ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `updateVersion`  | `boolean`     |             | Required. This is passed to the `updateVersion` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)          |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
+| name             | type          | default     | description                                                                                                                |
+| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -332,14 +325,13 @@ The `publish` executor reflects calling the `dotnet publish` command with the do
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                   |
-| ---------------- | ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `updateVersion`  | `boolean`     |             | Required. This is passed to the `updateVersion` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)          |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
+| name             | type          | default     | description                                                                                                                |
+| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -409,14 +401,13 @@ The `run` executor reflects calling the `dotnet run` command with the dotnet CLI
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                   |
-| ---------------- | ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `updateVersion`  | `boolean`     |             | Required. This is passed to the `updateVersion` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)          |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)               |
+| name             | type          | default     | description                                                                                                                |
+| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -548,8 +539,7 @@ The following is a full example of what's added to the `workspace.json` for a do
             "configMap": {
               "dev": "Debug",
               "prod": "Release"
-            },
-            "updateVersion": true
+            }
           },
           "configurations": {
             "dev": {},

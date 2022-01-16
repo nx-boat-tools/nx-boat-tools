@@ -53,7 +53,6 @@ describe('Run Dotnet Command Executor', () => {
       action: 'clean',
       srcPath: 'apps/my-project',
       outputPath: 'dist/apps/my-project',
-      updateVersion: false,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configMap: { dev: 'Develop' },
@@ -79,7 +78,6 @@ describe('Run Dotnet Command Executor', () => {
         action: 'clean',
         srcPath: srcPath,
         outputPath: 'dist/apps/my-project',
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop' },
@@ -104,7 +102,6 @@ describe('Run Dotnet Command Executor', () => {
         action: 'clean',
         srcPath: 'apps/my-project',
         outputPath: outputPath,
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop' },
@@ -138,7 +135,6 @@ describe('Run Dotnet Command Executor', () => {
         action: action,
         srcPath: 'apps/my-project',
         outputPath: undefined, //outputPath is undefined so valid actions don't execute
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop' },
@@ -159,7 +155,6 @@ describe('Run Dotnet Command Executor', () => {
       action: 'clean',
       srcPath: 'apps/my-project',
       outputPath: 'dist/apps/my-project',
-      updateVersion: false,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configMap: { dev: 'Develop' },
@@ -203,7 +198,6 @@ describe('Run Dotnet Command Executor', () => {
         action: 'build', //action must be build to check csproj updates
         srcPath: srcPath,
         outputPath: 'dist/apps/my-project',
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop' },
@@ -228,12 +222,11 @@ describe('Run Dotnet Command Executor', () => {
     }
   );
 
-  it('fails when updateVersion true but no VERSION exists (csproj)', async () => {
+  it('updates csproj IsPackable (csproj)', async () => {
     const options: DotNetCommandExecutorSchema = {
       action: 'build', //action must be build to check csproj updates
       srcPath: 'apps/my-project/test.csproj',
       outputPath: 'dist/apps/my-project',
-      updateVersion: true,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configMap: { dev: 'Develop' },
@@ -248,83 +241,6 @@ describe('Run Dotnet Command Executor', () => {
     const fakeFs = {};
     fakeFs[path.join(context.root, options.srcPath)] =
       createTestCsprojContent();
-
-    console.log('Mocked fs', fakeFs);
-
-    mockFs(fakeFs);
-
-    expect(defuse(executor(options, context))).rejects.toThrow(
-      `Unable to detect version. No VERSION file found at '${path.join(
-        context.root,
-        options.outputPath,
-        'VERSION'
-      )}'!`
-    );
-  });
-
-  it('updates csproj versions when updateVersion true and VERSION exists (csproj)', async () => {
-    const options: DotNetCommandExecutorSchema = {
-      action: 'build', //action must be build to check csproj updates
-      srcPath: 'apps/my-project/test.csproj',
-      outputPath: 'dist/apps/my-project',
-      updateVersion: true,
-      runtimeID: 'someRuntime',
-      additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
-    };
-    const context = createTestExecutorContext({
-      configurationName: 'prod',
-      targetsMap: [
-        { name: 'run-dotnet-command', echo: 'hello from run-dotnet-command' },
-      ],
-    });
-
-    const fakeFs = {};
-    fakeFs[path.join(context.root, options.srcPath)] =
-      createTestCsprojContent();
-    fakeFs[path.join(context.root, options.outputPath, 'VERSION')] = '0.0.1';
-
-    console.log('Mocked fs', fakeFs);
-
-    mockFs(fakeFs);
-
-    const output = await executor(options, context);
-
-    expect(output.success).toBe(true);
-
-    const csproj = readFileSync(
-      path.join(context.root, options.srcPath)
-    ).toString();
-    expect(csproj.indexOf('<IsPackable>true</IsPackable>')).toBeGreaterThan(0);
-    expect(
-      csproj.indexOf('<ReleaseVersion>0.0.1</ReleaseVersion>')
-    ).toBeGreaterThan(0);
-    expect(
-      csproj.indexOf('<PackageVersion>0.0.1</PackageVersion>')
-    ).toBeGreaterThan(0);
-  });
-
-  it('updates csproj IsPackable when updateVersion false (csproj)', async () => {
-    const options: DotNetCommandExecutorSchema = {
-      action: 'build', //action must be build to check csproj updates
-      srcPath: 'apps/my-project/test.csproj',
-      outputPath: 'dist/apps/my-project',
-      updateVersion: false,
-      runtimeID: 'someRuntime',
-      additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
-    };
-    const context = createTestExecutorContext({
-      configurationName: 'prod',
-      targetsMap: [
-        { name: 'run-dotnet-command', echo: 'hello from run-dotnet-command' },
-      ],
-    });
-
-    const fakeFs = {};
-    fakeFs[path.join(context.root, options.srcPath)] =
-      createTestCsprojContent();
-    fakeFs[path.join(context.root, options.outputPath, 'VERSION')] = '0.0.1';
 
     console.log('Mocked fs', fakeFs);
 
@@ -342,12 +258,11 @@ describe('Run Dotnet Command Executor', () => {
     expect(csproj.indexOf('<PackageVersion>0.0.1</PackageVersion>')).toBe(-1);
   });
 
-  it('fails when updateVersion true but no VERSION exists (sln)', async () => {
+  it('updates csproj IsPackable (sln)', async () => {
     const options: DotNetCommandExecutorSchema = {
       action: 'build', //action must be build to check csproj updates
       srcPath: 'apps/my-project/test.sln',
       outputPath: 'dist/apps/my-project',
-      updateVersion: true,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configMap: { dev: 'Develop' },
@@ -360,140 +275,6 @@ describe('Run Dotnet Command Executor', () => {
     });
 
     const fakeFs = {};
-    fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
-      'SampleProject1',
-      'SampleProject2',
-    ]);
-    fakeFs[
-      path.join(
-        context.root,
-        'apps/my-project',
-        'SampleProject1',
-        'SampleProject1.csproj'
-      )
-    ] = createTestCsprojContent();
-    fakeFs[
-      path.join(
-        context.root,
-        'apps/my-project',
-        'SampleProject2',
-        'SampleProject2.csproj'
-      )
-    ] = createTestCsprojContent();
-
-    console.log('Mocked fs', fakeFs);
-
-    mockFs(fakeFs);
-
-    expect(defuse(executor(options, context))).rejects.toThrow(
-      `Unable to detect version. No VERSION file found at '${path.join(
-        context.root,
-        options.outputPath,
-        'VERSION'
-      )}'!`
-    );
-  });
-
-  it('updates csproj versions when updateVersion true and VERSION exists (sln)', async () => {
-    const options: DotNetCommandExecutorSchema = {
-      action: 'build', //action must be build to check csproj updates
-      srcPath: 'apps/my-project/test.sln',
-      outputPath: 'dist/apps/my-project',
-      updateVersion: true,
-      runtimeID: 'someRuntime',
-      additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
-    };
-    const context = createTestExecutorContext({
-      configurationName: 'prod',
-      targetsMap: [
-        { name: 'run-dotnet-command', echo: 'hello from run-dotnet-command' },
-      ],
-    });
-
-    const fakeFs = {};
-    fakeFs[path.join(context.root, options.outputPath, 'VERSION')] = '0.0.1';
-    fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
-      'SampleProject1',
-      'SampleProject2',
-    ]);
-    fakeFs[
-      path.join(
-        context.root,
-        'apps/my-project',
-        'SampleProject1',
-        'SampleProject1.csproj'
-      )
-    ] = createTestCsprojContent();
-    fakeFs[
-      path.join(
-        context.root,
-        'apps/my-project',
-        'SampleProject2',
-        'SampleProject2.csproj'
-      )
-    ] = createTestCsprojContent();
-
-    console.log('Mocked fs', fakeFs);
-
-    mockFs(fakeFs);
-
-    const output = await executor(options, context);
-
-    expect(output.success).toBe(true);
-
-    let csproj = readFileSync(
-      path.join(
-        context.root,
-        'apps/my-project',
-        'SampleProject1',
-        'SampleProject1.csproj'
-      )
-    ).toString();
-    expect(csproj.indexOf('<IsPackable>true</IsPackable>')).toBeGreaterThan(0);
-    expect(
-      csproj.indexOf('<ReleaseVersion>0.0.1</ReleaseVersion>')
-    ).toBeGreaterThan(0);
-    expect(
-      csproj.indexOf('<PackageVersion>0.0.1</PackageVersion>')
-    ).toBeGreaterThan(0);
-
-    csproj = readFileSync(
-      path.join(
-        context.root,
-        'apps/my-project',
-        'SampleProject2',
-        'SampleProject2.csproj'
-      )
-    ).toString();
-    expect(csproj.indexOf('<IsPackable>true</IsPackable>')).toBeGreaterThan(0);
-    expect(
-      csproj.indexOf('<ReleaseVersion>0.0.1</ReleaseVersion>')
-    ).toBeGreaterThan(0);
-    expect(
-      csproj.indexOf('<PackageVersion>0.0.1</PackageVersion>')
-    ).toBeGreaterThan(0);
-  });
-
-  it('updates csproj IsPackable when updateVersion false (sln)', async () => {
-    const options: DotNetCommandExecutorSchema = {
-      action: 'build', //action must be build to check csproj updates
-      srcPath: 'apps/my-project/test.sln',
-      outputPath: 'dist/apps/my-project',
-      updateVersion: false,
-      runtimeID: 'someRuntime',
-      additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
-    };
-    const context = createTestExecutorContext({
-      configurationName: 'prod',
-      targetsMap: [
-        { name: 'run-dotnet-command', echo: 'hello from run-dotnet-command' },
-      ],
-    });
-
-    const fakeFs = {};
-    fakeFs[path.join(context.root, options.outputPath, 'VERSION')] = '0.0.1';
     fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
       'SampleProject1',
       'SampleProject2',
@@ -555,7 +336,6 @@ describe('Run Dotnet Command Executor', () => {
         action: action,
         srcPath: 'apps/my-project.tmp', //if action=build then .tmp would fail in the update csproj
         outputPath: 'dist/apps/my-project',
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop' },
@@ -587,7 +367,6 @@ describe('Run Dotnet Command Executor', () => {
       action: 'run',
       srcPath: 'apps/my-project.csproj',
       outputPath: 'dist/apps/my-project',
-      updateVersion: false,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configMap: { dev: 'Develop' },
@@ -635,7 +414,6 @@ describe('Run Dotnet Command Executor', () => {
         action: action,
         srcPath: 'apps/my-project.csproj',
         outputPath: 'dist/apps/my-project',
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop' },
@@ -691,7 +469,6 @@ describe('Run Dotnet Command Executor', () => {
         action: 'run',
         srcPath: 'apps/my-project.csproj',
         outputPath: 'dist/apps/my-project',
-        updateVersion: false,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
         configMap: { dev: 'Develop', prod: 'Release' },
@@ -738,7 +515,6 @@ describe('Run Dotnet Command Executor', () => {
       action: 'run',
       srcPath: 'apps/my-project.csproj',
       outputPath: 'dist/apps/my-project',
-      updateVersion: false,
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -778,7 +554,6 @@ describe('Run Dotnet Command Executor', () => {
         action: action,
         srcPath: 'apps/my-project.csproj',
         outputPath: 'dist/apps/my-project',
-        updateVersion: false,
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',

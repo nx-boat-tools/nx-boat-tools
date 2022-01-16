@@ -6,7 +6,8 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { spawnAsync } from '@nx-boat-tools/common';
 
 import { DotNetCommandExecutorSchema } from './schema';
-import { getAllProjectsFromSolution } from '../../utilities/slnFileHelper';
+import { getAllProjectsFromFile } from '../../utilities/slnFileHelper';
+import { updateCsprojFile } from '../../utilities/csprojFileHelper';
 
 const validActions: Array<string> = [
   'build',
@@ -23,90 +24,21 @@ const actionVerbs: { [key: string]: string } = {
   clean: '🗑 Cleaning',
 };
 
-function getAllProjects(dotnetProjectPath: string): Array<string> {
-  if (dotnetProjectPath.endsWith('.csproj')) {
-    return [dotnetProjectPath];
-  } else if (!dotnetProjectPath.endsWith('.sln')) {
-    throw new Error(
-      `The dotnet project file must have an extenstion of '.csproj' or '.sln'`
-    );
-  }
-
-  const slnBuffer = readFileSync(dotnetProjectPath);
-
-  if (slnBuffer === null) {
-    throw new Error(
-      `Unable to read the dotnet project file specified, '${dotnetProjectPath}'`
-    );
-  }
-
-  const slnContent = slnBuffer.toString();
-  const basePath = dotnetProjectPath.substring(
-    0,
-    dotnetProjectPath.lastIndexOf(path.sep)
-  );
-
-  return getAllProjectsFromSolution(slnContent, basePath);
-}
-
-async function updateCsprojFile(
-  dotnetProjectPath: string,
-  outputPath: string,
-  updateVersion: boolean
+async function updateCsprojIsPackable(
+  dotnetProjectPath: string
 ): Promise<void> {
-  const projPaths = getAllProjects(dotnetProjectPath);
+  const projPaths = getAllProjectsFromFile(dotnetProjectPath);
 
   for (let x = 0; x < projPaths.length; x++) {
     const currentProjPath = projPaths[x];
 
-    console.log(`📝 Updating csproj file '${currentProjPath}'...`);
-
-    const csprojBuffer = readFileSync(currentProjPath);
-
-    if (csprojBuffer === null) {
-      throw new Error(
-        `Unable to read the csproj file specified, '${currentProjPath}'`
-      );
-    }
-
-    let xmlString = csprojBuffer.toString();
-    let xmlDoc = create(xmlString);
-    const doc: any = xmlDoc.end({ format: 'object' });
-
-    if (_.isArray(doc.Project.PropertyGroup)) {
-      doc.Project.PropertyGroup[0].IsPackable = true;
-    } else {
-      doc.Project.PropertyGroup.IsPackable = true;
-    }
-
-    if (updateVersion) {
-      const versionPath = path.join(outputPath, 'VERSION');
-
-      if (!existsSync(versionPath)) {
-        throw new Error(
-          `Unable to detect version. No VERSION file found at '${versionPath}'!`
-        );
-      }
-
-      const version = readFileSync(versionPath).toString();
-
-      console.log(`\t🏷  Updating version to ${version}...`);
-
+    await updateCsprojFile(currentProjPath, (doc) => {
       if (_.isArray(doc.Project.PropertyGroup)) {
-        doc.Project.PropertyGroup[0].ReleaseVersion = version;
-        doc.Project.PropertyGroup[0].PackageVersion = version;
+        doc.Project.PropertyGroup[0].IsPackable = true;
       } else {
-        doc.Project.PropertyGroup.ReleaseVersion = version;
-        doc.Project.PropertyGroup.PackageVersion = version;
+        doc.Project.PropertyGroup.IsPackable = true;
       }
-    }
-
-    xmlDoc = create(doc);
-    xmlString = xmlDoc.end({ prettyPrint: true, headless: true });
-
-    writeFileSync(currentProjPath, xmlString);
-
-    console.log('');
+    });
   }
 }
 
@@ -115,8 +47,7 @@ export default async function (
   context: ExecutorContext
 ) {
   let { srcPath, outputPath } = options;
-  const { action, configMap, runtimeID, updateVersion, additionalArgs } =
-    options;
+  const { action, configMap, runtimeID, additionalArgs } = options;
   const { root, projectName, configurationName } = context;
 
   if (projectName === undefined) {
@@ -145,7 +76,7 @@ export default async function (
   }
 
   if (action == 'build') {
-    await updateCsprojFile(srcPath, outputPath, updateVersion);
+    await updateCsprojIsPackable(srcPath);
   }
 
   const args: Array<string> = [];
