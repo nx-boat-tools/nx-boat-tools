@@ -34,15 +34,15 @@ yarn add -D @nx-boat-tools/docker
 
 ### `build`
 
-The `build` executor builds a docker image from a `dockerfile` for a given project. It tags the image as both `latest` and the version in the project's `package.json`
+The `build` executor builds a docker image from a `dockerfile` for a given project. It tags the image as both `latest` and the version in the project's `package.json`.
 
 #### 🚩  Note:
 
-The `buildPath` is set to the dist directory of a project by default as that is where the files that will be copied into docker usually are located. This means that the `copyFiles` executor needs to have ran first as well as any other executors producing build output that needs to be copied into the image.
+If no `package.json` exists for the project or it does not specify a version then only `latest` will be tagged.
 
-#### 🚧  This needs to be refactored  🚧
+#### 🚩  Note:
 
-This actually is looking for a `VERSION` file right now instead of a `package.json`
+The `buildPath` is set to the dist directory of a project by default as that is where the files that will be copied into docker usually are located. This means that the `copyFiles` executor needs to have ran first as well as any other executors producing build output that needs to be copied into 
 
 #### Available options:
 
@@ -133,6 +133,10 @@ This would result in copying the `dockerfile` and `.dockerignore` files to `dist
 ### `publish`
 
 The `publish` executor will create tags for `latest` and the version in the project's `package.json` file, then upload the image to either the user or repo specifed by runing the corresponding `docker push` commands.
+
+#### 🚩  Note:
+
+If no `package.json` exists for the project or it does not specify a version then only `latest` will be tagged and pushed.
 
 #### 🚩  Note:
 

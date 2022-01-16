@@ -14,6 +14,7 @@ The "net" in the Nx Boat Tools toolbox. The `dotnet` plugin adds .Net project su
   - [`package`](#package)
   - [`publish`](#publish)
   - [`run`](#run)
+  - [`version`](#version)
 - [Generators](#generators)
   - [`project`](#project)
   - [`classlib`](#classlib)
@@ -44,7 +45,7 @@ The `dotnet` plugin currently generates projects using [.Net 5.0](https://dotnet
 
 ### `run-dotnet-command`
 
-The `run-dotnet-command` is the heart of all of the dotnet executors and is meant to reflect the underlying dotnet CLI. Its job is to take in the various parameters, form the CLI command to run, and then execute it.
+The `run-dotnet-command` is the heart of most of the dotnet executors and is meant to reflect the underlying dotnet CLI. Its job is to take in the various parameters, form the CLI command to run, and then execute it.
 
 #### Available options:
 
@@ -80,12 +81,6 @@ export default async function runExecutor(
   };
 }
 ```
-
-#### Versioning:
-
-🚧  This needs to be updated  🚧
-
-Version pulls the version from the project's `package.json` which is generated when generating all dotnet projects. We can then pull the `csproj` version update funtionality into its own `version` executor. To wrap it all up, we can add the community `semver` plugin to the generated projects and pass the `versionDotnet` target in the postTargets of the `version` target configuration.
 
 ### `build`
 
@@ -471,6 +466,41 @@ Which would run the following dotnet CLI command
 dotnet run projectRoot/apps/example/example.sln --output projectRoot/dist/apps/example --configuration Release --nologo
 ```
 
+### `version`
+
+The `version` executor is a utility function that updates the versions in all `csproj` files associaciated with the project to match the version specified in the project's `package.json`
+
+#### Available options:
+
+| name             | type          | default     | description                                                                                                                |
+| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`      |             | Required. This is the `csproj` or `sln` file associated with the project   |
+
+#### Example:
+
+The following workspace configuration illustrates a possible dotnet `run` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "dotnetVersion": {
+          "executor": "@nx-boat-tools/dotnet:version",
+          "options": {
+            "srcPath": "apps/example/example.sln"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## ✍️  Generators
 
 ### `project`
@@ -485,24 +515,23 @@ The `project` generator is the heart of all of the dotnet generators. Its job is
 | `tags`             | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
 | `directory`        | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
 | `projectType`      | `string`  |             | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
-| `pathPrefix`       | `string?` | `undefined` | This doesn't appear to be used and can be removed  🚧                                                                                                                                                                                                                                                    |
-| `simpleModuleName` | `boolean` | `undefined` | 🚧  This doesn't appear to be used and can be removed  🚧                                                                                                                                                                                                                                                |
 | `ownSolution`      | `boolean` | `false`     | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
 
 #### Generated files:
 
-What files are generated depend on the `projectType` that's specified but should mostly reflect the same files you'd get from running `dotnet new {projectType}`. The biggest difference is whether or not the solution file is created or if another one is appended to.
+What files are generated depend on the `projectType` that's specified but should mostly reflect the same files you'd get from running `dotnet new {projectType}`. Other than the addition of a `package.json` file for the project, the biggest difference is whether or not the solution file is created or if another one is appended to.
 
 #### Updates to `workspace.json`:
 
 The project is added to the `workspace.json` with the following high-level targets defined:
 
 - `build` - This is a `chain-execute` which calls the following targets:
-  - `version` - 🚧  This is the common `version` executor but needs to be refactored 🚧
+  - `dotnetVersion` - This runs the `version` executor to ensure the `csproj` versions match the project's `package.json`
   - `buildDotnet` - This runs the dotnet `build` executor for the project
   - `package` - For the `prod` condiguration only, this runs the dotnet `package` executor
 - `clean` - this calls the dotnet `clean` executor to clean up build output
 - `run` - this calls the dotnet `run` target to run the application
+- `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin. The `dotnetVersion` is added to the `postTargets` parameter so the `csproj` files are updated at the same time.
 
 🚩  Note: The `run` target is not added when `classlib` is specified for `projectType`
 
@@ -561,6 +590,16 @@ The following is a full example of what's added to the `workspace.json` for a do
             "prod": {}
           }
         },
+        "dotnetVersion": {
+          "executor": "@nx-boat-tools/dotnet:version",
+          "options": {
+            "srcPath": "./workspace-name.sln",
+          },
+          "configurations": {
+            "dev": {},
+            "prod": {}
+          }
+        },
         "package": {
           "executor": "@nx-boat-tools/dotnet:package",
           "options": {
@@ -592,14 +631,12 @@ The following is a full example of what's added to the `workspace.json` for a do
           }
         },
         "version": {
-          "executor": "@nx-boat-tools/common:set-version",
+          "executor": "@@jscutlery/semver:version",
           "options": {
-            "projectPath": "apps/console-app",
-            "outputPath": "dist/apps/console-app"
-          },
-          "configurations": {
-            "dev": {},
-            "prod": {}
+            "commitMessageFormat": "chore(${projectName}): release version ${version}",
+            "postTargets": [
+              "dotnetVersion"
+            ]
           }
         }
       },
@@ -624,7 +661,7 @@ Creates a dotnet class library project.
 
 #### Generated files:
 
-The generated files should mostly reflect the same files you'd get from running `dotnet new classlib`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `classlib` projects will be under the `libs` folder in the workspace.
+Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `dotnet new classlib`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `classlib` projects will be under the `libs` folder in the workspace.
 
 #### Creating a `classlib` project
 
@@ -656,7 +693,7 @@ Creates a dotnet console application project.
 
 #### Generated files:
 
-The generated files should mostly reflect the same files you'd get from running `dotnet new console`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `console` projects will be under the `apps` folder in the workspace.
+Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `dotnet new console`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `console` projects will be under the `apps` folder in the workspace.
 
 #### Creating a `console` project
 
@@ -688,7 +725,7 @@ Creates a dotnet web API project.
 
 #### Generated files:
 
-The generated files should mostly reflect the same files you'd get from running `dotnet new webapi`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `webapi` projects will be under the `apps` folder in the workspace.
+Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `dotnet new webapi`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `webapi` projects will be under the `apps` folder in the workspace.
 
 #### Creating a `webapi` project
 
