@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import * as devkit from '@nrwl/devkit';
 import { Console } from 'console';
 
@@ -8,8 +9,6 @@ import {
   createFakeExecutor,
   createTestExecutorContext,
 } from '../../utilities/executorTestHelpers';
-
-import * as _ from 'underscore';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 

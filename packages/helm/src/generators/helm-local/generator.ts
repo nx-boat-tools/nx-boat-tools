@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import * as path from 'path';
 import {
   NxJsonProjectConfiguration,
@@ -12,8 +13,6 @@ import { readdirSync } from 'fs';
 
 import { HelmLocalGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
-
-import * as _ from 'underscore';
 
 interface NormalizedSchema extends HelmLocalGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;

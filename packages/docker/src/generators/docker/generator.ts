@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import * as path from 'path';
 import {
   NxJsonProjectConfiguration,
@@ -12,8 +13,6 @@ import {
 } from '@nrwl/devkit';
 
 import { DockerGeneratorSchema } from './schema';
-
-import * as _ from 'underscore';
 
 interface NormalizedSchema extends DockerGeneratorSchema {
   projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
