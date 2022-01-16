@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
-import { existsSync, readFileSync } from 'fs';
-import { spawnAsync } from '@nx-boat-tools/common';
+import { existsSync } from 'fs';
+import { getVersionForProject, spawnAsync } from '@nx-boat-tools/common';
 
 import { BuildExecutorSchema } from './schema';
 
@@ -41,10 +41,11 @@ export default async function runExecutor(
     )
   );
 
-  const versionPath: string = path.join(buildPath, 'VERSION');
-  const version = existsSync(versionPath)
-    ? readFileSync(versionPath).toString()
-    : undefined;
+  const projectPath: string = path.join(
+    root,
+    context.workspace.projects[projectName].root
+  );
+  const version = getVersionForProject(projectPath, false);
 
   if (version !== undefined) {
     console.log(
