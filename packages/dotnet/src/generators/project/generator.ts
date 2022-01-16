@@ -20,6 +20,7 @@ import {
   appendGlobalSectionToSolution,
   appendProjectLinesToSolution,
 } from '../../utilities/slnFileHelper';
+import { getVersionForProject } from '@nx-boat-tools/common';
 
 interface NormalizedSchema extends DotnetGeneratorSchema {
   projectName: string;
@@ -97,11 +98,8 @@ function getDotnetPluginVersion(): string {
     '..',
     'package.json'
   );
-  const dotnetPackageJsonBuffer = readFileSync(dotnetPackageJsonPath);
 
-  const dotnetPackage = JSON.parse(dotnetPackageJsonBuffer.toString());
-
-  return dotnetPackage.version;
+  return getVersionForProject(dotnetPackageJsonPath);
 }
 
 function getNxProjectType(tree: Tree, projectType: string): ProjectType {

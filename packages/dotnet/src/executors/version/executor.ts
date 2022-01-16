@@ -1,29 +1,12 @@
 import * as _ from 'underscore';
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync } from 'fs';
+import { getVersionForProject } from '@nx-boat-tools/common';
 
 import { DotNetVersionExecutorSchema } from './schema';
 import { getAllProjectsFromFile } from '../../utilities/slnFileHelper';
 import { updateCsprojFile } from '../../utilities/csprojFileHelper';
-
-function getVersionForProject(projectPath: string): string {
-  const packageJsonPath = path.join(projectPath, 'package.json');
-
-  if (!existsSync(packageJsonPath)) {
-    throw new Error(
-      `Unable to detect version. No package.json found at '${packageJsonPath}'!`
-    );
-  }
-
-  const projectPackageJsonBuffer = readFileSync(packageJsonPath);
-  const projectPackageJsonString = projectPackageJsonBuffer.toString();
-  const projectPackageJson = JSON.parse(projectPackageJsonString);
-
-  const version = projectPackageJson?.version || '0.0.0';
-
-  return version;
-}
 
 async function updateCsprojVersion(
   dotnetProjectPath: string,
@@ -70,7 +53,7 @@ export default async function (
     context.workspace.projects[projectName].root
   );
 
-  const version = getVersionForProject(projectPath);
+  const version = getVersionForProject(projectPath) || '0.0.0';
   const projPaths = getAllProjectsFromFile(srcPath);
 
   for (let x = 0; x < projPaths.length; x++) {
