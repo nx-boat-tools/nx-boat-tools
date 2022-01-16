@@ -9,7 +9,7 @@ import { DockerRunExecutorSchema } from './schema';
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn((command, args, options) => {
+const fn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [

@@ -1,8 +1,7 @@
 import * as _ from 'underscore';
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
-import { create } from 'xmlbuilder2';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync } from 'fs';
 import { spawnAsync } from '@nx-boat-tools/common';
 
 import { DotNetCommandExecutorSchema } from './schema';

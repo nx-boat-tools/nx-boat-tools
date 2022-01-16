@@ -1,4 +1,3 @@
-import * as _ from 'underscore';
 import * as mockFs from 'mock-fs';
 import each from 'jest-each';
 import { Console } from 'console';
@@ -588,15 +587,9 @@ describe('dotnet project generator', () => {
 
   each([...libProjectTypes]).describe('projectType %s', (projectType) => {
     let appTree: Tree;
-    let packageJsonName: string;
 
     beforeEach(() => {
       appTree = createTreeWithEmptyWorkspace();
-
-      const packageJson: { name: string } = JSON.parse(
-        appTree.read('package.json').toString()
-      );
-      packageJsonName = names(packageJson.name).className;
 
       console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
     });

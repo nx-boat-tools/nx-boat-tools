@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { ExecutorContext, readProjectConfiguration } from '@nrwl/devkit';
+import { ExecutorContext } from '@nrwl/devkit';
 import { copyFileSync, existsSync, mkdirSync } from 'fs';
 
 import { DockerCopyFilesExecutorSchema } from './schema';

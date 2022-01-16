@@ -35,7 +35,10 @@ export default async function runExecutor(
 
   mkdirSync(outputPath, { recursive: true });
 
-  const projectPath: string = path.join(root, context.workspace.projects[projectName].root);
+  const projectPath: string = path.join(
+    root,
+    context.workspace.projects[projectName].root
+  );
   const version = getVersionForProject(projectPath, false);
 
   let args = `-d ${outputPath}`;

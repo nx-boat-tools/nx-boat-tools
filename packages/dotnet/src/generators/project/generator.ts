@@ -13,14 +13,13 @@ import {
   offsetFromRoot,
 } from '@nrwl/devkit';
 import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
-import { readFileSync } from 'fs';
+import { getVersionForProject } from '@nx-boat-tools/common';
 
 import { DotnetGeneratorSchema } from './schema';
 import {
   appendGlobalSectionToSolution,
   appendProjectLinesToSolution,
 } from '../../utilities/slnFileHelper';
-import { getVersionForProject } from '@nx-boat-tools/common';
 
 interface NormalizedSchema extends DotnetGeneratorSchema {
   projectName: string;

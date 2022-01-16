@@ -7,11 +7,9 @@ import {
   Tree,
   addProjectConfiguration,
   readProjectConfiguration,
-  updateProjectConfiguration,
 } from '@nrwl/devkit';
 import { createTargetConfig, defuse } from '@nx-boat-tools/common';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
-import { readFileSync } from 'fs';
 
 import generator from './generator';
 import { HelmRepoGeneratorSchema } from './schema';
@@ -23,7 +21,7 @@ console = new Console(process.stdout, process.stderr); //mockFs messes with the 
 const fakeValues = 'test: This is a fake values file';
 
 const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn((command, args, options) => {
+const fn = jest.fn(() => {
   return {
     pid: 1,
     output: [fakeValues],

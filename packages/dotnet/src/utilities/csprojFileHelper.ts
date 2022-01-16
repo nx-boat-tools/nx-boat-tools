@@ -1,5 +1,5 @@
 import { create } from 'xmlbuilder2';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 
 export function createTestCsprojContent(): string {
   return `

@@ -6,7 +6,6 @@ import {
   Tree,
   addProjectConfiguration,
   readProjectConfiguration,
-  updateProjectConfiguration,
 } from '@nrwl/devkit';
 import { createTargetConfig, defuse } from '@nx-boat-tools/common';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
