@@ -1,6 +1,4 @@
 import * as _ from 'underscore';
-import * as child_process from 'child_process';
-import * as mockFs from 'mock-fs';
 import { Console } from 'console';
 import {
   ProjectConfiguration,
@@ -10,54 +8,32 @@ import {
 } from '@nrwl/devkit';
 import { createTargetConfig, defuse } from '@nx-boat-tools/common';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
+import { readFileSync } from 'fs';
 
 import generator from './generator';
-import { HelmRepoGeneratorSchema } from './schema';
+import { HelmLocalChartGeneratorSchema } from './schema';
 
 import path = require('path');
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
-const fakeValues = 'test: This is a fake values file';
-
-const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn((command, args) => {
-  return {
-    pid: 1,
-    output: [fakeValues],
-    stdout: `Mock spawnSync (Command: '${command}', Args: '${args.join(' ')}')\n`,
-    stderr: '',
-    status: 0,
-    signal: null,
-  };
-});
-
-describe('helm-local generator', () => {
+describe('local-chart generator', () => {
   let appTree: Tree;
-
-  beforeAll(() => {
-    spy.mockImplementation(fn);
-  });
 
   beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();
-
-    fn.mockClear();
 
     console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
   });
 
   afterEach(() => {
-    mockFs.restore();
-
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 
   it('fails when project does not exist', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'test',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
 
     addProjectConfiguration(appTree, 'my-project', {
@@ -76,10 +52,9 @@ describe('helm-local generator', () => {
   });
 
   it('fails when helm target already exists for project', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
 
     addProjectConfiguration(appTree, 'my-project', {
@@ -96,11 +71,10 @@ describe('helm-local generator', () => {
     );
   });
 
-  it('does not add packageHelmChart to project config', async () => {
-    const options: HelmRepoGeneratorSchema = {
+  it('adds packageHelmChart to project config', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -116,15 +90,25 @@ describe('helm-local generator', () => {
     await generator(appTree, options);
 
     const config = readProjectConfiguration(appTree, 'my-project');
+    const projectHelmPath = path.join(initialConfig.root, 'helm');
+    const projectDistPath = path.join('dist', initialConfig.root, 'helm');
 
-    expect(config?.targets?.packageHelmChart).toBeUndefined();
+    expect(config?.targets?.packageHelmChart).toBeDefined();
+    expect(config.targets.packageHelmChart.executor).toBe(
+      '@nx-boat-tools/helm:package'
+    );
+    expect(config.targets.packageHelmChart.options?.projectHelmPath).toBe(
+      projectHelmPath
+    );
+    expect(config.targets.packageHelmChart.options?.outputPath).toBe(
+      path.join(projectDistPath, 'chart')
+    );
   });
 
   it('adds build to project config when build target does not already exists', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -154,10 +138,9 @@ describe('helm-local generator', () => {
   });
 
   it('adds copyHelmValues to project config when build target already exists', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -189,10 +172,9 @@ describe('helm-local generator', () => {
   });
 
   it('renames build target to buildSrc when already exists and not chain-execute', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -220,10 +202,9 @@ describe('helm-local generator', () => {
   });
 
   it('creates chain-execute build target when build already exists (existing build not chain-execute)', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -250,10 +231,9 @@ describe('helm-local generator', () => {
   });
 
   it('adds to chain-execute build target when build already exists (existing build chain-execute)', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -290,10 +270,9 @@ describe('helm-local generator', () => {
   });
 
   it('sorts targets alphabetically', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -320,18 +299,18 @@ describe('helm-local generator', () => {
     const config = readProjectConfiguration(appTree, 'my-project');
     const targets = _.keys(config?.targets);
 
-    expect(targets.length).toBe(4);
+    expect(targets.length).toBe(5);
     expect(targets[0]).toBe('build');
     expect(targets[1]).toBe('buildSrc');
     expect(targets[2]).toBe('copyHelmValues');
-    expect(targets[3]).toBe('test');
+    expect(targets[3]).toBe('packageHelmChart');
+    expect(targets[4]).toBe('test');
   });
 
-  it('does not add chart files to project helm directory', async () => {
-    const options: HelmRepoGeneratorSchema = {
+  it('adds chart.yaml file to chart files in project helm directory matching template', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -346,16 +325,26 @@ describe('helm-local generator', () => {
 
     await generator(appTree, options);
 
-    const chartPath = path.join(initialConfig.root, 'helm', 'chart');
+    const chartPath = path.join(
+      initialConfig.root,
+      'helm',
+      'chart',
+      'Chart.yaml'
+    );
+    const chartTemplate = readFileSync(
+      path.join(__dirname, 'files', 'generated', 'Chart.yaml.template')
+    )
+      .toString()
+      .replace('<%= name %>', options.project);
 
-    expect(appTree.exists(chartPath)).toBe(false);
+    expect(appTree.exists(chartPath)).toBe(true);
+    expect(appTree.read(chartPath).toString()).toBe(chartTemplate);
   });
 
-  it('adds project values.yaml when createValues true (no environments specified', async () => {
-    const options: HelmRepoGeneratorSchema = {
+  it('adds values.yaml file to chart files in project helm directory matching template', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -370,28 +359,140 @@ describe('helm-local generator', () => {
 
     await generator(appTree, options);
 
-    expect(fn.mock.calls.length).toBe(1);
+    const valuesPath = path.join(
+      initialConfig.root,
+      'helm',
+      'chart',
+      'values.yaml'
+    );
+    const valuesTemplate = readFileSync(
+      path.join(__dirname, 'files', 'generated', 'values.yaml.template')
+    )
+      .toString()
+      .replace('<%= name %>', options.project);
 
-    const firstCall = fn.mock.calls[0];
-    const commandArg: string = firstCall[0];
-    const argsArg: string[] = firstCall[1];
+    expect(appTree.exists(valuesPath)).toBe(true);
+    expect(appTree.read(valuesPath).toString()).toBe(valuesTemplate);
+  });
 
-    expect(commandArg).toBe('helm');
-    expect(argsArg[0]).toBe('show');
-    expect(argsArg[1]).toBe('values');
-    expect(argsArg[2]).toBe(`${options.repository}/${options.chart}`);
+  it('adds .helmignore file to chart files in project helm directory matching template', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const helmignorePath = path.join(
+      initialConfig.root,
+      'helm',
+      'chart',
+      '.helmignore'
+    );
+    const helmignoreTemplate = readFileSync(
+      path.join(__dirname, 'files', 'generated', '__dot__helmignore.template')
+    )
+      .toString()
+      .replace('<%= name %>', options.project);
+
+    expect(appTree.exists(helmignorePath)).toBe(true);
+    expect(appTree.read(helmignorePath).toString()).toBe(helmignoreTemplate);
+  });
+
+  it('adds templates directory to chart files in project helm directory', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const templatesDirPath = path.join(
+      initialConfig.root,
+      'helm',
+      'chart',
+      'templates'
+    );
+
+    expect(appTree.exists(templatesDirPath)).toBe(true);
+  });
+
+  it('does not add project values.yaml when createValues false', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
 
     const valuesPath = path.join(initialConfig.root, 'helm', 'values.yaml');
 
+    expect(appTree.exists(valuesPath)).toBe(false);
+  });
+
+  it('adds project values.yaml when createValues true (no environments specified', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: true,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const valuesPath = path.join(initialConfig.root, 'helm', 'values.yaml');
+    const valuesTemplate = readFileSync(
+      path.join(__dirname, 'files', 'generated', 'values.yaml.template')
+    )
+      .toString()
+      .replace('<%= name %>', options.project);
+
     expect(appTree.exists(valuesPath)).toBe(true);
-    expect(appTree.read(valuesPath).toString()).toBe(fakeValues);
+    expect(appTree.read(valuesPath).toString()).toBe(valuesTemplate);
   });
 
   it('adds project values.yaml when createValues true (environments specified', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
-      repository: 'bitnami',
-      chart: 'mysql',
+      createValues: true,
       environments: 'dev,prod',
     };
     const initialConfig: ProjectConfiguration = {
@@ -407,17 +508,6 @@ describe('helm-local generator', () => {
 
     await generator(appTree, options);
 
-    expect(fn.mock.calls.length).toBe(1);
-
-    const firstCall = fn.mock.calls[0];
-    const commandArg: string = firstCall[0];
-    const argsArg: string[] = firstCall[1];
-
-    expect(commandArg).toBe('helm');
-    expect(argsArg[0]).toBe('show');
-    expect(argsArg[1]).toBe('values');
-    expect(argsArg[2]).toBe(`${options.repository}/${options.chart}`);
-
     const valuesPath = path.join(initialConfig.root, 'helm', 'values.yaml');
     const devValuesPath = path.join(
       initialConfig.root,
@@ -429,13 +519,18 @@ describe('helm-local generator', () => {
       'helm',
       'values-prod.yaml'
     );
+    const valuesTemplate = readFileSync(
+      path.join(__dirname, 'files', 'generated', 'values.yaml.template')
+    )
+      .toString()
+      .replace('<%= name %>', options.project);
 
     expect(appTree.exists(valuesPath)).toBe(false);
 
     expect(appTree.exists(devValuesPath)).toBe(true);
-    expect(appTree.read(devValuesPath).toString()).toBe(fakeValues);
+    expect(appTree.read(devValuesPath).toString()).toBe(valuesTemplate);
 
     expect(appTree.exists(prodValuesPath)).toBe(true);
-    expect(appTree.read(prodValuesPath).toString()).toBe(fakeValues);
+    expect(appTree.read(prodValuesPath).toString()).toBe(valuesTemplate);
   });
 });

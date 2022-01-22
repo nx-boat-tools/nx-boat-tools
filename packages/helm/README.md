@@ -9,8 +9,10 @@ The helm is a key tool for any boat! The `helm` plugin adds Helm support to exis
   - [`copyValues`](#copyValues)
   - [`package`](#package)
 - [Generators](#generators)
-  - [`helm-local`](#helm-local)
-  - [`helm-repo`](#helm-repo)
+  - [`local-chart`](#local-chart)
+  - [`repo-chart`](#repo-chart)
+  - [`local-chart-project`](#local-chart-project)
+  - [`repo-chart-project`](#repo-chart-project)
 
 <hr>
 
@@ -122,9 +124,9 @@ Both of the above would result in a chart archive file being created at `dist/ap
 
 ## ✍️  Generators
 
-### `helm-local`
+### `local-chart`
 
-The `helm-local` generator is for creating a local helm chart for your project.
+The `local-chart` generator is for creating a local helm chart for an existing project.
 
 #### Available options:
 
@@ -219,21 +221,21 @@ The following is a full example of what's added to the `workspace.json` for a pr
 }
 ```
 
-#### Adding `helm-local` to a project
+#### Adding `local-chart` to a project
 
 The following illustrates how to add a local helm chart to a project:
 
 ```bash
 #Add a helm chart to a project named my-project with a single values file, values.yaml
-nx g @nx-dev-tools/helm:helm-local my-project --createValues=true
+nx g @nx-dev-tools/helm:local-chart my-project --createValues=true
 
 #Add a helm chart to a project named my-project with two values files, values-dev.yaml and values-prod.yaml
-nx g @nx-dev-tools/helm:helm-local my-project --createValues=true --environments=dev,prod
+nx g @nx-dev-tools/helm:local-chart my-project --createValues=true --environments=dev,prod
 ```
 
-### `helm-repo`
+### `repo-chart`
 
-The `helm-repo` generator is for creating a local helm chart for your project.
+The `repo-chart` generator is for adding a helm chart from a repository to your project.
 
 #### Available options:
 
@@ -246,7 +248,7 @@ The `helm-repo` generator is for creating a local helm chart for your project.
 
 #### Generated files:
 
-A helm folder is added within the project directory and it the values files that were created.
+A helm folder is added within the project directory containing the values files that were created.
 
 #### Updates to `workspace.json`:
 
@@ -316,14 +318,174 @@ The following is a full example of what's added to the `workspace.json` for a pr
 }
 ```
 
-#### Adding `helm-repo` to a project
+#### Adding `repo-chart` to a project
 
 The following illustrates how to add a support for a remote helm chart to a project:
 
 ```bash
 #Add a helm chart to a project named my-project with a single values file, values.yaml
-nx g @nx-dev-tools/helm:helm-repo my-project --repo=bitnami --chart=mysql
+nx g @nx-dev-tools/helm:repo-chart my-project --repo=bitnami --chart=mysql
 
 #Add a helm chart to a project named my-project with two values files, values-dev.yaml and values-prod.yaml
-nx g @nx-dev-tools/helm:helm-repo my-project --repo=bitnami --chart=mysql --environments=dev,prod
+nx g @nx-dev-tools/helm:repo-chart my-project --repo=bitnami --chart=mysql --environments=dev,prod
+```
+
+### `local-chart-project`
+
+The `local-chart-project` generator is for creating new project containing a local helm chart.
+
+#### Available options:
+
+| name           | type      | default     | description                                                                                                                                                |
+| -------------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`             | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                                                                                           |
+| `tags`             | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
+| `directory`        | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
+| `createValues` | `boolean` | `true`      | Whether or not to copy the values file from the chart to use for deployment                                                                                |
+| `environments` | `string?` | `undefined` | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+
+#### Generated files:
+
+ Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `helm create`. The project will contain a helm folder which will contain the chart directory and as well as any values files that were created.
+
+#### Updates to `workspace.json`:
+
+The project is added to the `workspace.json` with the following high-level targets defined:
+
+- `build` - This is a `chain-execute` which calls the following targets:
+  - `copyHelmValues` - Then we want to copy any values files to the dist directory
+  - `packageHelmChart` - Only called when the `prod` configuration is used, this packages the chart into an achive
+- `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
+- `packageHelmChart` - this calls the helm `package` executor to create a chart archive file in the dist directory
+- `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
+
+The following is a full example of what's added to the `workspace.json` when adding a helm local-chart project:
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "targets": ["copyHelmValues"],
+            "additionalTargets": ["packageHelmChart"]
+          }
+        },
+        "copyHelmValues": {
+          "executor": "@nx-boat-tools/helm:copyValues",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm",
+            "distPath": "dist/apps/my-app/helm/values"
+          }
+        },
+        "packageHelmChart": {
+          "executor": "@nx-boat-tools/helm:package",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm",
+            "distPath": "dist/apps/my-app/helm/chart"
+          }
+        },
+        "version": {
+          "executor": "@@jscutlery/semver:version",
+          "options": {
+            "commitMessageFormat": "chore(${projectName}): release version ${version}"
+          }
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+#### Using `local-chart-project` to create a project
+
+The following illustrates how to create a local helm chart project:
+
+```bash
+#Create a project named my-project with a local helm chart and a single values file, values.yaml
+nx g @nx-dev-tools/helm:local-chart-project my-project --createValues=true
+
+#Create a project named my-project with a local helm chart and two values files, values-dev.yaml and values-prod.yaml
+nx g @nx-dev-tools/helm:local-chart-project my-project --createValues=true --environments=dev,prod
+```
+
+
+### `repo-chart-project`
+
+The `repo-chart-project` generator is for creating new project utilizing a helm chart from a repository.
+
+#### Available options:
+
+| name           | type      | default     | description                                                                                                                                                |
+| -------------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`             | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                                                                                           |
+| `tags`             | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
+| `directory`        | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
+| `repository`   | `string`  |             | Required. The name of the repository containing the chart                                                            |
+| `chart`        | `string`  |             | Required. The name of the chart to use (without the repository)                                                      |
+| `environments` | `string?` | `undefined` | THis is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+
+#### Generated files:
+
+ Other than the addition of a `package.json` file for the project, a helm folder is added within the project directory containing the values files that were created.
+
+#### Updates to `workspace.json`:
+
+The project is added to the `workspace.json` with the following high-level targets defined:
+
+- `build` - Since no other build targets exists, here `build` is not a chain execute and simply calls the helm `copyValues` target to copy any values files to the dist directory.
+- `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
+
+The following is a full example of what's added to the `workspace.json` when adding a helm repo-chart project:
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nx-boat-tools/helm:copyValues",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm",
+            "distPath": "dist/apps/my-app/helm/values"
+          }
+        },
+        "version": {
+          "executor": "@@jscutlery/semver:version",
+          "options": {
+            "commitMessageFormat": "chore(${projectName}): release version ${version}"
+          }
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+#### Using `repo-chart-project` to create a project
+
+The following illustrates how to create a repository helm chart project:
+
+```bash
+#Create a project named my-project with a repo helm chart and a single values file, values.yaml
+nx g @nx-dev-tools/helm:repo-chart-project my-project --createValues=true
+
+#Create a project named my-project with a repo helm chart and two values files, values-dev.yaml and values-prod.yaml
+nx g @nx-dev-tools/helm:repo-chart-project my-project --createValues=true --environments=dev,prod
 ```
