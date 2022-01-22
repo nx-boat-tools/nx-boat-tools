@@ -228,6 +228,8 @@ describe('local-chart generator', () => {
     expect(config.targets.build.options?.targets?.length).toBe(2);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('copyHelmValues');
+    expect(config.targets.build.configurations?.prod?.additionalTargets?.length).toBe(1);
+    expect(config.targets.build.configurations?.prod?.additionalTargets[0]).toBe('packageHelmChart');
   });
 
   it('adds to chain-execute build target when build already exists (existing build chain-execute)', async () => {

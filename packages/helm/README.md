@@ -147,10 +147,7 @@ The project's entry in the `workspace.json` will be updated as follows:
 - `build` - If a `build` target existed previously then it will be renamed to to `buildSrc`. A new `build` will then be added and is a `chain-execute` which calls the following targets:
   - `buildSrc` - This is the previous build target and we want it to run first
   - `copyHelmValues` - Then we want to copy any values files to the dist directory
-
-🚧  This needs to be refactored  🚧
-This currently adds the `packageHelmChart` target to the `additionalTargets` param directly but it should be in the `configurations` section for `prod`
-
+  - `packageHelmChart` - For prod configuration only. This packages the chart into an achive
 - `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
 - `packageHelmChart` - this calls the helm `package` executor to create a chart archive file in the dist directory
 
