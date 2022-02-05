@@ -3,10 +3,11 @@
   "version": "0.1.1",
   "license": "MIT",
   "scripts": {
+    "commit": "cz",
     "nx": "nx",
     "start": "nx serve",
-    "build": "nx build",
-    "test": "nx test",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
     "affected:apps": "nx affected:apps",
@@ -53,6 +54,8 @@
     "@types/xml2js": "^0.4.9",
     "@typescript-eslint/eslint-plugin": "5.3.1",
     "@typescript-eslint/parser": "5.3.1",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
     "dotenv": "~10.0.0",
     "eslint": "8.2.0",
     "eslint-config-prettier": "8.3.0",
@@ -72,6 +75,11 @@
     ".js, .jsx, .ts, .tsx": {
       "parser": "typescript",
       "style": "renke"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }

@@ -1,11 +1,11 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ main ]
 
 jobs:
-  build:
+  version:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Hub CLI
@@ -14,35 +14,31 @@ jobs:
           https://github.com/github/hub/releases/download/v2.12.8/hub-linux-amd64-2.12.8.tgz  | \
           tar xz --strip-components=1 --wildcards '*/bin/hub'
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GIT_TOKEN_KILLIAN }}
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-          registry-url: https://registry.npmjs.org/
-      - name: Get release assets
+          cache: 'npm'
+      - name: Create build artifacts
+        run: |
+          git config --global user.email "hale.killian@gmail.com"
+          git config --global user.name "Killian Hale"
+          make templates -B
+          make artifacts
+          make version tag=true commit=true commit-branch=develop
+      - name: Set variables
+        run: |
+          VER=$(cat RELEASE_VERSION)
+          echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
+      - name: Create release
         env:
           GITHUB_USER: ${{ secrets.GITHUB_USER }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_KILLIAN}}
-          TAG_NAME: ${{ github.event.release.tag_name }}
-          PACKAGES_DIST_DIR: ./dist/packages
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          ARTIFACTS_DIR: ./dist/artifacts
         run: |
-          echo 📩 Fetching release assets...
-          hub release download "$TAG_NAME" -i "*.zip";
-          
-          for f in $(find . -type f -name "*.zip"); do echo 📦 Unzipping $f...; unzip -q $f; done;
-          echo 
-          for f in $(find "$PACKAGES_DIST_DIR" -type d -maxdepth 1 ! -name "packages"); do echo 📡 Publishing $f to npm...; npm publish $f --access public; echo; done;
-
-          RELEASE_CONTENTS=$(find "$PACKAGES_DIST_DIR" -type d -maxdepth 1 ! -name "packages"  -printf "- [%p](https://www.npmjs.com/package/@nx-boat-tools/%p/$TAG_NAME)\n")
-          echo "RELEASE_CONTENTS_MESSAGE=$VER" >> $GITHUB_ENV
-
-      # - uses: juztcode/gitter-github-action@v1
-      #   with:
-      #     room-id: ${{ secrets.GITTER_ROOM_COMMUNITY }}
-      #     token: ${{ secrets.GITTER_TOKEN_KILLIAN }}
-      #     text: |
-      #     ## 🚢 Version ${{ github.event.release.tag_name }} was just released!\n
-      #     This release contains the following npm packages:\n
-      #     ${{ env.RELEASE_CONTENTS_MESSAGE }}\n
-      #     \n
-      #     [🔗   View the changes on GitHub](${{ github.event.release.html_url }})\n
+          echo 🚢 Creating release $RELEASE_VERSION...\n
+          hub release create $(find "$ARTIFACTS_DIR" -type f -printf "-a %p ") -d -m "$RELEASE_VERSION" -m "$COMMIT_MESSAGE" "v$RELEASE_VERSION"
