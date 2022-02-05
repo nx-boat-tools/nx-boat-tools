@@ -36,16 +36,12 @@ Main is currently in the definition strictly for testing purposes
 
 The Build action is triggered when a commit is pushed to either the `develop` or `main` branches. Its purpose is to ensure that those branches are healthy and to alert if problems are found. It does that by building the projects affected since the last commit to main, performing tests on them, and checking code coverage.
 
-🚧 Refactor Note 🚧 
+### Release
 
-I'm not sure main makes sense here... this probably should only be for develop as I don't think the "projects affected since the last commit to main" would work properly or would even make sense in that case
-
-### Merge
-
-The Merge action takes place when a commit is pushed to the `main` branch. It first creates the build artifacts by building the projects affected since the last version. It then zips each project folder into a zip archive artifact. It then creates a draft release for the project and uploads each zip archive as an asset.
+The Release action takes place when a commit is pushed to the `main` branch. It first creates the build artifacts by building the projects affected since the last version. It then zips each project folder into a zip archive artifact. It then creates a draft release for the project and uploads each zip archive as an asset.
 
 After the artifacts are created, this action also bumps the version and pushes the change to the `develop` branch. The idea is that you're working on the next version from that point forward.
 
-### Release
+### Publish
 
-The Release action takes place when a release is published for the project. It downloads the zipped assets for each project on the release, unzips them, and publishes them to npm.
+The Publish action takes place when a release is published for the project. It downloads the zipped assets for each project on the release, unzips them, and publishes them to npm.

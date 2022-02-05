@@ -11,6 +11,7 @@ We'd love to have you help us with Nx Boat Tools! Please read this page for deta
 - [Templates](#templates)
 - [Building the Project](#building-the-project)
   - [`Running Unit Tests`](#running-unit-tests)
+  - [`Makefile targets`](#makefile-targets)
   - [`Developing on Windows`](#developing-on-windows)
 - [Documentation Contributions](#documentation-contributions)
 - [Submission Guidelines](#submission-guidelines)
@@ -161,6 +162,64 @@ You can also test all projects, even unaffected, by running:
 ```bash
 npm run test
 ```
+
+### Makefile targets
+
+This project utilizes `make` to orchestrate some of the build process, in particular for use in CI/CD. The following tarkets are defined in the top-level makefile:
+
+#### build (default)
+The `build` target represents the main build for Nx Boat Tools, utilizing Nx to only build what has changed when comparing the current commit to the base_ref.
+
+Arguments:
+| name | type | default | description |
+| ----------------- | ------- | ------- | --------------------------------------------------------------------------------- |
+| `base_ref` | string | 'main' | Maps to the `base` param on `nx affected:*` commands |
+
+Build Steps:
+1. Install dependencies
+2. Build the affected projects
+3. Test the affected projects
+
+#### format
+The `format` target formats and lints what has changed when comparing the current commit to the base_ref.
+
+Arguments:
+| name | type | default | description |
+| ----------------- | ------- | ------- | --------------------------------------------------------------------------------- |
+| `base_ref` | string | 'main' | Maps to the `base` param on `nx:format*` and `nx affected:*` commands |
+| `commit` | boolean | false | Whether or not to commit the changes |
+| `commit-branch` | string | 'develop' | The branch to push to when committing format changes |
+
+Steps:
+1. Install dependencies
+2. Format the affected projects
+3. Lint and fix the affected projects
+4. Commit and push the resulting changes if requested
+
+#### artifacts
+The `artifacts` target builds the projects changed since the last tag. It then zips each resulting folder into its own zip archive in the artifacts directory. The zip archive will be suffixed with the version in the `package.json`
+
+Arguments: N/A
+
+Steps:
+1. Install dependencies
+2. Build the affected projects
+3. Zip each project's output into a zip archive using the version as a suffix
+
+#### version
+
+WIP
+
+#### templates
+The `templates` target creates the generated template output for some of the generators. It calls `make` on each directory in the templates folder (with the exception of `dotnet-base`)
+
+Arguments: N/A
+
+Steps:
+1. Create a template for the `dotnet` `classlib` generator based on the output from `dotnet new classlib`
+2. Create a template for the `dotnet` `console` generator based on the output from `dotnet new console`
+3. Create a template for the `dotnet` `webapi` generator based on the output from `dotnet new webapi`
+4. Create a template for the `helm` `local-chart` generator based on the output from `helm create`
 
 ### Developing on Windows
 
