@@ -31,7 +31,7 @@ format:
 
 ifeq ($(commit), true)
 	$(eval changes = $(shell git status -s))
-	$(if $(strip $(changes)), git add .; git commit -m 'Formatting and lint changes'; git push -u origin $(PUSH_BRANCH))
+	$(if $(strip $(changes)), git add .; git commit -m 'cleanup(misc): formatting and lint changes'; git push -u origin $(PUSH_BRANCH))
 endif
 artifacts:
 	echo $(NEWLINE)🏺 Creating build artifacts...
@@ -50,11 +50,14 @@ artifacts:
 	
 	echo $(current_version) >> RELEASE_VERSION
 version:
+	# NOTE: We're not using @jscutlery/semver because we want to control the tags ourselves 
+
 	echo $(NEWLINE)🏷 Tagging and updating version...
 
 	yarn install --immutable;
 
 	$(eval current_version = $(shell npm pkg get version))
+	$(eval major_version = $(shell echo $(current_root_version) | sed 's/\..*//' | sed 's/[^0-9]//'))
 	$(eval new_version = $(shell yarn dlx semver -i patch $(current_version)))
 
 ifeq ($(tag), true)
@@ -70,7 +73,7 @@ endif
 
 ifeq ($(commit), true)
 	git add .
-	git commit -m 'Bumping version to $(new_version)';
+	git commit -m 'chore(repo): bumping version to $(new_version)';
 	git push -u origin $(PUSH_BRANCH)
 endif
 templates:
