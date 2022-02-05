@@ -56,11 +56,15 @@ export function getHelmAppendedBuildTargets(
   }
 
   if (addPackageTarget) {
-    targets[build].options.additionalTargets =
-      targets[build].options.additionalTargets || [];
+    targets[build].configurations = targets[build].configurations || {
+      prod: {}
+    }
 
-    if (!targets[build].options.additionalTargets.includes(packageHelmChart)) {
-      targets[build].options.additionalTargets.push(packageHelmChart);
+    targets[build].configurations.prod.additionalTargets =
+      targets[build].configurations.prod.additionalTargets || [];
+
+    if (!targets[build].configurations.prod.additionalTargets.includes(packageHelmChart)) {
+      targets[build].configurations.prod.additionalTargets.push(packageHelmChart);
     }
   }
 

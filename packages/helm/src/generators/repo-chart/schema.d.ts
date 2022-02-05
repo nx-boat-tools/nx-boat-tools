@@ -1,4 +1,4 @@
-export interface HelmRepoGeneratorSchema {
+export interface HelmRepoChartGeneratorSchema {
   project: string;
   environments?: string;
   repository: string;

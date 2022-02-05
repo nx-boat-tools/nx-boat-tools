@@ -1,19 +1,19 @@
 import * as _ from 'underscore';
 import * as path from 'path';
 import {
-  NxJsonProjectConfiguration,
   ProjectConfiguration,
   Tree,
+  generateFiles,
+  names,
   readProjectConfiguration,
   updateProjectConfiguration,
 } from '@nrwl/devkit';
-import { spawnSync } from 'node:child_process';
 
-import { HelmRepoGeneratorSchema } from './schema';
+import { HelmLocalChartGeneratorSchema } from './schema';
 import { getHelmAppendedBuildTargets } from '../../utilities/projectConfigHelper';
 
-interface NormalizedSchema extends HelmRepoGeneratorSchema {
-  projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
+interface NormalizedSchema extends HelmLocalChartGeneratorSchema {
+  projectConfig: ProjectConfiguration;
   projectDistPath: string;
   projectHelmPath: string;
   environmentsList: string[];
@@ -21,7 +21,7 @@ interface NormalizedSchema extends HelmRepoGeneratorSchema {
 
 function normalizeOptions(
   tree: Tree,
-  options: HelmRepoGeneratorSchema
+  options: HelmLocalChartGeneratorSchema
 ): NormalizedSchema {
   const projectConfig = readProjectConfiguration(tree, options.project);
   const projectDistPath = path.join('dist', projectConfig.root);
@@ -45,29 +45,51 @@ function normalizeOptions(
   };
 }
 
-export default async function (tree: Tree, options: HelmRepoGeneratorSchema) {
+export default async function (tree: Tree, options: HelmLocalChartGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const updatedTargets = getHelmAppendedBuildTargets(
     normalizedOptions.projectDistPath,
     normalizedOptions.projectHelmPath,
-    normalizedOptions.projectConfig
+    normalizedOptions.projectConfig,
+    true
   );
 
   updateProjectConfiguration(tree, options.project, {
     ...normalizedOptions.projectConfig,
     targets: updatedTargets,
   });
-  createValuesFiles(tree, normalizedOptions);
+  addChartFiles(tree, normalizedOptions);
+  copyValuesFiles(tree, normalizedOptions);
+  //await formatFiles(tree);
 }
 
-function createValuesFiles(tree: Tree, options: NormalizedSchema) {
-  console.log(`Fetching values for ${options.repository}/${options.chart}...`);
+function addChartFiles(tree: Tree, options: NormalizedSchema) {
+  const pathParts: Array<string> = [__dirname, 'files', 'generated'];
+  const templateOptions = {
+    ...options,
+    ...names(options.project),
+    dot: '.',
+    template: '',
+  };
+  generateFiles(
+    tree,
+    path.resolve(path.join(...pathParts)),
+    path.join(options.projectConfig.root, 'helm', 'chart'),
+    templateOptions
+  );
+}
+
+function copyValuesFiles(tree: Tree, options: NormalizedSchema) {
+  if (options.createValues != true) return;
 
   const projectConfig = options.projectConfig;
+  const chartValuesFile = path.join(
+    options.projectHelmPath,
+    'chart',
+    'values.yaml'
+  );
 
-  const args = ['show', 'values', `${options.repository}/${options.chart}`];
-
-  const values = spawnSync('helm', args, { shell: true }).output.join('\n');
+  const values = tree.read(chartValuesFile).toString();
 
   _.each(options.environmentsList, (environment) => {
     const filename =

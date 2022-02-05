@@ -1,6 +1,5 @@
 import * as _ from 'underscore';
 import { Console } from 'console';
-// import * as mockFs from 'mock-fs';
 import {
   ProjectConfiguration,
   Tree,
@@ -12,13 +11,13 @@ import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import { readFileSync } from 'fs';
 
 import generator from './generator';
-import { HelmLocalGeneratorSchema } from './schema';
+import { HelmLocalChartGeneratorSchema } from './schema';
 
 import path = require('path');
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
-describe('helm-local generator', () => {
+describe('local-chart generator', () => {
   let appTree: Tree;
 
   beforeEach(() => {
@@ -28,13 +27,11 @@ describe('helm-local generator', () => {
   });
 
   afterEach(() => {
-    // mockFs.restore();
-
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 
   it('fails when project does not exist', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'test',
       createValues: false,
     };
@@ -55,7 +52,7 @@ describe('helm-local generator', () => {
   });
 
   it('fails when helm target already exists for project', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -75,7 +72,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds packageHelmChart to project config', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -109,7 +106,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds build to project config when build target does not already exists', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -141,7 +138,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds copyHelmValues to project config when build target already exists', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -175,7 +172,7 @@ describe('helm-local generator', () => {
   });
 
   it('renames build target to buildSrc when already exists and not chain-execute', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -205,7 +202,7 @@ describe('helm-local generator', () => {
   });
 
   it('creates chain-execute build target when build already exists (existing build not chain-execute)', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -231,10 +228,12 @@ describe('helm-local generator', () => {
     expect(config.targets.build.options?.targets?.length).toBe(2);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('copyHelmValues');
+    expect(config.targets.build.configurations?.prod?.additionalTargets?.length).toBe(1);
+    expect(config.targets.build.configurations?.prod?.additionalTargets[0]).toBe('packageHelmChart');
   });
 
   it('adds to chain-execute build target when build already exists (existing build chain-execute)', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -273,7 +272,7 @@ describe('helm-local generator', () => {
   });
 
   it('sorts targets alphabetically', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -311,7 +310,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds chart.yaml file to chart files in project helm directory matching template', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -345,7 +344,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds values.yaml file to chart files in project helm directory matching template', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -379,7 +378,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds .helmignore file to chart files in project helm directory matching template', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -413,7 +412,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds templates directory to chart files in project helm directory', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -441,7 +440,7 @@ describe('helm-local generator', () => {
   });
 
   it('does not add project values.yaml when createValues false', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
     };
@@ -464,7 +463,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds project values.yaml when createValues true (no environments specified', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: true,
     };
@@ -493,7 +492,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds project values.yaml when createValues true (environments specified', async () => {
-    const options: HelmLocalGeneratorSchema = {
+    const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: true,
       environments: 'dev,prod',
