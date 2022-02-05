@@ -19,12 +19,13 @@ jobs:
           token: ${{ secrets.GIT_TOKEN_KILLIAN }}
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
-          cache: 'npm'
+          node-version: '17'
+          cache: 'yarn'
       - name: Create build artifacts
         run: |
           git config --global user.email "hale.killian@gmail.com"
           git config --global user.name "Killian Hale"
+          corepack enable
           make templates -B
           make artifacts
           make version tag=true commit=true commit-branch=develop
