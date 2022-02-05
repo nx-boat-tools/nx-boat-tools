@@ -46,7 +46,7 @@ artifacts:
 	yarn dlx nx affected:build --base=$(last_version_hash) --parallel=5
 
 	echo
-	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
+	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do echo 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
 	
 	echo $(current_version) >> RELEASE_VERSION
 version:
@@ -57,8 +57,7 @@ version:
 	yarn install --immutable;
 
 	$(eval current_version = $(shell npm pkg get version))
-	$(eval major_version = $(shell echo $(current_root_version) | sed 's/\..*//' | sed 's/[^0-9]//'))
-	$(eval new_version = $(shell yarn dlx semver -i patch $(current_version)))
+	$(eval new_version = $(shell yarn dlx -q semver -i patch $(current_version)))
 
 ifeq ($(tag), true)
 	git tag v$(current_version);
