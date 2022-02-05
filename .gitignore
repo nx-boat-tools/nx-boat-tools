@@ -54,6 +54,7 @@ Thumbs.db
 *.d.ts
 !**/schema.d.ts
 !.cz-config.js
+!scripts/*.js
 
 # IDEs and editors
 /.idea
