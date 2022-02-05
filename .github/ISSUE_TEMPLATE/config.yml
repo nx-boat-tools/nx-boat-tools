@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the community guidelines
+    about: "Please make sure you have read the submission guidelines before posting an issue"
+    url: https://github.com/nx-boat-tools/nx-boat-tools/blob/master/CONTRIBUTING.md#-submitting-an-issue
+  - name: Want to start a discussion?
+    about: "Want to start a thread to discuss an idea? Use the discussions feature provided by GitHub."
+    url: https://github.com/nx-boat-tools/nx-boat-tools/discussions
+  - name: Have a question?
+    url: https://gitter.im/nx-boat-tools/community
+    about: "The Nx Boat Tools Gitter is a great place for Nx Boat Tools questions to be asked and answered."
+  - name: Have a question about Nx?
+    url: https://go.nrwl.io/join-slack
+    about: "The Nx Community Slack is a great resource for things related to Nx. Please use the #support channel if you need non-Boat Tools related help with your workspace!"
