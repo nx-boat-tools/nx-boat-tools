@@ -10,3 +10,5 @@ updates:
     target-branch: develop
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore(repo):"
