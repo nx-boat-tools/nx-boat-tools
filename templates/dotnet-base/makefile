@@ -3,7 +3,7 @@ FrameworkVersion = "net5.0"
 default:
 	rm -rf $(out-dir)
 	# mkdir -p ${out-dir}/sln
-	dotnet new solution -n __className__ -o $(out-dir)/sln --force
+	dotnet new sln -n __className__ -o $(out-dir)/sln --force
 	dotnet new $(template) -f $(FrameworkVersion) -n __className__ -o $(out-dir)/csproj/__className__ --force
 	dotnet sln $(out-dir)/sln/__className__.sln add $(out-dir)/csproj/__className__/__className__.csproj
 	rm -rf $(out-dir)/csproj/__className__/obj
