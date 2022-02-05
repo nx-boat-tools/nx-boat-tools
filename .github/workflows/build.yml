@@ -13,10 +13,11 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-node@v2
       with:
-        node-version: '16'
-        cache: 'npm'
+        node-version: '17'
+        cache: 'yarn'
     - name: Build affected
       run: |
+        corepack enable
         make templates -B
         make base_ref=origin/main
     - uses: codecov/codecov-action@v2

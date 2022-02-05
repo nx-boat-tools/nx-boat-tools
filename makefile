@@ -19,15 +19,15 @@ endif
 build:
 	echo $(NEWLINE)🛠 Building affected projects compared to $(base_ref)...
 
-	npm ci
-	npx nx affected:build --base=$(base_ref) --parallel=5
-	npx nx affected:test --base=$(base_ref) --parallel=5
+	yarn install --immutable
+	yarn dlx nx affected:build --base=$(base_ref) --parallel=5
+	yarn dlx nx affected:test --base=$(base_ref) --parallel=5
 format:
 	echo $(NEWLINE)🧼️ Formatting and linting affected files compared to $(base_ref)...
 
-	npm ci
-	npx nx format:write --base=$(base_ref)
-	npx nx affected:lint --fix --base=$(base_ref)
+	yarn install --immutable
+	yarn dlx nx format:write --base=$(base_ref)
+	yarn dlx nx affected:lint --fix --base=$(base_ref)
 
 ifeq ($(commit), true)
 	$(eval changes = $(shell git status -s))
@@ -42,8 +42,8 @@ artifacts:
 
 	mkdir -p $(ARTIFACTS_DIR)
 
-	npm ci
-	npx nx affected:build --base=$(last_version_hash) --parallel=5
+	yarn install --immutable
+	yarn dlx nx affected:build --base=$(last_version_hash) --parallel=5
 
 	echo
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
@@ -52,10 +52,10 @@ artifacts:
 version:
 	echo $(NEWLINE)🏷 Tagging and updating version...
 
-	npm ci;
+	yarn install --immutable;
 
 	$(eval current_version = $(shell npm pkg get version))
-	$(eval new_version = $(shell npx semver -i patch $(current_version)))
+	$(eval new_version = $(shell yarn dlx semver -i patch $(current_version)))
 
 ifeq ($(tag), true)
 	git tag v$(current_version);

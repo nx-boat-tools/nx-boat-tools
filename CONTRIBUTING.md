@@ -256,8 +256,8 @@ Please follow the following guidelines:
 
 - Make sure unit tests pass (`nx affected --target=test`)
   - Target a specific project with: `nx run project:test` (i.e. `nx run helm:test` to target `packages/helm`)
-  - Target a specific unit test file (i.e. `packages/helm/src/executors/copyValues/executor.spec.ts`) with `npx jest packages/helm/src/executors/copyValues/executor.spec.ts`
-  - For more options on running tests - check `npx jest --help` or visit [jestjs.io](https://jestjs.io/)
+  - Target a specific unit test file (i.e. `packages/helm/src/executors/copyValues/executor.spec.ts`) with `jest packages/helm/src/executors/copyValues/executor.spec.ts`
+  - For more options on running tests - check `jest --help` or visit [jestjs.io](https://jestjs.io/)
   - Debug with `node --inspect-brk ./node_modules/jest/bin/jest.js build/packages/helm/src/executors/copyValues/executor.spec.js`
 - Make sure you run `make format`
 - Update your commit message to follow the guidelines below (use `yarn commit` to automate compliance)
