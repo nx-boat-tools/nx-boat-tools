@@ -20,6 +20,8 @@ jobs:
       env:
         BASE_REF: origin/${{ github.base_ref }}
         HEAD_REF: origin/${{ github.head_ref }}
+        GITHUB_USER: ${{ secrets.GITHUB_USER }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.email "hale.killian@gmail.com"
         git config --global user.name "Killian Hale"
