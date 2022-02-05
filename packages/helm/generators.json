@@ -3,15 +3,25 @@
   "name": "helm",
   "version": "0.0.1",
   "generators": {
-    "helm-local": {
-      "factory": "./src/generators/helm-local/generator",
-      "schema": "./src/generators/helm-local/schema.json",
-      "description": "helm-local generator"
+    "local-chart": {
+      "factory": "./src/generators/local-chart/generator",
+      "schema": "./src/generators/local-chart/schema.json",
+      "description": "Add a local helm chart to a project"
     },
-    "helm-repo": {
-      "factory": "./src/generators/helm-repo/generator",
-      "schema": "./src/generators/helm-repo/schema.json",
-      "description": "helm-repo generator"
+    "repo-chart": {
+      "factory": "./src/generators/repo-chart/generator",
+      "schema": "./src/generators/repo-chart/schema.json",
+      "description": "Add a helm chart from a repo to a project"
+    },
+    "local-chart-project": {
+      "factory": "./src/generators/local-chart-project/generator",
+      "schema": "./src/generators/local-chart-project/schema.json",
+      "description": "Create a new project containing a local helm chart"
+    },
+    "repo-chart-project": {
+      "factory": "./src/generators/repo-chart-project/generator",
+      "schema": "./src/generators/repo-chart-project/schema.json",
+      "description": "Create a new project containing a helm chart from a repo"
     }
   }
 }

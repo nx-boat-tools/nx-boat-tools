@@ -12,7 +12,7 @@ import { createTargetConfig, defuse } from '@nx-boat-tools/common';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 
 import generator from './generator';
-import { HelmRepoGeneratorSchema } from './schema';
+import { HelmRepoChartGeneratorSchema } from './schema';
 
 import path = require('path');
 
@@ -32,7 +32,7 @@ const fn = jest.fn((command, args) => {
   };
 });
 
-describe('helm-local generator', () => {
+describe('repo-chart generator', () => {
   let appTree: Tree;
 
   beforeAll(() => {
@@ -54,7 +54,7 @@ describe('helm-local generator', () => {
   });
 
   it('fails when project does not exist', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'test',
       repository: 'bitnami',
       chart: 'mysql',
@@ -76,7 +76,7 @@ describe('helm-local generator', () => {
   });
 
   it('fails when helm target already exists for project', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -97,7 +97,7 @@ describe('helm-local generator', () => {
   });
 
   it('does not add packageHelmChart to project config', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -121,7 +121,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds build to project config when build target does not already exists', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -154,7 +154,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds copyHelmValues to project config when build target already exists', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -189,7 +189,7 @@ describe('helm-local generator', () => {
   });
 
   it('renames build target to buildSrc when already exists and not chain-execute', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -220,7 +220,7 @@ describe('helm-local generator', () => {
   });
 
   it('creates chain-execute build target when build already exists (existing build not chain-execute)', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -247,10 +247,11 @@ describe('helm-local generator', () => {
     expect(config.targets.build.options?.targets?.length).toBe(2);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('copyHelmValues');
+    expect(config.targets.build.configurations?.prod?.additionalTargets).toBeUndefined();
   });
 
   it('adds to chain-execute build target when build already exists (existing build chain-execute)', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -290,7 +291,7 @@ describe('helm-local generator', () => {
   });
 
   it('sorts targets alphabetically', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -328,7 +329,7 @@ describe('helm-local generator', () => {
   });
 
   it('does not add chart files to project helm directory', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -352,7 +353,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds project values.yaml when createValues true (no environments specified', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',
@@ -388,7 +389,7 @@ describe('helm-local generator', () => {
   });
 
   it('adds project values.yaml when createValues true (environments specified', async () => {
-    const options: HelmRepoGeneratorSchema = {
+    const options: HelmRepoChartGeneratorSchema = {
       project: 'my-project',
       repository: 'bitnami',
       chart: 'mysql',

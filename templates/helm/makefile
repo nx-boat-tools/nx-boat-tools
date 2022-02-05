@@ -1,7 +1,7 @@
 ROOT_DIR:=$(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 # project-name = my-chart
-out-dir = ../../packages/helm/src/generators/helm-local/files/generated
+out-dir = ../../packages/helm/src/generators/local-chart/files/generated
 
 default:
 	rm -rf $(out-dir)

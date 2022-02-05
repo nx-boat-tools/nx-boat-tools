@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "Helm",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use?"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Add tags to the project (used for linting)",
+      "alias": "t"
+    },
+    "directory": {
+      "type": "string",
+      "description": "A directory where the project is placed",
+      "alias": "d"
+    },
+    "environments": {
+      "type": "string",
+      "description": "A comma seperated list of environments to add values for."
+    },
+    "repository": {
+      "type": "string",
+      "description": "The name of the repository containing your chart.",
+      "x-prompt": "What is the name of the repository containing your chart?"
+    },
+    "chart": {
+      "type": "string",
+      "description": "The name of the chart to use (without the repository).",
+      "x-prompt": "What is the name of the chart to use (without the repository)?"
+    }
+  },
+  "required": ["name", "repository", "chart"]
+}
