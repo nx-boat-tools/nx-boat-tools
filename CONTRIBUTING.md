@@ -13,6 +13,7 @@ We'd love to have you help us with Nx Boat Tools! Please read this page for deta
   - [`Running Unit Tests`](#running-unit-tests)
   - [`Makefile targets`](#makefile-targets)
   - [`Developing on Windows`](#developing-on-windows)
+- [Publishing to a local registry](#publishing-to-a-local-registry)
 - [Documentation Contributions](#documentation-contributions)
 - [Submission Guidelines](#submission-guidelines)
   - [`Submitting an Issue`](#-submitting-an-issue)
@@ -251,12 +252,65 @@ Steps:
 3. Create a template for the `dotnet` `webapi` generator based on the output from `dotnet new webapi`
 4. Create a template for the `helm` `local-chart` generator based on the output from `helm create`
 
+#### local-registry-\*
+
+These targets are used when publishing to a local registry. See the [section below](#publishing-to-a-local-registry) for more details.
+
 ### Developing on Windows
 
 To build Nx on Windows, you need to use WSL.
 
 - Run `npm install` in WSL. NPM will compile several dependencies. If you don't run `install` in WSL, they will be compiled for Windows.
 - Run `nx affected --target=test` and other commands in WSL.
+
+## 📦  Publishing to a local registry
+
+To test if your changes will actually work once the changes are published,
+it can be useful to publish to a local registry.
+
+The first step is to start the local registry so it can be published to. To do this, open a terminal and run the following:
+
+```bash
+# Starts the local registry. Keep this running in the background.
+make local-registry-start
+```
+
+Then, open another terminal and enter the following:
+
+```bash
+# We first need to add a user to the registry. (real credentials are not required, you just need to be logged in)
+npm adduser --registry http://localhost:4873
+
+# Now we need to tell npm and yarn to use the local registry.
+# Note: This reroutes your installs to your local registry
+make local-registry-enable
+```
+
+Now we need to publish the packages to the local registry. Luckily there's a make target to do this for us.
+
+```bash
+# publish what's in the dist folder to the local registry
+make local-registry-publish
+```
+
+You can now install and use the packages as needed for testing. To facilitate this process, you can create a temp workspace using the local registry by using the following:
+
+```bash
+# This creates a test workspace in ./tmp/local/test that uses the local registry
+make local-registry-workspace
+
+# You can now cd into the test workspace and buld the project, etc
+cd ./tmp/local-test
+yarn dlx nx build my-test
+
+```
+
+When you're ready to revert back to using your usual registry and stop the local one, enter the following command and then close the first terminal window.
+
+```bash
+# Revert npm and yarn to use their default registries
+make local-registry-disable
+```
 
 ## 📝  Documentation Contributions
 

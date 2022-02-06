@@ -6,6 +6,7 @@
 /out-tsc
 RELEASE_VERSION
 **/files/generated/**/*
+/build
 
 # dependencies
 /node_modules
