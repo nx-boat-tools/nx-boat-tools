@@ -16,12 +16,15 @@ ifeq ($(commit-branch),)
 PUSH_BRANCH = $(commit-branch)
 endif
 
+.PHONY: build
 build:
 	echo $(NEWLINE)🛠 Building affected projects compared to $(base_ref)...
 
 	yarn install --immutable
 	yarn dlx nx affected:build --base=$(base_ref) --parallel=5
 	yarn dlx nx affected:test --base=$(base_ref) --parallel=5
+
+.PHONY: format
 format:
 	echo $(NEWLINE)🧼️ Formatting and linting affected files compared to $(base_ref)...
 
@@ -33,6 +36,8 @@ ifeq ($(commit), true)
 	$(eval changes = $(shell git status -s))
 	$(if $(strip $(changes)), git add .; git commit -m 'cleanup(misc): formatting and lint changes'; git push -u origin $(PUSH_BRANCH))
 endif
+
+.PHONY: artifacts
 artifacts:
 	echo $(NEWLINE)🏺 Creating build artifacts...
 
@@ -43,12 +48,15 @@ artifacts:
 	mkdir -p $(ARTIFACTS_DIR)
 
 	yarn install --immutable
+	yarn dlx nx affected --base=$(last_version_hash) --target=updateDependencies
 	yarn dlx nx affected:build --base=$(last_version_hash) --parallel=5
 
 	echo
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do echo 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
 	
 	echo $(current_version) >> RELEASE_VERSION
+
+.PHONY: version
 version:
 	# NOTE: We're not using @jscutlery/semver because we want to control the tags ourselves 
 
@@ -67,14 +75,18 @@ ifdef commit-branch
 	git checkout $(commit-branch)
 endif
 
-	for f in $$(find "$(PACKAGES_DIR)" -type d -maxdepth 1 ! -name "packages"); do cd $$f; npm version $(new_version) --commit-hooks=false --git-tag-version=false; cd ../..; done;
 	npm version $(new_version) --commit-hooks=false --git-tag-version=false;
+	yarn dlx nx run-many --target=version --all --parallel=5 --to='$(new_version)' --git-tag-version=false
+
+	yarn dlx nx run-many --target=updateDependencies --all --parallel=5
 
 ifeq ($(commit), true)
 	git add .
 	git commit -m 'chore(repo): bumping version to $(new_version)';
 	git push -u origin $(PUSH_BRANCH)
 endif
+
+.PHONY: templates
 templates:
 	echo $(NEWLINE)🆕 Refreshing generator file templates...
 

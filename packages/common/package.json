@@ -5,10 +5,9 @@
   "generators": "./generators.json",
   "executors": "./executors.json",
   "dependencies": {
-    "@nrwl/devkit": "12.9.0",
-    "@nrwl/tao": "12.9.0",
     "minimist": "^1.2.5",
     "tslib": "^2.0.0",
     "underscore": "^1.13.1"
-  }
+  },
+  "peerDependencies": {}
 }
