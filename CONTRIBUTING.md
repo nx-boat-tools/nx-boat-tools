@@ -26,7 +26,7 @@ Nx Boat Tools was originally created using the `create-nx-plugin` initializer pa
 
 ```
 nx-boat-tools
-├── e2e/ 
+├── e2e/
 │   ├── common-e2e/··················· E2E Tests for the common plugin
 │   ├── docker-e2e/··················· E2E Tests for the docker plugin
 │   ├── dotnet-e2e/··················· E2E Tests for the dotnet plugin
@@ -75,9 +75,13 @@ nx-boat-tools
 │       ├── package.json················ THe package.json for the plugin
 │       ├── project.json················ THe project specification for the plugin
 │       └── tsconfig*.json·············· The tsconfigs for the plugin
+├── scripts/
+│   ├── check-lock-files.js··········· Used for enforcing consisten lock files in git hook
+│   ├── commit-lint.js················ Provides more information on commit message linting
+│   └── update-dependencies.js········ Updates the dependencies in a project package.json
 ├── templates/
 │   ├── dotnet-base/
-│   │   └── makefile·················· A makefile containing commands to generate dotnet 
+│   │   └── makefile·················· A makefile containing commands to generate dotnet
 │   │                                  projects based on the args given
 │   ├── dotnet-classlib/
 │   │   └── makefile·················· A makefile which uses the dotnet-base makefile to
@@ -168,6 +172,7 @@ npm run test
 This project utilizes `make` to orchestrate some of the build process, in particular for use in CI/CD. The following tarkets are defined in the top-level makefile:
 
 #### build (default)
+
 The `build` target represents the main build for Nx Boat Tools, utilizing Nx to only build what has changed when comparing the current commit to the base_ref.
 
 Arguments:
@@ -176,11 +181,13 @@ Arguments:
 | `base_ref` | string | 'main' | Maps to the `base` param on `nx affected:*` commands |
 
 Build Steps:
+
 1. Install dependencies
 2. Build the affected projects
 3. Test the affected projects
 
 #### format
+
 The `format` target formats and lints what has changed when comparing the current commit to the base_ref.
 
 Arguments:
@@ -191,31 +198,54 @@ Arguments:
 | `commit-branch` | string | 'develop' | The branch to push to when committing format changes |
 
 Steps:
+
 1. Install dependencies
 2. Format the affected projects
 3. Lint and fix the affected projects
 4. Commit and push the resulting changes if requested
 
 #### artifacts
+
 The `artifacts` target builds the projects changed since the last tag. It then zips each resulting folder into its own zip archive in the artifacts directory. The zip archive will be suffixed with the version in the `package.json`
 
 Arguments: N/A
 
 Steps:
+
 1. Install dependencies
-2. Build the affected projects
-3. Zip each project's output into a zip archive using the version as a suffix
+2. Update the dependencies in each affected project's `package.json`
+3. Build the affected projects
+4. Zip each project's output into a zip archive using the version as a suffix
 
 #### version
 
-WIP
+The `version` target updates the `package.json` version for the workspace and all plugins.
+
+Arguments:
+| name | type | default | description |
+| ----------------- | ------- | ------- | --------------------------------------------------------------------------------- |
+| `tag` | boolean | false | Whether or not to make a git tag for the version |
+| `commit` | boolean | false | Whether or not to commit the changes |
+| `commit-branch` | string | 'develop' | The branch to push to when committing version changes |
+
+Steps:
+
+1. Install dependencies
+2. Calculate the new version based off of the workspace version
+3. If `tag` is true then create and push the tag
+4. if `commit-branch` was specified then do a `git checkout`
+5. Set the workspace version
+6. Set the version for each project
+7. If `commit` is true then create a commit and push
 
 #### templates
+
 The `templates` target creates the generated template output for some of the generators. It calls `make` on each directory in the templates folder (with the exception of `dotnet-base`)
 
 Arguments: N/A
 
 Steps:
+
 1. Create a template for the `dotnet` `classlib` generator based on the output from `dotnet new classlib`
 2. Create a template for the `dotnet` `console` generator based on the output from `dotnet new console`
 3. Create a template for the `dotnet` `webapi` generator based on the output from `dotnet new webapi`
