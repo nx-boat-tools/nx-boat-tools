@@ -91,3 +91,72 @@ templates:
 	echo $(NEWLINE)🆕 Refreshing generator file templates...
 
 	$(foreach file, $(wildcard $(TEMPLATES_DIR)/*), [ "$(file)" != './templates/dotnet-base' ] && (make -C $(file));)
+
+.PHONY: local-registry-enable
+local-registry-enable:
+	echo "Setting registry to local registry"
+	echo "To Disable: yarn local-registry disable"
+
+	npm config set registry http://localhost:4873/
+	# yarn config set npmRegistryServer http://localhost:4873/
+
+.PHONY: local-registry-disable
+local-registry-disable:
+	npm config delete registry
+	# yarn config unset npmRegistryServer
+
+	$(eval CURRENT_NPM_REGISTRY = $(shell npm config get registry))
+	$(eval CURRENT_YARN_REGISTRY = $(shell yarn config get npmRegistryServer))
+
+	echo "Reverting registries"
+	echo "  > NPM:  $(CURRENT_NPM_REGISTRY)"
+	echo "  > YARN: $(CURRENT_YARN_REIGSTRY)"
+
+.PHONY: local-registry-clear
+local-registry-clear:
+	echo "Clearing Local Registry"
+
+	rm -rf ./build/local-registry/storage
+
+.PHONY: local-registry-start
+local-registry-start:
+	echo "Starting Local Registry"
+
+	VERDACCIO_HANDLE_KILL_SIGNALS=true
+	yarn verdaccio --config ./.verdaccio/config.yml
+
+.PHONY: local-registry-publish
+local-registry-publish:
+	echo "📤 Publishing packages to local registry"
+
+	$(eval NPM_REGISTRY = $(shell npm config get registry))
+
+ifneq (,$(findstring http://localhost*,$(NPM_REGISTRY)))
+    echo 🛑 STOPPING 🛑  \n\n$$NPM_REGISTRY does not look like a local registry! 😨
+
+	exit 1
+endif
+
+	$(eval current_version = $(shell npm pkg get version))
+	$(eval new_version = $(shell npx semver -i prepatch --preid local $(current_version)))
+
+	make templates
+
+	yarn dlx nx run-many --target=build --all --parallel=5
+	yarn dlx nx run-many --target=version --all --parallel=5 --to='$(new_version)' --pathPrefix=dist
+	yarn dlx nx run-many --target=updateDependencies --all --parallel=5 --peerVersion='$(new_version)' --pathPrefix=dist
+
+	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do echo 📝  Publishing $$f...; cd $$f; npm publish --tag next --access public --registry=$(NPM_REGISTRY); cd ../../..; done;
+
+local-registry-workspace:
+	make local-registry-disable;
+
+	rm -rf ./tmp/local-test
+	cd ./tmp; npx create-nx-workspace --preset=empty --name=local-test --nxCloud=false
+
+	cp makefile ./tmp/local-test/makefile
+
+	cd ./tmp/local-test; \
+	make local-registry-enable; \
+	npm i -D @nx-boat-tools/dotnet@next; \
+	npx nx g @nx-boat-tools/dotnet:console my-test;
