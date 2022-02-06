@@ -56,6 +56,19 @@
           }
         ]
       }
+    },
+    "updateDependencies": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "if [[ '{args.pathPrefix}' = 'undefined' ]] ; then pathPrefix=''; else pathPrefix='{args.pathPrefix}/'; fi; node ./scripts/update-dependencies.js --root=$PWD --peerVersion='{args.peerVersion}' --excludedRootDeps=guid-typescript,xmlbuilder2 --projectDir=${pathPrefix}packages/helm"
+      }
+    },
+    "version": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "if [[ '{args.pathPrefix}' = 'undefined' ]] ; then pathPrefix=''; else pathPrefix='{args.pathPrefix}/'; fi; cd ${pathPrefix}packages/helm; npm version {args.to} --git-tag-version=false"
+      }
     }
   }
 }
