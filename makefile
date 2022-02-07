@@ -54,6 +54,7 @@ artifacts:
 	echo
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do echo 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
 	
+	rm RELEASE_VERSION
 	echo $(current_version) >> RELEASE_VERSION
 
 .PHONY: version
@@ -95,7 +96,7 @@ templates:
 .PHONY: local-registry-enable
 local-registry-enable:
 	echo "Setting registry to local registry"
-	echo "To Disable: yarn local-registry disable"
+	echo "To Disable: make local-registry-disable"
 
 	npm config set registry http://localhost:4873/
 	# yarn config set npmRegistryServer http://localhost:4873/
@@ -106,11 +107,11 @@ local-registry-disable:
 	# yarn config unset npmRegistryServer
 
 	$(eval CURRENT_NPM_REGISTRY = $(shell npm config get registry))
-	$(eval CURRENT_YARN_REGISTRY = $(shell yarn config get npmRegistryServer))
+	# $(eval CURRENT_YARN_REGISTRY = $(shell yarn config get npmRegistryServer))
 
 	echo "Reverting registries"
 	echo "  > NPM:  $(CURRENT_NPM_REGISTRY)"
-	echo "  > YARN: $(CURRENT_YARN_REIGSTRY)"
+	# echo "  > YARN: $(CURRENT_YARN_REIGSTRY)"
 
 .PHONY: local-registry-clear
 local-registry-clear:
@@ -121,6 +122,12 @@ local-registry-clear:
 .PHONY: local-registry-start
 local-registry-start:
 	echo "Starting Local Registry"
+
+ifneq (,$(wildcard RELEASE_VERSION))
+	rm RELEASE_VERSION
+endif
+
+	echo "999.0.0" >> RELEASE_VERSION
 
 	VERDACCIO_HANDLE_KILL_SIGNALS=true
 	yarn verdaccio --config ./.verdaccio/config.yml
@@ -137,8 +144,16 @@ ifneq (,$(findstring http://localhost*,$(NPM_REGISTRY)))
 	exit 1
 endif
 
+ifeq (,$(wildcard RELEASE_VERSION))
 	$(eval current_version = $(shell npm pkg get version))
-	$(eval new_version = $(shell npx semver -i prepatch --preid local $(current_version)))
+else
+	$(eval current_version = $(shell head -n 1 RELEASE_VERSION))
+	rm RELEASE_VERSION
+endif
+
+	$(eval new_version = $(shell npx semver -i prerelease --preid local $(current_version)))
+
+	echo $(new_version) >> RELEASE_VERSION
 
 	make templates
 
@@ -152,6 +167,7 @@ local-registry-workspace:
 	make local-registry-disable;
 
 	rm -rf ./tmp/local-test
+	mkdir -p ./tmp
 	cd ./tmp; npx create-nx-workspace --preset=empty --name=local-test --nxCloud=false
 
 	cp makefile ./tmp/local-test/makefile
