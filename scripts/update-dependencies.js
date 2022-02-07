@@ -7,12 +7,14 @@ const argv = require('minimist')(process.argv.slice(2));
 const root = argv.root;
 const projectDir = argv.projectDir;
 const version = argv.peerVersion == 'undefined' ? undefined : argv.peerVersion;
-const excludedRootDeps = argv.excludedRootDeps?.split(',') || []
-const ignoredPeerDeps = argv.ignoredPeerDeps?.split(',') || []
+const excludedRootDeps = argv.excludedRootDeps?.split(',') || [];
+const ignoredPeerDeps = argv.ignoredPeerDeps?.split(',') || [];
 
 const project = path.basename(projectDir);
 
-console.log(`\n🆙  Updating the dependencies in package.json for project '${project}'...`)
+console.log(
+  `\n🆙  Updating the dependencies in package.json for project '${project}'...`
+);
 
 if (root === undefined) {
   console.log('1');
@@ -32,7 +34,7 @@ const rootPackageJson = JSON.parse(rootPackageJsonString);
 
 const rootVersion = version || `^${rootPackageJson.version}` || 'latest';
 const rootDependencies = rootPackageJson.dependencies || {};
-const filteredDependencies = _.omit(rootDependencies, ...excludedRootDeps)
+const filteredDependencies = _.omit(rootDependencies, ...excludedRootDeps);
 
 let projectPackageJsonString = readFileSync(projectPackageJsonPath);
 const projectPackageJson = JSON.parse(projectPackageJsonString);
