@@ -9,7 +9,7 @@ export default async function runExecutor(
   options: BuildExecutorSchema,
   context: ExecutorContext
 ) {
-  let { buildPath } = options;
+  let { buildPath, dockerFilePath } = options;
   const { projectName, root } = context;
 
   if (projectName === undefined) {
@@ -22,7 +22,10 @@ export default async function runExecutor(
 
   buildPath = path.join(root, buildPath);
 
-  const dockerFilePath = path.join(buildPath, 'dockerfile');
+  dockerFilePath =
+    dockerFilePath == undefined
+      ? path.join(buildPath, 'dockerfile')
+      : path.join(root, dockerFilePath);
 
   if (!existsSync(buildPath)) {
     throw new Error(`Unable to locate build path for project, '${buildPath}'`);

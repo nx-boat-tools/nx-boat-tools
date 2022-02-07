@@ -1,7 +1,6 @@
 import * as _ from 'underscore';
 import * as path from 'path';
 import {
-  NxJsonProjectConfiguration,
   ProjectConfiguration,
   TargetConfiguration,
   Tree,
@@ -15,7 +14,9 @@ import {
 import { DockerGeneratorSchema } from './schema';
 
 interface NormalizedSchema extends DockerGeneratorSchema {
-  projectConfig: ProjectConfiguration & NxJsonProjectConfiguration;
+  projectConfig: ProjectConfiguration;
+  dockerFilePath: string;
+  dockerIgnorePath: string;
   projectDistPath: string;
 }
 
@@ -24,6 +25,8 @@ function normalizeOptions(
   options: DockerGeneratorSchema
 ): NormalizedSchema {
   const projectConfig = readProjectConfiguration(tree, options.project);
+  const dockerFilePath = path.join(projectConfig.root, 'dockerfile');
+  const dockerIgnorePath = path.join(projectConfig.root, '.dockerignore');
   const projectDistPath = path.join('dist', projectConfig.root);
 
   if (projectConfig.targets.buildDocker) {
@@ -33,6 +36,8 @@ function normalizeOptions(
   return {
     ...options,
     projectConfig,
+    dockerFilePath,
+    dockerIgnorePath,
     projectDistPath,
   };
 }
@@ -68,6 +73,7 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
     buildDockerImage: {
       executor: '@nx-boat-tools/docker:build',
       options: {
+        dockerFilePath: normalizedOptions.dockerFilePath,
         buildPath: normalizedOptions.projectDistPath,
       },
     },
@@ -91,6 +97,8 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
   targets[copyTargetName] = {
     executor: '@nx-boat-tools/docker:copyFiles',
     options: {
+      dockerFilePath: normalizedOptions.dockerFilePath,
+      dockerIgnorePath: normalizedOptions.dockerIgnorePath,
       distPath: normalizedOptions.projectDistPath,
     },
   };

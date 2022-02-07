@@ -5,10 +5,18 @@
   "description": "",
   "type": "object",
   "properties": {
+    "dockerFilePath": {
+      "type": "string",
+      "description": "The path to the dockerfile for the project "
+    },
+    "dockerIgnorePath": {
+      "type": "string",
+      "description": "The path to the dockerignore for the project"
+    },
     "distPath": {
       "type": "string",
       "description": "The dist path of the project where the files should be copied to"
     }
   },
-  "required": ["distPath"]
+  "required": ["dockerFilePath", "distPath"]
 }
