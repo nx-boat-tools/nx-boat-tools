@@ -41,7 +41,7 @@ async function updateCsprojIsPackable(
   }
 }
 
-export default async function (
+export async function runDotnetCommand(
   options: DotNetCommandExecutorSchema,
   context: ExecutorContext
 ) {
@@ -108,3 +108,5 @@ export default async function (
 
   return { success: true };
 }
+
+export default runDotnetCommand;

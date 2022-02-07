@@ -1,19 +1,21 @@
-import * as devkit from '@nrwl/devkit';
 import { Console } from 'console';
-import {
-  TargetSummary,
-  createFakeExecutor,
-  createTestExecutorContext,
-} from '@nx-boat-tools/common';
+import { ExecutorContext } from '@nrwl/devkit';
+import { createTestExecutorContext } from '@nx-boat-tools/common';
 
+import * as runDotnetCommandExecutor from '../run-dotnet-command/executor';
 import executor from './executor';
 import { BuildDotnetExecutorSchema } from './schema';
 import { DotNetCommandExecutorSchema } from '../run-dotnet-command/schema';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
-const spy = jest.spyOn(devkit, 'runExecutor');
-const mockedRunExecutor = jest.fn(createFakeExecutor());
+const spy = jest.spyOn(runDotnetCommandExecutor, 'runDotnetCommand');
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockedRunExecutor = jest.fn(
+  async (options: DotNetCommandExecutorSchema, context: ExecutorContext) => {
+    return { success: true };
+  }
+);
 
 describe('Dotnet Build Executor', () => {
   beforeAll(() => {
@@ -56,11 +58,9 @@ describe('Dotnet Build Executor', () => {
     expect(mockedRunExecutor.mock.calls.length).toBe(1);
 
     const firstCall: any[] = mockedRunExecutor.mock.calls[0];
-    const targetArg: TargetSummary = firstCall[0];
-    const optionsArg: DotNetCommandExecutorSchema = firstCall[1];
-    const contextArg: devkit.ExecutorContext = firstCall[2];
+    const optionsArg: DotNetCommandExecutorSchema = firstCall[0];
+    const contextArg: ExecutorContext = firstCall[1];
 
-    expect(targetArg.target).toBe('run-dotnet-command');
     expect(optionsArg.action).toBe('build');
     expect(optionsArg.srcPath).toBe('apps/my-project');
     expect(optionsArg.outputPath).toBe('dist/apps/my-project');
