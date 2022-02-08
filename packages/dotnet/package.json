@@ -1,11 +1,11 @@
 {
   "name": "@nx-boat-tools/dotnet",
-  "version": "0.1.2",
+  "version": "0.1.0-alpha.2",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
   "peerDependencies": {
-    "@nx-boat-tools/common": "0.1.2"
+    "@nx-boat-tools/common": "^0.1.0-alpha.2"
   },
   "dependencies": {
     "guid-typescript": "^1.0.9",

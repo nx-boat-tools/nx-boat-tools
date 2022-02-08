@@ -57,14 +57,20 @@ export function getHelmAppendedBuildTargets(
 
   if (addPackageTarget) {
     targets[build].configurations = targets[build].configurations || {
-      prod: {}
-    }
+      prod: {},
+    };
 
     targets[build].configurations.prod.additionalTargets =
       targets[build].configurations.prod.additionalTargets || [];
 
-    if (!targets[build].configurations.prod.additionalTargets.includes(packageHelmChart)) {
-      targets[build].configurations.prod.additionalTargets.push(packageHelmChart);
+    if (
+      !targets[build].configurations.prod.additionalTargets.includes(
+        packageHelmChart
+      )
+    ) {
+      targets[build].configurations.prod.additionalTargets.push(
+        packageHelmChart
+      );
     }
   }
 

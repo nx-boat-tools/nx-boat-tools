@@ -25,24 +25,23 @@ if (exitCode === 0) {
 } else {
   console.log(
     'Oh no! Your commit message does not follow the commit message convention specified in the CONTRIBUTING.MD file. 😦 \n\n\n' +
-    'Commit Message: \n' +
-    '-------------------------------------------------------------------\n' +
-    gitMessage +
-    '\n-------------------------------------------------------------------\n'
+      'Commit Message: \n' +
+      '-------------------------------------------------------------------\n' +
+      gitMessage +
+      '\n-------------------------------------------------------------------\n'
   );
   console.log(
     'Convention: \n' +
-    '-------------------------------------------------------------------\n' +
-    '\ntype(scope): subject \n  \n body' +
-    '\n-------------------------------------------------------------------\n'
+      '-------------------------------------------------------------------\n' +
+      '\ntype(scope): subject \n  \n body' +
+      '\n-------------------------------------------------------------------\n'
   );
   console.log(`possible types: ${allowedTypes.join('|')}`);
   console.log(
     `possible scopes: ${allowedScopes.join('|')} (if unsure use "misc")`
   );
   console.log(
-    '\nEXAMPLE: \n' +
-      'feat(dotnet): add a generator for grpc project type\n'
+    '\nEXAMPLE: \n' + 'feat(dotnet): add a generator for grpc project type\n'
   );
 }
 process.exit(exitCode);

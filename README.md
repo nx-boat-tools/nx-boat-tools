@@ -17,7 +17,7 @@ width="100%" alt="Nx Boat Tools"></p>
 
 # What is Nx Boat Tools?
 
-Nx Boat Tools is a nautically themed suite of community plugins for the [Nx build system](https://github.com/nrwl/nx). 
+Nx Boat Tools is a nautically themed suite of community plugins for the [Nx build system](https://github.com/nrwl/nx).
 
 # Plugins
 
@@ -27,7 +27,8 @@ Nx Boat Tools is a nautically themed suite of community plugins for the [Nx buil
 - [Helm](./packages/helm/README.md) - The Helm
 
 # Helpful Links
-- [Nx Boat Tools Announcements](https://github.com/nx-boat-tools/nx-boat-tools/discussions/categories/announcements) - Our announcement board for Boat Tools related news. 
+
+- [Nx Boat Tools Announcements](https://github.com/nx-boat-tools/nx-boat-tools/discussions/categories/announcements) - Our announcement board for Boat Tools related news.
 - [The Nx Boat Tools Boatyard](https://www.youtube.com/channel/UC9aDt2pydy3DTwDJ7jYt5Vw) - Our YouTube channel where we share tutorials, review updates, and talk about anything related to the project.
 - [The Nx YouTube Channel](https://www.youtube.com/c/Nrwl_io) - The Nrwl Nx YouTube channel which contains the Nx Show, demos, and other Nx related context.
 - [Nx Documentation](https://nx.dev/getting-started/intro)
@@ -38,12 +39,13 @@ This project follows the [all-contributors](https://allcontributors.org) specifi
 Contributions of any kind are welcome! We just ask that you brush up on our [code of conduct](CODE_OF_CONDUCT.md) first. 😃
 
 ## Where to find us
+
 - Discussion Board: https://github.com/nx-boat-tools/nx-boat-tools/discussions
 - Gitter: https://gitter.im/nx-boat-tools/community
 
 ## Got a Question?
 
-We are trying to keep GitHub issues for bug reports and feature requests. The [Q&A section](https://github.com/nx-boat-tools/nx-boat-tools/discussions/categories/q-a) on our disscussion board can be used for questions about Nx Boat Tools or you can reach out on our [gitter channel](https://gitter.im/nx-boat-tools/community). 
+We are trying to keep GitHub issues for bug reports and feature requests. The [Q&A section](https://github.com/nx-boat-tools/nx-boat-tools/discussions/categories/q-a) on our disscussion board can be used for questions about Nx Boat Tools or you can reach out on our [gitter channel](https://gitter.im/nx-boat-tools/community).
 
 ℹ️  Tip: Be sure to search the discussion board before asking your question. We may have already answered it 😃
 
@@ -81,4 +83,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 Icon made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
 
 # Special Thanks
+
 Thank you [Nx](https://github.com/nrwl/nx) for giving us Nx to build on top of as well as for giving us a foundation to build off of for our some of documentation (Readme, Contribution Guide, Issue Templates, etc) 🙏

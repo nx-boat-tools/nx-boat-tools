@@ -333,17 +333,17 @@ The `local-chart-project` generator is for creating new project containing a loc
 
 #### Available options:
 
-| name           | type      | default     | description                                                                                                                                                |
-| -------------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`             | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                                                                                           |
-| `tags`             | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
-| `directory`        | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
-| `createValues` | `boolean` | `true`      | Whether or not to copy the values file from the chart to use for deployment                                                                                |
-| `environments` | `string?` | `undefined` | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+| name           | type      | default     | description                                                                                                                                                                                                                   |
+| -------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                       |
+| `tags`         | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
+| `directory`    | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
+| `createValues` | `boolean` | `true`      | Whether or not to copy the values file from the chart to use for deployment                                                                                                                                                   |
+| `environments` | `string?` | `undefined` | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                    |
 
 #### Generated files:
 
- Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `helm create`. The project will contain a helm folder which will contain the chart directory and as well as any values files that were created.
+Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `helm create`. The project will contain a helm folder which will contain the chart directory and as well as any values files that were created.
 
 #### Updates to `workspace.json`:
 
@@ -415,25 +415,24 @@ nx g @nx-dev-tools/helm:local-chart-project my-project --createValues=true
 nx g @nx-dev-tools/helm:local-chart-project my-project --createValues=true --environments=dev,prod
 ```
 
-
 ### `repo-chart-project`
 
 The `repo-chart-project` generator is for creating new project utilizing a helm chart from a repository.
 
 #### Available options:
 
-| name           | type      | default     | description                                                                                                                                                |
-| -------------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`             | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                                                                                           |
-| `tags`             | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
-| `directory`        | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
-| `repository`   | `string`  |             | Required. The name of the repository containing the chart                                                            |
-| `chart`        | `string`  |             | Required. The name of the chart to use (without the repository)                                                      |
-| `environments` | `string?` | `undefined` | THis is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+| name           | type      | default     | description                                                                                                                                                                                                                   |
+| -------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                       |
+| `tags`         | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
+| `directory`    | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
+| `repository`   | `string`  |             | Required. The name of the repository containing the chart                                                                                                                                                                     |
+| `chart`        | `string`  |             | Required. The name of the chart to use (without the repository)                                                                                                                                                               |
+| `environments` | `string?` | `undefined` | THis is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                                                          |
 
 #### Generated files:
 
- Other than the addition of a `package.json` file for the project, a helm folder is added within the project directory containing the values files that were created.
+Other than the addition of a `package.json` file for the project, a helm folder is added within the project directory containing the values files that were created.
 
 #### Updates to `workspace.json`:
 

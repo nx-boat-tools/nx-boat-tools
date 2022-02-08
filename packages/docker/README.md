@@ -42,7 +42,7 @@ If no `package.json` exists for the project or it does not specify a version the
 
 #### 🚩  Note:
 
-The `buildPath` is set to the dist directory of a project by default as that is where the files that will be copied into docker usually are located. This means that the `copyFiles` executor needs to have ran first as well as any other executors producing build output that needs to be copied into 
+The `buildPath` is set to the dist directory of a project by default as that is where the files that will be copied into docker usually are located. This means that the `copyFiles` executor needs to have ran first as well as any other executors producing build output that needs to be copied into
 
 #### Available options:
 

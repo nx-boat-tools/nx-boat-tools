@@ -1,11 +1,11 @@
 {
   "name": "@nx-boat-tools/docker",
-  "version": "0.1.2",
+  "version": "0.1.0-alpha.2",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
   "peerDependencies": {
-    "@nx-boat-tools/common": "0.1.2"
+    "@nx-boat-tools/common": "^0.1.0-alpha.2"
   },
   "dependencies": {
     "minimist": "^1.2.5",

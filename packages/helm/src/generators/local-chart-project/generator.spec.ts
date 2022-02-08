@@ -9,10 +9,10 @@ import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 
 import * as localChartGenerator from '../local-chart/generator';
 import generator from './generator';
+import { HelmLocalChartGeneratorSchema } from '../local-chart/schema';
 import { HelmLocalChartProjectGeneratorSchema } from './schema';
 
 import path = require('path');
-import { HelmLocalChartGeneratorSchema } from '../local-chart/schema';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
@@ -88,7 +88,7 @@ describe('local-chart-project generator', () => {
     expect(packageJson?.devDependencies).toBeDefined();
     expect(packageJson?.devDependencies['@jscutlery/semver']).toBeDefined();
   });
-  
+
   it('adds package.json to project with directory', async () => {
     const options: HelmLocalChartProjectGeneratorSchema = {
       name: 'my-project',
@@ -156,9 +156,7 @@ describe('local-chart-project generator', () => {
     const config = readProjectConfiguration(appTree, 'my-project');
 
     expect(config?.targets?.version).toBeDefined();
-    expect(config.targets.version.executor).toBe(
-      '@jscutlery/semver:version'
-    );
+    expect(config.targets.version.executor).toBe('@jscutlery/semver:version');
     expect(config.targets.version.options?.syncVersions).toBeUndefined();
     expect(config.targets.version.options?.baseBranch).toBeUndefined();
     expect(config.targets.version.options?.commitMessageFormat).toBe(

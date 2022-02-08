@@ -1,16 +1,15 @@
 import * as path from 'path';
 import {
   Tree,
+  addDependenciesToPackageJson,
+  addProjectConfiguration,
   generateFiles,
   names,
-  addDependenciesToPackageJson,
-  addProjectConfiguration
 } from '@nrwl/devkit';
 import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
 
+import repoChartGenerator from '../repo-chart/generator';
 import { HelmRepoChartProjectGeneratorSchema } from './schema';
-
-import repoChartGenerator from '../repo-chart/generator'
 
 interface NormalizedSchema extends HelmRepoChartProjectGeneratorSchema {
   projectName: string;
@@ -85,12 +84,15 @@ function addProjectDependencies(tree: Tree) {
     tree,
     {},
     {
-      '@jscutlery/semver': 'latest'
+      '@jscutlery/semver': 'latest',
     }
   );
 }
 
-export default async function (tree: Tree, options: HelmRepoChartProjectGeneratorSchema) {
+export default async function (
+  tree: Tree,
+  options: HelmRepoChartProjectGeneratorSchema
+) {
   const normalizedOptions = normalizeOptions(tree, options);
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
@@ -101,13 +103,14 @@ export default async function (tree: Tree, options: HelmRepoChartProjectGenerato
       version: createTarget({
         syncVersions: false,
         baseBranch: undefined,
-        commitMessageFormat: 'chore(${projectName}): release version ${version}',
-      })
-    }
+        commitMessageFormat:
+          'chore(${projectName}): release version ${version}',
+      }),
+    },
   });
   addFiles(tree, normalizedOptions);
   await repoChartGenerator(tree, {
     ...options,
-    project: options.name
-  })
+    project: options.name,
+  });
 }
