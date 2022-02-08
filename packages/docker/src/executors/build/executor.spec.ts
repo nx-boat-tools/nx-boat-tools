@@ -126,7 +126,7 @@ describe('Docker Build Executor', () => {
     );
   });
 
-  it('creates the correct Docker CLI build command', async () => {
+  it('creates the correct Docker CLI build command (dockerFilePath undefined)', async () => {
     const options: BuildExecutorSchema = {
       buildPath: 'apps/my-project',
     };
@@ -161,6 +161,79 @@ describe('Docker Build Executor', () => {
     expect(argsArg[4]).toBe(
       path.join(context.root, options.buildPath, 'dockerfile')
     );
+    expect(argsArg[5]).toBe(path.join(context.root, options.buildPath));
+  });
+
+  it('creates the correct Docker CLI build command (dockerFilePath inside projectDir)', async () => {
+    const options: BuildExecutorSchema = {
+      buildPath: 'apps/my-project',
+      dockerFilePath: 'apps/my-project/dockerfile.prod',
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const fakeFs = {};
+    fakeFs[path.join(context.root, options.buildPath)] = {
+      'dockerfile.prod': '',
+    };
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
+    expect(fn.mock.calls.length).toBe(1);
+
+    const firstCall = fn.mock.calls[0];
+    const commandArg: string = firstCall[0];
+    const argsArg: string[] = firstCall[1];
+
+    expect(commandArg).toBe('docker');
+    expect(argsArg[0]).toBe('build');
+    expect(argsArg[1]).toBe('-t');
+    expect(argsArg[2]).toBe(`${context.projectName}:latest`);
+    expect(argsArg[3]).toBe('-f');
+    expect(argsArg[4]).toBe(path.join(context.root, options.dockerFilePath));
+    expect(argsArg[5]).toBe(path.join(context.root, options.buildPath));
+  });
+
+  it('creates the correct Docker CLI build command (dockerFilePath outside projectDir)', async () => {
+    const options: BuildExecutorSchema = {
+      buildPath: 'apps/my-project',
+      dockerFilePath: 'images/base-dockerfile',
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const fakeFs = {};
+    fakeFs[path.join(context.root, options.buildPath)] = {};
+    fakeFs[path.join(context.root, 'images', 'base-dockerfile')] = '';
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
+    expect(fn.mock.calls.length).toBe(1);
+
+    const firstCall = fn.mock.calls[0];
+    const commandArg: string = firstCall[0];
+    const argsArg: string[] = firstCall[1];
+
+    expect(commandArg).toBe('docker');
+    expect(argsArg[0]).toBe('build');
+    expect(argsArg[1]).toBe('-t');
+    expect(argsArg[2]).toBe(`${context.projectName}:latest`);
+    expect(argsArg[3]).toBe('-f');
+    expect(argsArg[4]).toBe(path.join(context.root, options.dockerFilePath));
     expect(argsArg[5]).toBe(path.join(context.root, options.buildPath));
   });
 

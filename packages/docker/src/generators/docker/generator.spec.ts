@@ -98,6 +98,9 @@ describe('docker generator', () => {
     expect(config.targets.buildDockerImage.executor).toBe(
       '@nx-boat-tools/docker:build'
     );
+    expect(config.targets.copyDockerFiles.options?.dockerFilePath).toBe(
+      path.join(initialConfig.root, 'dockerfile')
+    );
     expect(config.targets.buildDockerImage.options?.buildPath).toBe(
       path.join('dist', initialConfig.root)
     );
@@ -220,6 +223,12 @@ describe('docker generator', () => {
     expect(config?.targets?.copyDockerFiles).toBeDefined();
     expect(config.targets.copyDockerFiles.executor).toBe(
       '@nx-boat-tools/docker:copyFiles'
+    );
+    expect(config.targets.copyDockerFiles.options?.dockerFilePath).toBe(
+      path.join(initialConfig.root, 'dockerfile')
+    );
+    expect(config.targets.copyDockerFiles.options?.dockerIgnorePath).toBe(
+      path.join(initialConfig.root, '.dockerignore')
     );
     expect(config.targets.copyDockerFiles.options?.distPath).toBe(distPath);
   });
