@@ -1,4 +1,4 @@
-FrameworkVersion = "net5.0"
+FrameworkVersion = "net6.0"
 
 default:
 	rm -rf $(out-dir)
