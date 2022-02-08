@@ -1,13 +1,15 @@
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
+import { SpawnSyncOptions } from 'child_process';
 import { existsSync } from 'fs';
 import { getVersionForProject, spawnAsync } from '@nx-boat-tools/common';
 
 import { BuildExecutorSchema } from './schema';
 
-export default async function runExecutor(
+export async function dockerBuildExecutor(
   options: BuildExecutorSchema,
-  context: ExecutorContext
+  context: ExecutorContext,
+  spawnArgs?: SpawnSyncOptions
 ) {
   let { buildPath, dockerFilePath } = options;
   const { projectName, root } = context;
@@ -40,7 +42,9 @@ export default async function runExecutor(
   console.log(`\n🔨 Building docker image '${projectName}'...\n`);
   console.log(
     await spawnAsync(
-      `docker build -t ${projectName}:latest -f ${dockerFilePath} ${buildPath}`
+      `docker build -t ${projectName}:latest -f ${dockerFilePath} ${buildPath}`,
+      [],
+      spawnArgs
     )
   );
 
@@ -56,7 +60,9 @@ export default async function runExecutor(
     );
     console.log(
       await spawnAsync(
-        `docker tag ${projectName}:latest ${projectName}:${version}`
+        `docker tag ${projectName}:latest ${projectName}:${version}`,
+        [],
+        spawnArgs
       )
     );
   }
@@ -65,3 +71,5 @@ export default async function runExecutor(
 
   return { success: true };
 }
+
+export default dockerBuildExecutor;

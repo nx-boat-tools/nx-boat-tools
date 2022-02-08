@@ -17,6 +17,11 @@
     "dockerRepoOrUser": {
       "type": "string",
       "description": "the user or repo to upload the docker image to"
+    },
+    "minikube": {
+      "type": "boolean",
+      "description": "Whether or not to add additional targets for minikube.",
+      "default": true
     }
   },
   "required": ["project", "dockerRepoOrUser"]

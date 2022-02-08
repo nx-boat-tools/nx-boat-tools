@@ -14,7 +14,7 @@ const fn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [
-      `Mock spawnSync (Command: '${command}', Args: '${args.join(' ')}')\n`,
+      `Mock spawnSync (Command: '${command}', Args: '${args?.join(' ')}')\n`,
     ],
     stdout: '',
     stderr: '',
