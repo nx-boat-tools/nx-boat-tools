@@ -22,6 +22,7 @@ describe('Docker Copy Files Executor', () => {
 
   it('fails when no project specified', async () => {
     const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile',
       distPath: 'dist/apps/my-project',
     };
     const context = createTestExecutorContext({
@@ -44,6 +45,7 @@ describe('Docker Copy Files Executor', () => {
 
   it('fails when no dist directory specified', async () => {
     const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile',
       distPath: undefined,
     };
     const context = createTestExecutorContext({
@@ -62,8 +64,30 @@ describe('Docker Copy Files Executor', () => {
     );
   });
 
+  it('fails when no dockerfile specified', async () => {
+    const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: undefined,
+      distPath: 'dist/apps/my-project',
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const fakeFs = {};
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    expect(defuse(executor(options, context))).rejects.toThrow(
+      `You must specify the dockerfile path.`
+    );
+  });
+
   it('fails when dockerfile does not exist', async () => {
     const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile',
       distPath: 'dist/apps/my-project',
     };
     const context = createTestExecutorContext({
@@ -84,6 +108,7 @@ describe('Docker Copy Files Executor', () => {
 
   it('creates output folder when does not exist', async () => {
     const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile',
       distPath: 'dist/apps/my-project',
     };
     const context = createTestExecutorContext({
@@ -92,7 +117,7 @@ describe('Docker Copy Files Executor', () => {
     });
 
     const fakeFs = {};
-    fakeFs[path.join(context.root, 'dockerfile')] = '';
+    fakeFs[path.join(context.root, options.dockerFilePath)] = '';
 
     console.log('Mocked fs', fakeFs);
 
@@ -108,8 +133,9 @@ describe('Docker Copy Files Executor', () => {
     expect(outputDirExists).toBe(true);
   });
 
-  it('copies the dockerfile file to dist folder', async () => {
+  it('copies the dockerfile file to dist folder (dockerfile)', async () => {
     const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile',
       distPath: 'dist/apps/my-project',
     };
     const context = createTestExecutorContext({
@@ -118,7 +144,8 @@ describe('Docker Copy Files Executor', () => {
     });
 
     const fakeFs = {};
-    fakeFs[path.join(context.root, 'dockerfile')] = 'This is a dockerfile';
+    fakeFs[path.join(context.root, options.dockerFilePath)] =
+      'This is a dockerfile';
 
     console.log('Mocked fs', fakeFs);
 
@@ -138,8 +165,9 @@ describe('Docker Copy Files Executor', () => {
     ).toBe('This is a dockerfile');
   });
 
-  it('copies the dockerignore file to dist folder if present', async () => {
+  it('copies the dockerfile file to dist folder (dockerfile.prod)', async () => {
     const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile.prod',
       distPath: 'dist/apps/my-project',
     };
     const context = createTestExecutorContext({
@@ -148,8 +176,42 @@ describe('Docker Copy Files Executor', () => {
     });
 
     const fakeFs = {};
-    fakeFs[path.join(context.root, 'dockerfile')] = 'This is a dockerfile';
-    fakeFs[path.join(context.root, '.dockerignore')] =
+    fakeFs[path.join(context.root, options.dockerFilePath)] =
+      'This is a dockerfile';
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
+
+    expect(
+      existsSync(path.join(context.root, options.distPath, 'dockerfile.prod'))
+    ).toBe(true);
+    expect(
+      readFileSync(
+        path.join(context.root, options.distPath, 'dockerfile.prod')
+      ).toString()
+    ).toBe('This is a dockerfile');
+  });
+
+  it('copies the dockerignore file to dist folder if present', async () => {
+    const options: DockerCopyFilesExecutorSchema = {
+      dockerFilePath: 'apps/my-project/dockerfile',
+      dockerIgnorePath: 'apps/my-project/.dockerignore',
+      distPath: 'dist/apps/my-project',
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const fakeFs = {};
+    fakeFs[path.join(context.root, options.dockerFilePath)] =
+      'This is a dockerfile';
+    fakeFs[path.join(context.root, options.dockerIgnorePath)] =
       'This is a .dockerignore';
 
     console.log('Mocked fs', fakeFs);

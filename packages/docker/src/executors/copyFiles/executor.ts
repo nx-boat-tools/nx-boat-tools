@@ -8,7 +8,7 @@ export default async function runExecutor(
   options: DockerCopyFilesExecutorSchema,
   context: ExecutorContext
 ) {
-  let { distPath } = options;
+  let { dockerFilePath, dockerIgnorePath, distPath } = options;
   const { projectName, root } = context;
 
   if (projectName === undefined) {
@@ -19,13 +19,21 @@ export default async function runExecutor(
     throw new Error('You must specify a dist path.');
   }
 
+  if (dockerFilePath === undefined || dockerFilePath === '') {
+    throw new Error('You must specify the dockerfile path.');
+  }
+
   distPath = path.join(root, distPath);
+  dockerFilePath = path.join(root, dockerFilePath);
+
+  if (dockerIgnorePath != undefined) {
+    dockerIgnorePath = path.join(root, dockerIgnorePath);
+  }
 
   mkdirSync(distPath, { recursive: true });
 
-  const dockerFilePath = path.join(root, 'dockerfile');
-  const dockerIgnorePath = path.join(root, '.dockerignore');
-  const dockerFileDistPath = path.join(distPath, 'dockerfile');
+  const dockerFileName = path.basename(dockerFilePath);
+  const dockerFileDistPath = path.join(distPath, dockerFileName);
   const dockerIgnoreDistPath = path.join(distPath, '.dockerignore');
 
   console.log('\n📁 Copying docker files to the dist folder...');
