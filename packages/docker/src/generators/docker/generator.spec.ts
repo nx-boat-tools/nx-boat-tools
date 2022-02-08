@@ -98,7 +98,7 @@ describe('docker generator', () => {
     expect(config.targets.buildDockerImage.executor).toBe(
       '@nx-boat-tools/docker:build'
     );
-    expect(config.targets.copyDockerFiles.options?.dockerFilePath).toBe(
+    expect(config.targets.buildDockerImage.options?.dockerFilePath).toBe(
       path.join(initialConfig.root, 'dockerfile')
     );
     expect(config.targets.buildDockerImage.options?.buildPath).toBe(
@@ -231,6 +231,63 @@ describe('docker generator', () => {
       path.join(initialConfig.root, '.dockerignore')
     );
     expect(config.targets.copyDockerFiles.options?.distPath).toBe(distPath);
+  });
+
+  it('adds buildMinikubeImage to project config when --minikube=false', async () => {
+    const options: DockerGeneratorSchema = {
+      project: 'my-project',
+      dockerRepoOrUser: 'myusername',
+      minikube: false
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.buildMinikubeImage).toBeUndefined();
+  });
+
+  it('adds buildMinikubeImage to project config when --minikube=true', async () => {
+    const options: DockerGeneratorSchema = {
+      project: 'my-project',
+      dockerRepoOrUser: 'myusername',
+      minikube: true
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.buildMinikubeImage).toBeDefined();
+    expect(config.targets.buildMinikubeImage.executor).toBe(
+      '@nx-boat-tools/docker:minikubeBuild'
+    );
+    expect(config.targets.buildMinikubeImage.options?.dockerFilePath).toBe(
+      path.join(initialConfig.root, 'dockerfile')
+    );
+    expect(config.targets.buildMinikubeImage.options?.buildPath).toBe(
+      path.join('dist', initialConfig.root)
+    );
   });
 
   it('renames build target to buildSrc when already exists and not chain-execute', async () => {

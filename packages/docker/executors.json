@@ -20,6 +20,11 @@
       "implementation": "./src/executors/run/executor",
       "schema": "./src/executors/run/schema.json",
       "description": "Run Docker image executor"
+    },
+    "minikubeBuild": {
+      "implementation": "./src/executors/minikubeBuild/executor",
+      "schema": "./src/executors/minikubeBuild/schema.json",
+      "description": "minikubeBuild executor"
     }
   }
 }

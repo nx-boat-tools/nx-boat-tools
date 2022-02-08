@@ -46,9 +46,10 @@ The `buildPath` is set to the dist directory of a project by default as that is 
 
 #### Available options:
 
-| name        | type     | default | description                                      |
-| ----------- | -------- | ------- | ------------------------------------------------ |
-| `buildPath` | `string` |         | Required. The path to the project's `dockerfile` |
+| name             | type     | default                   | description                                    |
+| ---------------- | -------- | ------------------------- | ---------------------------------------------- |
+| `buildPath`      | `string` |                           | Required. The path to pass to the docker build |
+| `dockerFilePath` | `string` | `${buildPath}/dockerfile` | The path to the dockerfile for the project.    |
 
 #### Example:
 
@@ -66,6 +67,7 @@ The following workspace configuration illustrates a possible docker `build` targ
         "build": {
           "executor": "@nx-boat-tools/docker:build",
           "options": {
+            "dockerFilePath": "apps/example/dockerfile",
             "buildPath": "apps/example"
           }
         }
@@ -83,7 +85,7 @@ nx build example
 nx run example:build
 ```
 
-Both of the above would result in a docker image being build that's named `example` and would be tagged with `latest` and the version in the `package.json`
+Both of the above would result in a docker image being built that's named `example` and would be tagged with `latest` and the version in the `package.json`
 
 ### `copyFiles`
 
@@ -91,9 +93,11 @@ The `copyFiles` executor copies the `dockerfile` and `.dockerignore` file (if on
 
 #### Available options:
 
-| name       | type     | default | description                                                                |
-| ---------- | -------- | ------- | -------------------------------------------------------------------------- |
-| `distPath` | `string` |         | Required. The dist path of the project where the files should be copied to |
+| name               | type     | default                     | description                                                                |
+| ------------------ | -------- | --------------------------- | -------------------------------------------------------------------------- |
+| `distPath`         | `string` |                             | Required. The dist path of the project where the files should be copied to |
+| `dockerFilePath`   | `string` |                             | Required. The path to the dockerfile for the project.                      |
+| `dockerIgnorePath` | `string` | `${distPath}/.dockerignore` | The path to the .dockerignore for the project.                             |
 
 #### Example:
 
@@ -111,6 +115,8 @@ The following workspace configuration illustrates a possible docker `copyFiles` 
         "copyDockerFiles": {
           "executor": "@nx-boat-tools/docker:copyFiles",
           "options": {
+            "dockerFilePath": "apps/example/dockerfile",
+            "dockerIgnorePath": "apps/example/.dockerignore",
             "distPath": "dist/apps/example"
           }
         }
@@ -268,6 +274,61 @@ Which would run the following docker CLI command
 docker run --rm -e ASPNETCORE_ENVIRONMENT=production -p 80:5000 -v /tmp/example/config:/example/config
 ```
 
+### `minikubeBuild`
+
+The `minikubeBuild` executor connects to the docker daemon within minikube and then builds the docker image from a `dockerfile` for a given project. It tags the image as both `latest` and the version in the project's `package.json`.
+
+#### 🚩  Note:
+
+If no `package.json` exists for the project or it does not specify a version then only `latest` will be tagged.
+
+#### 🚩  Note:
+
+The `buildPath` is set to the dist directory of a project by default as that is where the files that will be copied into docker usually are located. This means that the `copyFiles` executor needs to have ran first as well as any other executors producing build output that needs to be copied into the docker image.
+
+#### Available options:
+
+| name             | type     | default                   | description                                    |
+| ---------------- | -------- | ------------------------- | ---------------------------------------------- |
+| `buildPath`      | `string` |                           | Required. The path to pass to the docker build |
+| `dockerFilePath` | `string` | `${buildPath}/dockerfile` | The path to the dockerfile for the project.    |
+
+#### Example:
+
+The following workspace configuration illustrates a possible docker `minikubeBuild` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "buildMinikubeImage": {
+          "executor": "@nx-boat-tools/docker:minikubeBuild",
+          "options": {
+            "dockerFilePath": "apps/example/dockerfile",
+            "buildPath": "apps/example"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To build our docker image within minikube we just need to execute the `minikubeBuild` target...
+
+```bash
+nx minikubeBuild example
+# OR
+nx run example:minikubeBuild
+```
+
+Both of the above would result in a docker image being built within the docker daemon within minikube that's named `example` and would be tagged with `latest` and the version in the `package.json`
+
 ## ✍️  Generators
 
 ### `docker`
@@ -276,10 +337,11 @@ The `docker` generator adds docker support to an existing Nx project. It creates
 
 #### Available options:
 
-| name               | type     | default | description                                                                                  |
-| ------------------ | -------- | ------- | -------------------------------------------------------------------------------------------- |
-| `project`          | `string` |         | Required. The name of the project to add docker to.                                          |
-| `dockerRepoOrUser` | `string` |         | Required. This is used for the publish target and is the user or repo to upload the image to |
+| name               | type      | default | description                                                                                  |
+| ------------------ | --------- | ------- | -------------------------------------------------------------------------------------------- |
+| `project`          | `string`  |         | Required. The name of the project to add docker to.                                          |
+| `dockerRepoOrUser` | `string`  |         | Required. This is used for the publish target and is the user or repo to upload the image to |
+| `minikube`         | `boolean` |         | Whether or not to add additional targets for minikube.                                       |
 
 #### Generated files:
 
@@ -303,6 +365,7 @@ The project's entry in the `workspace.json` will be updated as follows:
 
 - `publishDockerImage` - this calls the docker `publish` executor to upload the docker image to a repo
 - `runDockerImage` - this calls the docker `run` target to run the docker image
+- `buildMinikubeImage` - Added if `--minikube=true`, calls the docker `buildMinikube` target to build the docker image within minikube
 
 The following is a full example of what's added to the `workspace.json` for a project when adding docker to it:
 
@@ -378,6 +441,13 @@ The following is a full example of what's added to the `workspace.json` for a pr
               "dist/apps/my-app": "/usr/share/nginx/html"
             }
           }
+        },
+        "buildMinikubeImage": {
+          "executor": "@nx-boat-tools/docker:minikubeBuild",
+          "options": {
+            "dockerFilePath": "apps/my-app/dockerfile",
+            "buildPath": "apps/my-app"
+          }
         }
       },
       "tags": ""
@@ -392,5 +462,5 @@ The following illustrates how to add a docker support project with various optio
 
 ```bash
 #Add docker to a project named my-project that publishes to dockerhub for user my-dockerhub-user
-nx g @nx-dev-tools/docker:docker my-project --dockerRepoOrUser=my-dockerhub-user
+nx g @nx-dev-tools/docker:docker my-project --dockerRepoOrUser=my-dockerhub-user --minikube=false
 ```

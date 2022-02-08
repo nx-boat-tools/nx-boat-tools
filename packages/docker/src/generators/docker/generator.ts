@@ -122,6 +122,16 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
     }
   }
 
+  if (options.minikube == true) {
+    targets['buildMinikubeImage'] = {
+      executor: '@nx-boat-tools/docker:minikubeBuild',
+      options: {
+        dockerFilePath: normalizedOptions.dockerFilePath,
+        buildPath: normalizedOptions.projectDistPath,
+      },
+    };
+  }
+
   const sortetTargetKeys = _.keys(targets).sort();
 
   updateProjectConfiguration(tree, options.project, {
