@@ -44,7 +44,10 @@ function normalizeOptions(
   };
 }
 
-export default async function (tree: Tree, options: HelmRepoChartGeneratorSchema) {
+export default async function (
+  tree: Tree,
+  options: HelmRepoChartGeneratorSchema
+) {
   const normalizedOptions = normalizeOptions(tree, options);
   const updatedTargets = getHelmAppendedBuildTargets(
     normalizedOptions.projectDistPath,

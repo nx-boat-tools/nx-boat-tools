@@ -472,9 +472,9 @@ The `version` executor is a utility function that updates the versions in all `c
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                |
-| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is the `csproj` or `sln` file associated with the project   |
+| name      | type     | default | description                                                              |
+| --------- | -------- | ------- | ------------------------------------------------------------------------ |
+| `srcPath` | `string` |         | Required. This is the `csproj` or `sln` file associated with the project |
 
 #### Example:
 
@@ -509,13 +509,13 @@ The `project` generator is the heart of all of the dotnet generators. Its job is
 
 #### Available options:
 
-| name               | type      | default     | description                                                                                                                                                                                                                                                                                              |
-| ------------------ | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`             | `string`  |             | Required. The name of the dotnet project that's being created.                                                                                                                                                                                                                                           |
-| `tags`             | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
-| `directory`        | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
-| `projectType`      | `string`  |             | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
-| `ownSolution`      | `boolean` | `false`     | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
+| name          | type      | default     | description                                                                                                                                                                                                                                                                                              |
+| ------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`  |             | Required. The name of the dotnet project that's being created.                                                                                                                                                                                                                                           |
+| `tags`        | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
+| `directory`   | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
+| `projectType` | `string`  |             | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
+| `ownSolution` | `boolean` | `false`     | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
 
 #### Generated files:
 
@@ -593,7 +593,7 @@ The following is a full example of what's added to the `workspace.json` for a do
         "dotnetVersion": {
           "executor": "@nx-boat-tools/dotnet:version",
           "options": {
-            "srcPath": "./workspace-name.sln",
+            "srcPath": "./workspace-name.sln"
           },
           "configurations": {
             "dev": {},
@@ -634,9 +634,7 @@ The following is a full example of what's added to the `workspace.json` for a do
           "executor": "@@jscutlery/semver:version",
           "options": {
             "commitMessageFormat": "chore(${projectName}): release version ${version}",
-            "postTargets": [
-              "dotnetVersion"
-            ]
+            "postTargets": ["dotnetVersion"]
           }
         }
       },

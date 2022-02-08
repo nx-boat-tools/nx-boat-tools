@@ -25,7 +25,9 @@ const fn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [fakeValues],
-    stdout: `Mock spawnSync (Command: '${command}', Args: '${args.join(' ')}')\n`,
+    stdout: `Mock spawnSync (Command: '${command}', Args: '${args.join(
+      ' '
+    )}')\n`,
     stderr: '',
     status: 0,
     signal: null,
@@ -247,7 +249,9 @@ describe('repo-chart generator', () => {
     expect(config.targets.build.options?.targets?.length).toBe(2);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('copyHelmValues');
-    expect(config.targets.build.configurations?.prod?.additionalTargets).toBeUndefined();
+    expect(
+      config.targets.build.configurations?.prod?.additionalTargets
+    ).toBeUndefined();
   });
 
   it('adds to chain-execute build target when build already exists (existing build chain-execute)', async () => {
