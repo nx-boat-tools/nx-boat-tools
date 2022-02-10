@@ -41,10 +41,10 @@
   },
   "devDependencies": {
     "@jscutlery/semver": "^2.18.1",
-    "@nrwl/cli": "13.7.3",
+    "@nrwl/cli": "13.8.1",
     "@nrwl/devkit": "13.7.3",
     "@nrwl/eslint-plugin-nx": "13.8.0",
-    "@nrwl/jest": "13.8.0",
+    "@nrwl/jest": "13.8.1",
     "@nrwl/linter": "13.7.3",
     "@nrwl/node": "13.7.3",
     "@nrwl/nx-plugin": "13.7.3",

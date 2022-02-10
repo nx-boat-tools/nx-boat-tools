@@ -611,6 +611,16 @@
     v8-compile-cache "2.3.0"
     yargs-parser "20.0.0"
 
+"@nrwl/cli@13.8.1":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-13.8.1.tgz#31af91b27f4c19e736dd9793b0f36f69ef482256"
+  dependencies:
+    "@nrwl/tao" "13.8.1"
+    chalk "4.1.0"
+    enquirer "~2.3.6"
+    v8-compile-cache "2.3.0"
+    yargs-parser "20.0.0"
+
 "@nrwl/devkit@13.7.3":
   version "13.7.3"
   resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.7.3.tgz#6159b205e743e6127df432a5e33c2fab04a01c93"
@@ -622,11 +632,22 @@
     semver "7.3.4"
     tslib "^2.3.0"
 
-"@nrwl/devkit@13.8.0", "@nrwl/devkit@^13.0.2":
+"@nrwl/devkit@13.8.0":
   version "13.8.0"
   resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.8.0.tgz#d380d7921d3d83777fdd5dc1f638eb193336f3f2"
   dependencies:
     "@nrwl/tao" "13.8.0"
+    ejs "^3.1.5"
+    ignore "^5.0.4"
+    rxjs "^6.5.4"
+    semver "7.3.4"
+    tslib "^2.3.0"
+
+"@nrwl/devkit@13.8.1", "@nrwl/devkit@^13.0.2":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.8.1.tgz#03184e057b04b2a451dd7856e0e8008b8def1685"
+  dependencies:
+    "@nrwl/tao" "13.8.1"
     ejs "^3.1.5"
     ignore "^5.0.4"
     rxjs "^6.5.4"
@@ -673,6 +694,22 @@
     "@jest/reporters" "27.2.2"
     "@jest/test-result" "27.2.2"
     "@nrwl/devkit" "13.8.0"
+    chalk "4.1.0"
+    identity-obj-proxy "3.0.0"
+    jest-config "27.2.2"
+    jest-resolve "27.2.2"
+    jest-util "27.2.0"
+    resolve.exports "1.1.0"
+    rxjs "^6.5.4"
+    tslib "^2.3.0"
+
+"@nrwl/jest@13.8.1":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/jest/-/jest-13.8.1.tgz#32f2c9c28ae03e0f4a5bdd8fc6688c4bbca8ab09"
+  dependencies:
+    "@jest/reporters" "27.2.2"
+    "@jest/test-result" "27.2.2"
+    "@nrwl/devkit" "13.8.1"
     chalk "4.1.0"
     identity-obj-proxy "3.0.0"
     jest-config "27.2.2"
@@ -772,6 +809,24 @@
     ignore "^5.0.4"
     jsonc-parser "3.0.0"
     nx "13.8.0"
+    rxjs "^6.5.4"
+    rxjs-for-await "0.0.2"
+    semver "7.3.4"
+    tmp "~0.2.1"
+    tslib "^2.3.0"
+    yargs-parser "20.0.0"
+
+"@nrwl/tao@13.8.1":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/tao/-/tao-13.8.1.tgz#6d8168d5cb81ffc1e3e74352db4f5eef7e5ba3f0"
+  dependencies:
+    chalk "4.1.0"
+    enquirer "~2.3.6"
+    fast-glob "3.2.7"
+    fs-extra "^9.1.0"
+    ignore "^5.0.4"
+    jsonc-parser "3.0.0"
+    nx "13.8.1"
     rxjs "^6.5.4"
     rxjs-for-await "0.0.2"
     semver "7.3.4"
@@ -4934,6 +4989,12 @@ nx@13.8.0:
   resolved "https://registry.yarnpkg.com/nx/-/nx-13.8.0.tgz#3c9bc20c185833d8df9ee968068e713d022966e5"
   dependencies:
     "@nrwl/cli" "13.8.0"
+
+nx@13.8.1:
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/nx/-/nx-13.8.1.tgz#10e17dace55eb38f762ed212ded02e24797c8ac7"
+  dependencies:
+    "@nrwl/cli" "13.8.1"
 
 oauth-sign@~0.9.0:
   version "0.9.0"
