@@ -632,11 +632,22 @@
     semver "7.3.4"
     tslib "^2.3.0"
 
-"@nrwl/devkit@13.8.0", "@nrwl/devkit@^13.0.2":
+"@nrwl/devkit@13.8.0":
   version "13.8.0"
   resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.8.0.tgz#d380d7921d3d83777fdd5dc1f638eb193336f3f2"
   dependencies:
     "@nrwl/tao" "13.8.0"
+    ejs "^3.1.5"
+    ignore "^5.0.4"
+    rxjs "^6.5.4"
+    semver "7.3.4"
+    tslib "^2.3.0"
+
+"@nrwl/devkit@13.8.1", "@nrwl/devkit@^13.0.2":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.8.1.tgz#03184e057b04b2a451dd7856e0e8008b8def1685"
+  dependencies:
+    "@nrwl/tao" "13.8.1"
     ejs "^3.1.5"
     ignore "^5.0.4"
     rxjs "^6.5.4"
@@ -683,6 +694,22 @@
     "@jest/reporters" "27.2.2"
     "@jest/test-result" "27.2.2"
     "@nrwl/devkit" "13.8.0"
+    chalk "4.1.0"
+    identity-obj-proxy "3.0.0"
+    jest-config "27.2.2"
+    jest-resolve "27.2.2"
+    jest-util "27.2.0"
+    resolve.exports "1.1.0"
+    rxjs "^6.5.4"
+    tslib "^2.3.0"
+
+"@nrwl/jest@13.8.1":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/jest/-/jest-13.8.1.tgz#32f2c9c28ae03e0f4a5bdd8fc6688c4bbca8ab09"
+  dependencies:
+    "@jest/reporters" "27.2.2"
+    "@jest/test-result" "27.2.2"
+    "@nrwl/devkit" "13.8.1"
     chalk "4.1.0"
     identity-obj-proxy "3.0.0"
     jest-config "27.2.2"
