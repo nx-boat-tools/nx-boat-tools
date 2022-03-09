@@ -64,7 +64,7 @@
     "cz-customizable": "^6.3.0",
     "dotenv": "~16.0.0",
     "eslint": "8.10.0",
-    "eslint-config-prettier": "8.3.0",
+    "eslint-config-prettier": "8.5.0",
     "husky": "^7.0.4",
     "import-sort-style-renke": "^6.0.0",
     "jest": "27.5.1",
