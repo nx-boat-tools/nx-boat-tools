@@ -32,6 +32,7 @@ interface NormalizedSchema extends DotnetGeneratorSchema {
   rootDir: string;
   pkgName: string;
   dotnetPluginVersion: string;
+  projectClassName: string;
 }
 
 interface TemplateOptions extends NormalizedSchema {
@@ -50,10 +51,10 @@ function normalizeOptions(
   options: DotnetGeneratorSchema
 ): NormalizedSchema {
   const rootDir = tree.root;
-  const name = names(options.name).fileName;
+  const { fileName, className } = names(options.name);
   const projectDirectory = options.directory
-    ? `${names(options.directory).fileName}/${name}`
-    : name;
+    ? `${names(options.directory).fileName}/${fileName}`
+    : fileName;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
   const projectRoot = `${getProjectDirectoryPrefix(
     tree,
@@ -86,16 +87,12 @@ function normalizeOptions(
     parsedTags,
     pkgName,
     dotnetPluginVersion,
+    projectClassName: className,
   };
 }
 
 function getDotnetPluginVersion(): string {
-  const dotnetPackageJsonPath = path.join(
-    __dirname,
-    '..',
-    '..',
-    '..'
-  );
+  const dotnetPackageJsonPath = path.join(__dirname, '..', '..', '..');
 
   return getVersionForProject(dotnetPackageJsonPath);
 }
@@ -256,10 +253,13 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   };
   const dotnetOptions = {
     srcPath: !normalizedOptions.ownSolution
-      ? path.join('.', `${normalizedOptions.pkgName}.sln`)
+      ? path.join(
+          normalizedOptions.projectRoot,
+          `${normalizedOptions.projectClassName}.csproj`
+        )
       : path.join(
           normalizedOptions.projectRoot,
-          `${normalizedOptions.projectName}.sln`
+          `${normalizedOptions.projectClassName}.sln`
         ),
     outputPath: normalizedOptions.projectDistPath,
     configMap: {
