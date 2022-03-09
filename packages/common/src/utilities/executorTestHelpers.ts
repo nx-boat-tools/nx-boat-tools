@@ -1,8 +1,6 @@
 import * as _ from 'underscore';
 import { ExecutorContext } from '@nrwl/devkit';
 
-import { promiseToAsyncIterator } from './iterableHelpers';
-
 export type TargetSummary = {
   project: string;
   target: string;
@@ -86,4 +84,10 @@ export function createFakeExecutor() {
 
     return Promise.resolve(asyncIterable);
   };
+}
+
+async function* promiseToAsyncIterator<T extends { success: boolean }>(
+  v: Promise<T>
+): AsyncIterableIterator<T> {
+  yield await v;
 }
