@@ -633,22 +633,15 @@
     semver "7.3.4"
     tslib "^2.3.0"
 
-"@nrwl/eslint-plugin-nx@13.8.1":
-  version "13.8.1"
-  resolved "https://registry.yarnpkg.com/@nrwl/eslint-plugin-nx/-/eslint-plugin-nx-13.8.1.tgz#6a5c045d0b95f63a2adbd07cfbdaa62045e7c9bd"
+"@nrwl/eslint-plugin-nx@13.8.5":
+  version "13.8.5"
+  resolved "https://registry.yarnpkg.com/@nrwl/eslint-plugin-nx/-/eslint-plugin-nx-13.8.5.tgz#a9eaaa7f3db49319e5ef6fb25b3c37f051a0b03d"
   dependencies:
-    "@nrwl/devkit" "13.8.1"
-    "@nrwl/workspace" "13.8.1"
-    "@swc-node/register" "^1.4.2"
+    "@nrwl/devkit" "13.8.5"
+    "@nrwl/workspace" "13.8.5"
     "@typescript-eslint/experimental-utils" "~5.10.0"
     chalk "4.1.0"
     confusing-browser-globals "^1.0.9"
-    tsconfig-paths "^3.9.0"
-  optionalDependencies:
-    "@swc/core-linux-arm64-gnu" "^1.2.136"
-    "@swc/core-linux-arm64-musl" "^1.2.136"
-    "@swc/core-linux-x64-gnu" "^1.2.136"
-    "@swc/core-linux-x64-musl" "^1.2.136"
 
 "@nrwl/jest@13.8.1":
   version "13.8.1"
@@ -992,33 +985,17 @@
   version "1.2.151"
   resolved "https://registry.yarnpkg.com/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.2.151.tgz#a4ae2d8f7b0cfb0836466ca57b608be7505b13e7"
 
-"@swc/core-linux-arm64-gnu@^1.2.136":
-  version "1.2.137"
-  resolved "https://registry.yarnpkg.com/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.2.137.tgz#9b4e149ad94d71e76e90b227909500668160ec83"
-
 "@swc/core-linux-arm64-musl@1.2.151":
   version "1.2.151"
   resolved "https://registry.yarnpkg.com/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.2.151.tgz#16785fa421244d9df02123ce8b4bf8964b37412a"
-
-"@swc/core-linux-arm64-musl@^1.2.136":
-  version "1.2.137"
-  resolved "https://registry.yarnpkg.com/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.2.137.tgz#598cd4558d8092a35cbbd176aecf7988f5c1dca2"
 
 "@swc/core-linux-x64-gnu@1.2.151":
   version "1.2.151"
   resolved "https://registry.yarnpkg.com/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.2.151.tgz#b0717cb662becec95d306632fbd40f612d3db700"
 
-"@swc/core-linux-x64-gnu@^1.2.136":
-  version "1.2.137"
-  resolved "https://registry.yarnpkg.com/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.2.137.tgz#05bcd8cffce5676c4c25b13fc65b703aefa15fcf"
-
 "@swc/core-linux-x64-musl@1.2.151":
   version "1.2.151"
   resolved "https://registry.yarnpkg.com/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.2.151.tgz#7d703b3a96da37538bd69e4582c8ee70c9d36a37"
-
-"@swc/core-linux-x64-musl@^1.2.136":
-  version "1.2.137"
-  resolved "https://registry.yarnpkg.com/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.2.137.tgz#3ed98bb3567b577d30dab375873ae8a1f71e1a4e"
 
 "@swc/core-win32-arm64-msvc@1.2.151":
   version "1.2.151"
