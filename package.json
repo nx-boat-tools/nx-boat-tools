@@ -49,7 +49,7 @@
     "@nrwl/node": "13.8.5",
     "@nrwl/nx-plugin": "13.8.5",
     "@nrwl/tao": "13.8.5",
-    "@nrwl/workspace": "13.8.5",
+    "@nrwl/workspace": "13.8.8",
     "@types/cross-spawn": "^6.0.2",
     "@types/jest": "27.4.1",
     "@types/minimist": "^1.2.2",
