@@ -40,7 +40,7 @@
     "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
-    "@jscutlery/semver": "^2.20.1",
+    "@jscutlery/semver": "^2.21.3",
     "@nrwl/cli": "13.9.4",
     "@nrwl/devkit": "13.9.4",
     "@nrwl/eslint-plugin-nx": "13.9.4",
