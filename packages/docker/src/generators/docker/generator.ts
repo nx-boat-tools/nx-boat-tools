@@ -1,8 +1,11 @@
 import * as _ from 'underscore';
 import * as path from 'path';
 import {
+  ChainExecutorStage,
+  appendToChainTargets,
+} from '@nx-boat-tools/common';
+import {
   ProjectConfiguration,
-  TargetConfiguration,
   Tree,
   formatFiles,
   generateFiles,
@@ -29,8 +32,10 @@ function normalizeOptions(
   const dockerIgnorePath = path.join(projectConfig.root, '.dockerignore');
   const projectDistPath = path.join('dist', projectConfig.root);
 
-  if (projectConfig.targets.buildDocker) {
-    throw new Error(`${options.project} already has a buildDocker target.`);
+  if (projectConfig.targets.buildDockerImage) {
+    throw new Error(
+      `${options.project} already has a buildDockerImage target.`
+    );
   }
 
   return {
@@ -59,25 +64,67 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 
 export default async function (tree: Tree, options: DockerGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
-  const build = 'build';
-  const buildSrc = 'buildSrc';
-  const copyTargetName = getCopyTargetName(
-    normalizedOptions.projectConfig.targets
-  );
+
+  const buildDockerImage = 'buildDockerImage';
+  const copyDockerFiles = 'copyDockerFiles';
+  const buildMinikubeImage = 'buildMinikubeImage';
+  const publishDockerImage = 'publishDockerImage';
 
   const mounts: { [targetName: string]: string } = {};
   mounts[normalizedOptions.projectDistPath] = '/usr/share/nginx/html';
 
+  const buildStagesToAdd = {
+    dockerImage: {
+      targets: [copyDockerFiles, buildDockerImage],
+    } as ChainExecutorStage,
+  };
+
+  const minikubeTargets = {};
+
+  if (options.minikube == true) {
+    buildStagesToAdd['minikubeImage'] = {
+      explicit: true,
+      targets: [copyDockerFiles, buildMinikubeImage],
+    } as ChainExecutorStage;
+
+    minikubeTargets[buildMinikubeImage] = {
+      executor: '@nx-boat-tools/docker:minikubeBuild',
+      options: {
+        dockerFilePath: normalizedOptions.dockerFilePath,
+        buildPath: normalizedOptions.projectDistPath,
+      },
+    };
+  }
+
   const targets = {
-    ...normalizedOptions.projectConfig.targets,
-    buildDockerImage: {
+    ...appendToChainTargets(normalizedOptions.projectConfig.targets, {
+      build: {
+        stagesToAdd: buildStagesToAdd,
+      },
+      package: {
+        stagesToAdd: {
+          dockerImage: {
+            additionalTargets: [publishDockerImage],
+          } as ChainExecutorStage,
+        },
+      },
+    }),
+    [copyDockerFiles]: {
+      executor: '@nx-boat-tools/docker:copyFiles',
+      options: {
+        dockerFilePath: normalizedOptions.dockerFilePath,
+        dockerIgnorePath: normalizedOptions.dockerIgnorePath,
+        distPath: normalizedOptions.projectDistPath,
+      },
+    },
+    [buildDockerImage]: {
       executor: '@nx-boat-tools/docker:build',
       options: {
         dockerFilePath: normalizedOptions.dockerFilePath,
         buildPath: normalizedOptions.projectDistPath,
       },
     },
-    publishDockerImage: {
+    [publishDockerImage]: {
       executor: '@nx-boat-tools/docker:publish',
       options: {
         buildPath: normalizedOptions.projectDistPath,
@@ -93,44 +140,8 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
         mounts,
       },
     },
+    ...minikubeTargets,
   };
-  targets[copyTargetName] = {
-    executor: '@nx-boat-tools/docker:copyFiles',
-    options: {
-      dockerFilePath: normalizedOptions.dockerFilePath,
-      dockerIgnorePath: normalizedOptions.dockerIgnorePath,
-      distPath: normalizedOptions.projectDistPath,
-    },
-  };
-
-  if (copyTargetName !== 'build') {
-    if (targets[build]?.executor === '@nx-boat-tools/common:chain-execute') {
-      if (!targets[build].options.targets.includes(copyTargetName)) {
-        targets[build].options.targets.push(copyTargetName);
-      }
-    } else {
-      if (targets[build] !== undefined) {
-        targets[buildSrc] = targets[build];
-      }
-
-      targets[build] = {
-        executor: '@nx-boat-tools/common:chain-execute',
-        options: {
-          targets: ['buildSrc', copyTargetName],
-        },
-      };
-    }
-  }
-
-  if (options.minikube == true) {
-    targets['buildMinikubeImage'] = {
-      executor: '@nx-boat-tools/docker:minikubeBuild',
-      options: {
-        dockerFilePath: normalizedOptions.dockerFilePath,
-        buildPath: normalizedOptions.projectDistPath,
-      },
-    };
-  }
 
   const sortetTargetKeys = _.keys(targets).sort();
 
@@ -143,18 +154,4 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
   });
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
-}
-
-function getCopyTargetName(targets: {
-  [targetName: string]: TargetConfiguration;
-}): string {
-  const build = 'build';
-  const copyDockerFiles = 'copyDockerFiles';
-  const targetKeys = _.keys(targets);
-
-  if (targetKeys.includes(copyDockerFiles)) return copyDockerFiles;
-
-  const containsBuild = _.keys(targets).includes(build);
-
-  return containsBuild ? copyDockerFiles : build;
 }
