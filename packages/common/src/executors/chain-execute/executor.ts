@@ -4,31 +4,64 @@ import { ExecutorContext, runExecutor } from '@nrwl/devkit';
 import { ChainExecutorSchema } from './schema';
 import { asyncIteratorToArray } from '../../utilities/iterableHelpers';
 
+const toTarget = (project: string, target: string, configuration?: string) => {
+  return {
+    project: project,
+    target: target,
+    configuration: configuration,
+  };
+};
+
 export default async function (
   options: ChainExecutorSchema,
   context: ExecutorContext
 ) {
-  if (context.projectName === undefined) {
+  let { additionalTargets, run, stages, targets } = options;
+  const { projectName, configurationName } = context;
+
+  targets = targets || [];
+  additionalTargets = additionalTargets || [];
+
+  if (projectName === undefined) {
     throw new Error('You must specify a project!');
   }
 
-  if (options.additionalTargets !== undefined) {
-    options.targets = options.targets.concat(options.additionalTargets);
+  if (stages !== undefined) {
+    const explicitStages = run || [];
+    run = run || _.keys(stages);
+
+    let stagesToRun = _.intersection(_.keys(stages), run);
+    stagesToRun = _.filter(
+      stagesToRun,
+      (stage) =>
+        _.contains(explicitStages, stage) || stages[stage].explicit !== true
+    );
+
+    console.log(
+      `\n💡 Limiting chain execute to stages ${stagesToRun.join(',')}...\n`
+    );
+
+    stages = _.pick(stages, ...stagesToRun);
+
+    _.each(_.values(stages), (stage) => {
+      targets = targets.concat(stage.targets);
+      additionalTargets = additionalTargets.concat(stage.additionalTargets);
+    });
   }
 
-  const targets = _.map(options.targets, (target) => {
-    return {
-      project: context.projectName,
-      target: target,
-      configuration: context.configurationName,
-    };
-  });
+  if (additionalTargets !== undefined) {
+    targets = targets.concat(_.uniq(additionalTargets));
+  }
+
+  const targetsToRun = _.map(targets, (target) =>
+    toTarget(projectName, target, configurationName)
+  );
 
   let stack: Promise<{ success: boolean }> = Promise.resolve({
     success: false,
   });
 
-  _.each(targets, (target) => {
+  _.each(targetsToRun, (target) => {
     stack = stack
       .then(async () => {
         console.log(`\n⛓ Running chained target '${target.target}'...\n`);

@@ -12,8 +12,15 @@
     "additionalTargets": {
       "type": "array",
       "description": "An array containing additional builders to call (for configurations)."
+    },
+    "stages": {
+      "type": "object",
+      "description": "The stage definitions for the chain."
+    },
+    "run": {
+      "type": "array",
+      "description": " An array what stages to run."
     }
   },
-  "additionalProperties": true,
-  "required": ["targets"]
+  "additionalProperties": true
 }
