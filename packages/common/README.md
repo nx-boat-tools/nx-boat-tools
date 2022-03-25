@@ -20,12 +20,12 @@ Chain execute is an essential building block for the rest of Nx Boat Tools. With
 
 #### Available options:
 
-| name                | type       | default | description                                                          |
-| ------------------- | ---------- | ------- | -------------------------------------------------------------------- |
-| `targets`           | `string[]` | `[]`    | An array containing the other executors to call                      |
-| `additionalTargets` | `string[]` | `[]`    | An array containing additional builders to call (for configurations) |
-| `stages`           | `object` | | The stage definitions for the chain. See [Using Stages]() below. |
-| `run` | `string[]` | all non-explicit stages | An array what stages to run. See [Using Stages]() below. |
+| name                | type       | default                 | description                                                          |
+| ------------------- | ---------- | ----------------------- | -------------------------------------------------------------------- |
+| `targets`           | `string[]` | `[]`                    | An array containing the other executors to call                      |
+| `additionalTargets` | `string[]` | `[]`                    | An array containing additional builders to call (for configurations) |
+| `stages`            | `object`   |                         | The stage definitions for the chain. See [Using Stages]() below.     |
+| `run`               | `string[]` | all non-explicit stages | An array what stages to run. See [Using Stages]() below.             |
 
 #### Example:
 
@@ -128,12 +128,12 @@ Stages allow you to control what parts of a chain get ran apart from configurati
             "stages": {
               "special": {
                 "targets": ["special"],
-                "additionalTargets": ["special_post"],
+                "additionalTargets": ["special_post"]
               },
               "package": {
                 "explicit": true,
                 "targets": ["package"],
-                "additionalTargets": ["package_post"],
+                "additionalTargets": ["package_post"]
               }
             }
           }
@@ -149,7 +149,7 @@ When the chain is executed, it starts by executing any regular targets, in order
 Let's look at some examples of how to use the above config.
 
 ```bash
-nx build example 
+nx build example
 # This will call the following targets, in order: buildSrc, special, lint, special_post
 # Note that, since the run arg wasn't specified, the package stage wasn't explicitly requested so it was skipped.
 
