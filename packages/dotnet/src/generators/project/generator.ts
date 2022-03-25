@@ -291,18 +291,6 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
-        executor: '@nx-boat-tools/common:chain-execute',
-        options: {
-          targets: ['dotnetVersion', 'buildDotnet'],
-        },
-        configurations: {
-          dev: {},
-          prod: {
-            additionalTargets: ['package'],
-          },
-        },
-      },
-      buildDotnet: {
         executor: '@nx-boat-tools/dotnet:build',
         options: {
           ...dotnetOptions,

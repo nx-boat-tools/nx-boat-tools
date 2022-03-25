@@ -72,7 +72,7 @@ describe('dotnet project generator', () => {
         );
       });
 
-      it('adds buildDotnet to project config (ownSolution false)', async () => {
+      it('adds build to project config (ownSolution false)', async () => {
         const options: DotnetGeneratorSchema = {
           name: 'my-project',
           projectType: projectType,
@@ -84,28 +84,26 @@ describe('dotnet project generator', () => {
 
         const config = readProjectConfiguration(appTree, 'my-project');
 
-        expect(config?.targets?.buildDotnet).toBeDefined();
-        expect(config.targets.buildDotnet.executor).toBe(
+        expect(config?.targets?.build).toBeDefined();
+        expect(config.targets.build.executor).toBe(
           '@nx-boat-tools/dotnet:build'
         );
 
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.csproj`
         );
-        expect(config.targets.buildDotnet.options?.outputPath).toBe(
+        expect(config.targets.build.options?.outputPath).toBe(
           path.join('dist', config.root)
         );
-        expect(config.targets.buildDotnet.options?.configMap).toBeDefined();
-        expect(config.targets.buildDotnet.options?.configMap.dev).toBe('Debug');
-        expect(config.targets.buildDotnet.options?.configMap.prod).toBe(
-          'Release'
-        );
+        expect(config.targets.build.options?.configMap).toBeDefined();
+        expect(config.targets.build.options?.configMap.dev).toBe('Debug');
+        expect(config.targets.build.options?.configMap.prod).toBe('Release');
 
-        expect(config.targets.buildDotnet.configurations?.dev).toBeDefined();
-        expect(config.targets.buildDotnet.configurations?.prod).toBeDefined();
+        expect(config.targets.build.configurations?.dev).toBeDefined();
+        expect(config.targets.build.configurations?.prod).toBeDefined();
       });
 
-      it('adds buildDotnet to project config (ownSolution true)', async () => {
+      it('adds build to project config (ownSolution true)', async () => {
         const options: DotnetGeneratorSchema = {
           name: 'my-project',
           projectType: projectType,
@@ -117,25 +115,23 @@ describe('dotnet project generator', () => {
 
         const config = readProjectConfiguration(appTree, 'my-project');
 
-        expect(config?.targets?.buildDotnet).toBeDefined();
-        expect(config.targets.buildDotnet.executor).toBe(
+        expect(config?.targets?.build).toBeDefined();
+        expect(config.targets.build.executor).toBe(
           '@nx-boat-tools/dotnet:build'
         );
 
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.sln`
         );
-        expect(config.targets.buildDotnet.options?.outputPath).toBe(
+        expect(config.targets.build.options?.outputPath).toBe(
           path.join('dist', config.root)
         );
-        expect(config.targets.buildDotnet.options?.configMap).toBeDefined();
-        expect(config.targets.buildDotnet.options?.configMap.dev).toBe('Debug');
-        expect(config.targets.buildDotnet.options?.configMap.prod).toBe(
-          'Release'
-        );
+        expect(config.targets.build.options?.configMap).toBeDefined();
+        expect(config.targets.build.options?.configMap.dev).toBe('Debug');
+        expect(config.targets.build.options?.configMap.prod).toBe('Release');
 
-        expect(config.targets.buildDotnet.configurations?.dev).toBeDefined();
-        expect(config.targets.buildDotnet.configurations?.prod).toBeDefined();
+        expect(config.targets.build.configurations?.dev).toBeDefined();
+        expect(config.targets.build.configurations?.prod).toBeDefined();
       });
 
       it('adds clean to project config (ownSolution false)', async () => {
@@ -155,7 +151,7 @@ describe('dotnet project generator', () => {
           '@nx-boat-tools/dotnet:clean'
         );
 
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.csproj`
         );
         expect(config.targets.clean.options?.outputPath).toBe(
@@ -186,7 +182,7 @@ describe('dotnet project generator', () => {
           '@nx-boat-tools/dotnet:clean'
         );
 
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.sln`
         );
         expect(config.targets.clean.options?.outputPath).toBe(
@@ -217,7 +213,7 @@ describe('dotnet project generator', () => {
           '@nx-boat-tools/dotnet:package'
         );
 
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.csproj`
         );
         expect(config.targets.package.options?.outputPath).toBe(
@@ -248,7 +244,7 @@ describe('dotnet project generator', () => {
           '@nx-boat-tools/dotnet:package'
         );
 
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.sln`
         );
         expect(config.targets.package.options?.outputPath).toBe(
@@ -260,36 +256,6 @@ describe('dotnet project generator', () => {
 
         expect(config.targets.package.configurations?.dev).toBeDefined();
         expect(config.targets.package.configurations?.prod).toBeDefined();
-      });
-
-      it('adds build to project config', async () => {
-        const options: DotnetGeneratorSchema = {
-          name: 'my-project',
-          projectType: projectType,
-          ownSolution: false,
-        };
-
-        await generator(appTree, options);
-
-        const config = readProjectConfiguration(appTree, 'my-project');
-
-        expect(config?.targets?.build).toBeDefined();
-        expect(config.targets.build.executor).toBe(
-          '@nx-boat-tools/common:chain-execute'
-        );
-        expect(config.targets.build.options?.targets?.length).toBe(2);
-        expect(config.targets.build.options?.targets[0]).toBe('dotnetVersion');
-        expect(config.targets.build.options?.targets[1]).toBe('buildDotnet');
-
-        expect(config.targets.build.configurations?.dev).toBeDefined();
-        expect(config.targets.build.configurations?.prod).toBeDefined();
-
-        expect(
-          config.targets.build.configurations.prod.additionalTargets.length
-        ).toBe(1);
-        expect(
-          config.targets.build.configurations.prod.additionalTargets[0]
-        ).toBe('package');
       });
 
       it('adds dotnetVersion to project config (ownSolution false)', async () => {
@@ -308,7 +274,7 @@ describe('dotnet project generator', () => {
         expect(config.targets.dotnetVersion.executor).toBe(
           '@nx-boat-tools/dotnet:version'
         );
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.csproj`
         );
       });
@@ -329,7 +295,7 @@ describe('dotnet project generator', () => {
         expect(config.targets.dotnetVersion.executor).toBe(
           '@nx-boat-tools/dotnet:version'
         );
-        expect(config.targets.buildDotnet.options?.srcPath).toBe(
+        expect(config.targets.build.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.sln`
         );
       });
@@ -691,7 +657,7 @@ describe('dotnet project generator', () => {
       expect(config?.targets?.run).toBeDefined();
       expect(config.targets.run.executor).toBe('@nx-boat-tools/dotnet:run');
 
-      expect(config.targets.buildDotnet.options?.srcPath).toBe(
+      expect(config.targets.build.options?.srcPath).toBe(
         `${config.root}/${projectNames.className}.csproj`
       );
       expect(config.targets.run.options?.outputPath).toBe(
@@ -720,7 +686,7 @@ describe('dotnet project generator', () => {
       expect(config?.targets?.run).toBeDefined();
       expect(config.targets.run.executor).toBe('@nx-boat-tools/dotnet:run');
 
-      expect(config.targets.buildDotnet.options?.srcPath).toBe(
+      expect(config.targets.build.options?.srcPath).toBe(
         `${config.root}/${projectNames.className}.sln`
       );
       expect(config.targets.run.options?.outputPath).toBe(
