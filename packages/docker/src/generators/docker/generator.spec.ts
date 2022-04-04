@@ -237,7 +237,7 @@ describe('docker generator', () => {
     const options: DockerGeneratorSchema = {
       project: 'my-project',
       dockerRepoOrUser: 'myusername',
-      minikube: false
+      minikube: false,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -261,7 +261,7 @@ describe('docker generator', () => {
     const options: DockerGeneratorSchema = {
       project: 'my-project',
       dockerRepoOrUser: 'myusername',
-      minikube: true
+      minikube: true,
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
