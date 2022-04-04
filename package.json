@@ -57,7 +57,7 @@
     "@types/underscore": "^1.11.3",
     "@types/xml2js": "^0.4.9",
     "@types/yargs-parser": "^21.0.0",
-    "@typescript-eslint/eslint-plugin": "5.14.0",
+    "@typescript-eslint/eslint-plugin": "5.17.0",
     "@typescript-eslint/parser": "5.10.2",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
