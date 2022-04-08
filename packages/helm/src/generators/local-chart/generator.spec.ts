@@ -71,6 +71,70 @@ describe('local-chart generator', () => {
     );
   });
 
+  it('adds copyHelmValues to project config', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+    const projectHelmPath = path.join(initialConfig.root, 'helm');
+    const projectDistPath = path.join('dist', initialConfig.root, 'helm');
+
+    expect(config?.targets?.copyHelmValues).toBeDefined();
+    expect(config.targets.copyHelmValues.executor).toBe(
+      '@nx-boat-tools/helm:copyValues'
+    );
+    expect(config.targets.copyHelmValues.options?.projectHelmPath).toBe(
+      projectHelmPath
+    );
+    expect(config.targets.copyHelmValues.options?.outputPath).toBe(
+      path.join(projectDistPath, 'values')
+    );
+  });
+
+  it('adds lintHelmChart to project config', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+    const projectHelmPath = path.join(initialConfig.root, 'helm');
+
+    expect(config?.targets?.lintHelmChart).toBeDefined();
+    expect(config.targets.lintHelmChart.executor).toBe(
+      '@nx-boat-tools/helm:lint'
+    );
+    expect(config.targets.lintHelmChart.options?.projectHelmPath).toBe(
+      projectHelmPath
+    );
+  });
+
   it('adds packageHelmChart to project config', async () => {
     const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
@@ -105,39 +169,7 @@ describe('local-chart generator', () => {
     );
   });
 
-  it('adds build to project config when build target does not already exists', async () => {
-    const options: HelmLocalChartGeneratorSchema = {
-      project: 'my-project',
-      createValues: false,
-    };
-    const initialConfig: ProjectConfiguration = {
-      root: 'apps/my-project',
-      sourceRoot: 'apps/my-project/src',
-      projectType: 'application',
-      targets: createTargetConfig([
-        { name: 'buildSrc', echo: 'Hello from buildSrc' },
-      ]),
-    };
-
-    addProjectConfiguration(appTree, 'my-project', initialConfig);
-
-    await generator(appTree, options);
-
-    const config = readProjectConfiguration(appTree, 'my-project');
-    const projectHelmPath = path.join(initialConfig.root, 'helm');
-    const projectDistPath = path.join('dist', initialConfig.root, 'helm');
-
-    expect(config?.targets?.build).toBeDefined();
-    expect(config.targets.build.executor).toBe(
-      '@nx-boat-tools/helm:copyValues'
-    );
-    expect(config.targets.build.options?.projectHelmPath).toBe(projectHelmPath);
-    expect(config.targets.build.options?.outputPath).toBe(
-      path.join(projectDistPath, 'values')
-    );
-  });
-
-  it('adds copyHelmValues to project config when build target already exists', async () => {
+  it('adds installHelmChart to project config (no environments specified)', async () => {
     const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: false,
@@ -157,18 +189,210 @@ describe('local-chart generator', () => {
 
     const config = readProjectConfiguration(appTree, 'my-project');
     const projectHelmPath = path.join(initialConfig.root, 'helm');
-    const projectDistPath = path.join('dist', initialConfig.root, 'helm');
+    const valuesPath = path.join(initialConfig.root, 'helm', 'values.yaml');
 
-    expect(config?.targets?.copyHelmValues).toBeDefined();
-    expect(config.targets.copyHelmValues.executor).toBe(
-      '@nx-boat-tools/helm:copyValues'
+    expect(config?.targets?.installHelmChart).toBeDefined();
+    expect(config.targets.installHelmChart.executor).toBe(
+      '@nx-boat-tools/helm:installLocalChart'
     );
-    expect(config.targets.copyHelmValues.options?.projectHelmPath).toBe(
+    expect(config.targets.installHelmChart.options?.projectHelmPath).toBe(
       projectHelmPath
     );
-    expect(config.targets.copyHelmValues.options?.outputPath).toBe(
-      path.join(projectDistPath, 'values')
+    expect(
+      config.targets.installHelmChart.options?.valuesFilePaths?.length
+    ).toBe(1);
+    expect(config.targets.installHelmChart.options?.valuesFilePaths[0]).toBe(
+      valuesPath
     );
+  });
+
+  it('adds portForwardToMinikube to project config (default run args)', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.portForwardToMinikube).toBeDefined();
+    expect(config.targets.portForwardToMinikube.executor).toBe(
+      '@nx-boat-tools/helm:portForward'
+    );
+    expect(config.targets.portForwardToMinikube.options?.resourceName).toBe(
+      `deploymenet/${options.project}`
+    );
+    expect(config.targets.portForwardToMinikube.options?.hostPort).toBe(8080);
+    expect(config.targets.portForwardToMinikube.options?.containerPort).toBe(
+      80
+    );
+  });
+
+  it('adds portForwardToMinikube to project config (custom run args)', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+      runResourceName: 'pod/test123',
+      runHostPort: 8888,
+      runContainerPort: 9999,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.portForwardToMinikube).toBeDefined();
+    expect(config.targets.portForwardToMinikube.executor).toBe(
+      '@nx-boat-tools/helm:portForward'
+    );
+    expect(config.targets.portForwardToMinikube.options?.resourceName).toBe(
+      options.runResourceName
+    );
+    expect(config.targets.portForwardToMinikube.options?.hostPort).toBe(8888);
+    expect(config.targets.portForwardToMinikube.options?.containerPort).toBe(
+      9999
+    );
+  });
+
+  it('adds uninstallHelmChart to project config', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'build', echo: 'Hello from build' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.uninstallHelmChart).toBeDefined();
+    expect(config.targets.uninstallHelmChart.executor).toBe(
+      '@nx-boat-tools/helm:uninstall'
+    );
+    expect(
+      config.targets.uninstallHelmChart.options?.resourceName
+    ).toBeUndefined();
+  });
+
+  it('adds runHelmChart to project config (no buildTarget specified)', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'packageSrc', echo: 'Hello from packageSrc' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.runHelmChart).toBeDefined();
+    expect(config.targets.runHelmChart.executor).toBe(
+      '@nx-boat-tools/common:chain-execute'
+    );
+    expect(config.targets.runHelmChart.options?.targets).toBeUndefined();
+    expect(config.targets.runHelmChart.options?.additionalTargets?.length).toBe(
+      3
+    );
+    expect(config.targets.runHelmChart.options?.additionalTargets[0]).toBe(
+      'installHelmChart'
+    );
+    expect(config.targets.runHelmChart.options?.additionalTargets[1]).toBe(
+      'portForwardToMinikube'
+    );
+    expect(config.targets.runHelmChart.options?.additionalTargets[2]).toBe(
+      'uninstallHelmChart'
+    );
+    expect(config.targets.runHelmChart.options?.stages).toBeUndefined();
+  });
+
+  it('adds runHelmChart to project config (buildTarget specified)', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+      runBuildTarget: 'buildSrc',
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'packageSrc', echo: 'Hello from packageSrc' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.runHelmChart).toBeDefined();
+    expect(config.targets.runHelmChart.executor).toBe(
+      '@nx-boat-tools/common:chain-execute'
+    );
+    expect(config.targets.runHelmChart.options?.targets).toBeUndefined();
+    expect(config.targets.runHelmChart.options?.additionalTargets?.length).toBe(
+      3
+    );
+    expect(config.targets.runHelmChart.options?.additionalTargets[0]).toBe(
+      'installHelmChart'
+    );
+    expect(config.targets.runHelmChart.options?.additionalTargets[1]).toBe(
+      'portForwardToMinikube'
+    );
+    expect(config.targets.runHelmChart.options?.additionalTargets[2]).toBe(
+      'uninstallHelmChart'
+    );
+    expect(config.targets.runHelmChart.options?.stages).toBeDefined();
+    expect(config.targets.runHelmChart.options?.stages['build']).toBeDefined();
+    expect(
+      config.targets.runHelmChart.options?.stages['build']?.additionalTargets
+    ).toBeUndefined();
+    expect(
+      config.targets.runHelmChart.options?.stages['build']?.targets?.length
+    ).toBe(1);
+    expect(
+      config.targets.runHelmChart.options?.stages['build']?.targets[0]
+    ).toBe('buildSrc');
   });
 
   it('renames build target to buildSrc when already exists and not chain-execute', async () => {
@@ -201,6 +425,39 @@ describe('local-chart generator', () => {
     );
   });
 
+  it('adds build to project config when build target does not already exists', async () => {
+    const options: HelmLocalChartGeneratorSchema = {
+      project: 'my-project',
+      createValues: false,
+    };
+    const initialConfig: ProjectConfiguration = {
+      root: 'apps/my-project',
+      sourceRoot: 'apps/my-project/src',
+      projectType: 'application',
+      targets: createTargetConfig([
+        { name: 'buildSrc', echo: 'Hello from buildSrc' },
+      ]),
+    };
+
+    addProjectConfiguration(appTree, 'my-project', initialConfig);
+
+    await generator(appTree, options);
+
+    const config = readProjectConfiguration(appTree, 'my-project');
+
+    expect(config?.targets?.build).toBeDefined();
+    expect(config.targets.build.executor).toBe(
+      '@nx-boat-tools/common:chain-execute'
+    );
+    expect(config.targets.build.options?.targets).toBeUndefined();
+    expect(
+      config.targets.build.options?.stages?.helmChart?.targets.length
+    ).toBe(1);
+    expect(config.targets.build.options?.stages?.helmChart?.targets[0]).toBe(
+      'lintHelmChart'
+    );
+  });
+
   it('creates chain-execute build target when build already exists (existing build not chain-execute)', async () => {
     const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
@@ -225,15 +482,14 @@ describe('local-chart generator', () => {
     expect(config.targets.build.executor).toBe(
       '@nx-boat-tools/common:chain-execute'
     );
-    expect(config.targets.build.options?.targets?.length).toBe(2);
+    expect(config.targets.build.options?.targets?.length).toBe(1);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
-    expect(config.targets.build.options?.targets[1]).toBe('copyHelmValues');
     expect(
-      config.targets.build.configurations?.prod?.additionalTargets?.length
+      config.targets.build.options?.stages?.helmChart?.targets.length
     ).toBe(1);
-    expect(
-      config.targets.build.configurations?.prod?.additionalTargets[0]
-    ).toBe('packageHelmChart');
+    expect(config.targets.build.options?.stages?.helmChart?.targets[0]).toBe(
+      'lintHelmChart'
+    );
   });
 
   it('adds to chain-execute build target when build already exists (existing build chain-execute)', async () => {
@@ -269,10 +525,15 @@ describe('local-chart generator', () => {
     expect(config.targets.build.executor).toBe(
       '@nx-boat-tools/common:chain-execute'
     );
-    expect(config.targets.build.options?.targets?.length).toBe(3);
+    expect(config.targets.build.options?.targets?.length).toBe(2);
     expect(config.targets.build.options?.targets[0]).toBe('buildSrc');
     expect(config.targets.build.options?.targets[1]).toBe('test');
-    expect(config.targets.build.options?.targets[2]).toBe('copyHelmValues');
+    expect(
+      config.targets.build.options?.stages?.helmChart?.targets.length
+    ).toBe(1);
+    expect(config.targets.build.options?.stages?.helmChart?.targets[0]).toBe(
+      'lintHelmChart'
+    );
   });
 
   it('sorts targets alphabetically', async () => {
@@ -305,12 +566,18 @@ describe('local-chart generator', () => {
     const config = readProjectConfiguration(appTree, 'my-project');
     const targets = _.keys(config?.targets);
 
-    expect(targets.length).toBe(5);
+    expect(targets.length).toBe(11);
     expect(targets[0]).toBe('build');
     expect(targets[1]).toBe('buildSrc');
     expect(targets[2]).toBe('copyHelmValues');
-    expect(targets[3]).toBe('packageHelmChart');
-    expect(targets[4]).toBe('test');
+    expect(targets[3]).toBe('installHelmChart');
+    expect(targets[4]).toBe('lintHelmChart');
+    expect(targets[5]).toBe('package');
+    expect(targets[6]).toBe('packageHelmChart');
+    expect(targets[7]).toBe('portForwardToMinikube');
+    expect(targets[8]).toBe('runHelmChart');
+    expect(targets[9]).toBe('test');
+    expect(targets[10]).toBe('uninstallHelmChart');
   });
 
   it('adds chart.yaml file to chart files in project helm directory matching template', async () => {
@@ -466,7 +733,7 @@ describe('local-chart generator', () => {
     expect(appTree.exists(valuesPath)).toBe(false);
   });
 
-  it('adds project values.yaml when createValues true (no environments specified', async () => {
+  it('adds project values.yaml when createValues true (no environments specified)', async () => {
     const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: true,
@@ -495,7 +762,7 @@ describe('local-chart generator', () => {
     expect(appTree.read(valuesPath).toString()).toBe(valuesTemplate);
   });
 
-  it('adds project values.yaml when createValues true (environments specified', async () => {
+  it('adds project values.yaml when createValues true (environments specified)', async () => {
     const options: HelmLocalChartGeneratorSchema = {
       project: 'my-project',
       createValues: true,
@@ -531,7 +798,8 @@ describe('local-chart generator', () => {
       .toString()
       .replace('<%= name %>', options.project);
 
-    expect(appTree.exists(valuesPath)).toBe(false);
+    expect(appTree.exists(valuesPath)).toBe(true);
+    expect(appTree.read(valuesPath).toString()).toBe(valuesTemplate);
 
     expect(appTree.exists(devValuesPath)).toBe(true);
     expect(appTree.read(devValuesPath).toString()).toBe(valuesTemplate);

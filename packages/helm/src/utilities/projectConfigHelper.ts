@@ -1,78 +1,147 @@
 import * as _ from 'underscore';
 import {
-  NxJsonProjectConfiguration,
-  ProjectConfiguration,
-  TargetConfiguration,
-} from '@nrwl/devkit';
+  ChainExecutorStage,
+  appendToChainTargets,
+} from '@nx-boat-tools/common';
+import { TargetConfiguration } from '@nrwl/devkit';
 import path = require('path');
 
+export interface HelmTargetsConfig {
+  projectDistPath: string;
+  projectHelmPath: string;
+  runBuildTarget: string;
+  runResourceName?: string;
+  runHostPort?: number;
+  runContainerPort?: number;
+  runValuesPaths: Array<string>;
+  repository?: string;
+  chart?: string;
+}
+
 export function getHelmAppendedBuildTargets(
-  projectDistPath: string,
-  projectHelmPath: string,
-  projectConfig: ProjectConfiguration & NxJsonProjectConfiguration,
-  addPackageTarget = false
+  projectTargets: { [targetName: string]: TargetConfiguration },
+  projectName: string,
+  helmTargetsConfig: HelmTargetsConfig,
+  isLocalChart = false
 ): { [targetName: string]: TargetConfiguration } {
-  const build = 'build';
-  const buildSrc = 'buildSrc';
+  verifyConfig(helmTargetsConfig, projectName, isLocalChart);
+
+  const { projectHelmPath, projectDistPath } = helmTargetsConfig;
+
+  const copyHelmValues = 'copyHelmValues';
+  const installHelmChart = 'installHelmChart';
+  const lintHelmChart = 'lintHelmChart';
   const packageHelmChart = 'packageHelmChart';
-  const copyHelmValues = getCopyHelmValuesName(projectConfig.targets);
+  const portForwardToMinikube = 'portForwardToMinikube';
+  const uninstallHelmChart = 'uninstallHelmChart';
 
-  const targets = projectConfig.targets;
-  targets[copyHelmValues] = {
-    executor: '@nx-boat-tools/helm:copyValues',
-    options: {
-      projectHelmPath: projectHelmPath,
-      outputPath: path.join(projectDistPath, 'helm', 'values'),
-    },
-  };
+  const packageTargets = [copyHelmValues];
 
-  if (addPackageTarget) {
-    targets[packageHelmChart] = {
-      executor: '@nx-boat-tools/helm:package',
-      options: {
-        projectHelmPath: projectHelmPath,
-        outputPath: path.join(projectDistPath, 'helm', 'chart'),
+  let localBuildStages = {};
+  let localChartTargets = {};
+  let repoChartTargets = {};
+
+  const buildStages =
+    helmTargetsConfig.runBuildTarget === undefined
+      ? {}
+      : {
+          build: {
+            targets: [helmTargetsConfig.runBuildTarget],
+          },
+        };
+
+  if (isLocalChart) {
+    packageTargets.push(packageHelmChart);
+
+    localBuildStages = {
+      build: {
+        stagesToAdd: {
+          helmChart: {
+            targets: [lintHelmChart],
+          } as ChainExecutorStage,
+        },
+      },
+    };
+
+    localChartTargets = {
+      [lintHelmChart]: {
+        executor: '@nx-boat-tools/helm:lint',
+        options: {
+          projectHelmPath: projectHelmPath,
+        },
+      },
+      [packageHelmChart]: {
+        executor: '@nx-boat-tools/helm:package',
+        options: {
+          projectHelmPath: projectHelmPath,
+          outputPath: path.join(projectDistPath, 'helm', 'chart'),
+        },
+      },
+      [installHelmChart]: {
+        executor: '@nx-boat-tools/helm:installLocalChart',
+        options: {
+          projectHelmPath: projectHelmPath,
+          valuesFilePaths: helmTargetsConfig.runValuesPaths,
+        },
+      },
+    };
+  } else {
+    repoChartTargets = {
+      [installHelmChart]: {
+        executor: '@nx-boat-tools/helm:installRepoChart',
+        options: {
+          projectHelmPath: projectHelmPath,
+          repository: helmTargetsConfig.repository,
+          chart: helmTargetsConfig.chart,
+          valuesFilePaths: helmTargetsConfig.runValuesPaths,
+        },
       },
     };
   }
 
-  if (copyHelmValues !== 'build') {
-    if (targets[build]?.executor === '@nx-boat-tools/common:chain-execute') {
-      if (!targets[build].options.targets.includes(copyHelmValues)) {
-        targets[build].options.targets.push(copyHelmValues);
-      }
-    } else {
-      if (targets[build] !== undefined) {
-        targets[buildSrc] = targets[build];
-      }
-
-      targets[build] = {
-        executor: '@nx-boat-tools/common:chain-execute',
-        options: {
-          targets: ['buildSrc', copyHelmValues],
+  const targets = {
+    ...appendToChainTargets(projectTargets, {
+      package: {
+        stagesToAdd: {
+          helmChart: {
+            targets: packageTargets,
+          } as ChainExecutorStage,
         },
-      };
-    }
-  }
-
-  if (addPackageTarget) {
-    targets[build].configurations = targets[build].configurations || {
-      prod: {},
-    };
-
-    targets[build].configurations.prod.additionalTargets =
-      targets[build].configurations.prod.additionalTargets || [];
-
-    if (
-      !targets[build].configurations.prod.additionalTargets.includes(
-        packageHelmChart
-      )
-    ) {
-      targets[build].configurations.prod.additionalTargets.push(
-        packageHelmChart
-      );
-    }
-  }
+      },
+      runHelmChart: {
+        additionalTargetsToAdd: [
+          installHelmChart,
+          portForwardToMinikube,
+          uninstallHelmChart,
+        ],
+        stagesToAdd: {
+          ...buildStages,
+        },
+      },
+      ...localBuildStages,
+    }),
+    [copyHelmValues]: {
+      executor: '@nx-boat-tools/helm:copyValues',
+      options: {
+        projectHelmPath: projectHelmPath,
+        outputPath: path.join(projectDistPath, 'helm', 'values'),
+      },
+    },
+    [portForwardToMinikube]: {
+      executor: '@nx-boat-tools/helm:portForward',
+      options: {
+        resourceName: helmTargetsConfig.runResourceName,
+        hostPort: helmTargetsConfig.runHostPort,
+        containerPort: helmTargetsConfig.runContainerPort,
+      },
+    },
+    [uninstallHelmChart]: {
+      executor: '@nx-boat-tools/helm:uninstall',
+      options: {},
+    },
+    ...localChartTargets,
+    ...repoChartTargets,
+  };
 
   const sortetTargetKeys = _.keys(targets).sort();
 
@@ -82,16 +151,34 @@ export function getHelmAppendedBuildTargets(
   );
 }
 
-function getCopyHelmValuesName(targets: {
-  [targetName: string]: TargetConfiguration;
-}): string {
-  const build = 'build';
-  const copyHelmValues = 'copyHelmValues';
-  const targetKeys = _.keys(targets);
+function verifyConfig(
+  config: HelmTargetsConfig,
+  projectName: string,
+  isLocalChart: boolean
+) {
+  if (projectName === undefined) {
+    throw new Error('No project specified.');
+  }
 
-  if (targetKeys.includes(copyHelmValues)) return copyHelmValues;
+  if (config.projectDistPath === undefined) {
+    throw new Error('No project dist path specified.');
+  }
 
-  const containsBuild = _.keys(targets).includes(build);
+  if (config.projectHelmPath === undefined) {
+    throw new Error('No project helm path specified.');
+  }
 
-  return containsBuild ? copyHelmValues : build;
+  if (
+    !isLocalChart &&
+    (config.repository === undefined || config.chart === undefined)
+  ) {
+    throw new Error(
+      'You must secify both a repository and chart for a remote chart.'
+    );
+  }
+
+  config.runResourceName ??= `deploymenet/${projectName}`;
+  config.runHostPort ??= 8080;
+  config.runContainerPort ??= 80;
+  config.runValuesPaths ??= [];
 }

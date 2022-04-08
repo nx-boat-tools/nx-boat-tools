@@ -17,6 +17,7 @@ interface NormalizedSchema extends HelmLocalChartGeneratorSchema {
   projectDistPath: string;
   projectHelmPath: string;
   environmentsList: string[];
+  valuesFilesPaths: string[];
 }
 
 function normalizeOptions(
@@ -32,9 +33,17 @@ function normalizeOptions(
     throw new Error(`${options.project} already has a copyHelmValues target.`);
   }
 
-  if (environmentsList.length == 0) {
+  if (!_.contains(environmentsList, 'values')) {
     environmentsList.push('values');
   }
+
+  const valuesFilesPaths = _.map(environmentsList, (environment: string) => {
+    const filename =
+      environment === 'values' ? 'values.yaml' : `values-${environment}.yaml`;
+    const valuesPath = path.join(projectConfig.root, 'helm', filename);
+
+    return valuesPath;
+  });
 
   return {
     ...options,
@@ -42,6 +51,7 @@ function normalizeOptions(
     projectDistPath,
     projectHelmPath,
     environmentsList,
+    valuesFilesPaths,
   };
 }
 
@@ -51,9 +61,19 @@ export default async function (
 ) {
   const normalizedOptions = normalizeOptions(tree, options);
   const updatedTargets = getHelmAppendedBuildTargets(
-    normalizedOptions.projectDistPath,
-    normalizedOptions.projectHelmPath,
-    normalizedOptions.projectConfig,
+    normalizedOptions.projectConfig.targets,
+    options.project,
+    {
+      projectDistPath: normalizedOptions.projectDistPath,
+      projectHelmPath: normalizedOptions.projectHelmPath,
+      runBuildTarget: normalizedOptions.runBuildTarget,
+      runValuesPaths: [
+        path.join(normalizedOptions.projectConfig.root, 'helm', 'values.yaml'),
+      ],
+      runResourceName: normalizedOptions.runResourceName,
+      runHostPort: normalizedOptions.runHostPort,
+      runContainerPort: normalizedOptions.runContainerPort,
+    },
     true
   );
 
@@ -85,7 +105,6 @@ function addChartFiles(tree: Tree, options: NormalizedSchema) {
 function copyValuesFiles(tree: Tree, options: NormalizedSchema) {
   if (options.createValues != true) return;
 
-  const projectConfig = options.projectConfig;
   const chartValuesFile = path.join(
     options.projectHelmPath,
     'chart',
@@ -94,11 +113,7 @@ function copyValuesFiles(tree: Tree, options: NormalizedSchema) {
 
   const values = tree.read(chartValuesFile).toString();
 
-  _.each(options.environmentsList, (environment) => {
-    const filename =
-      environment === 'values' ? 'values.yaml' : `values-${environment}.yaml`;
-    const valuesPath = path.join(projectConfig.root, 'helm', filename);
-
+  _.each(options.valuesFilesPaths, (valuesPath) => {
     tree.write(valuesPath, values);
   });
 }

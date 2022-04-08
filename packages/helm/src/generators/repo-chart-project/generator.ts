@@ -1,9 +1,11 @@
 import * as path from 'path';
 import {
+  ProjectConfiguration,
   Tree,
   addDependenciesToPackageJson,
   addProjectConfiguration,
   generateFiles,
+  getWorkspaceLayout,
   names,
 } from '@nrwl/devkit';
 import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
@@ -33,6 +35,8 @@ function normalizeOptions(
   tree: Tree,
   options: HelmRepoChartProjectGeneratorSchema
 ): NormalizedSchema {
+  const layout = getWorkspaceLayout(tree);
+
   const rootDir = tree.root;
   const name = names(options.name).fileName;
   const projectDirectory = options.directory
@@ -46,6 +50,8 @@ function normalizeOptions(
     : [];
 
   const projectDistPath = path.join('dist', projectRoot);
+
+  options.isStandaloneConfig ??= layout.standaloneAsDefault;
 
   return {
     ...options,
@@ -94,7 +100,7 @@ export default async function (
   options: HelmRepoChartProjectGeneratorSchema
 ) {
   const normalizedOptions = normalizeOptions(tree, options);
-  addProjectConfiguration(tree, normalizedOptions.projectName, {
+  const projectConfig: ProjectConfiguration = {
     root: normalizedOptions.projectRoot,
     projectType: 'application',
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
@@ -107,7 +113,13 @@ export default async function (
           'chore(${projectName}): release version ${version}',
       }),
     },
-  });
+  };
+  addProjectConfiguration(
+    tree,
+    normalizedOptions.projectName,
+    projectConfig,
+    normalizedOptions.isStandaloneConfig
+  );
   addFiles(tree, normalizedOptions);
   await repoChartGenerator(tree, {
     ...options,

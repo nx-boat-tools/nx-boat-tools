@@ -370,28 +370,55 @@ The `local-chart` generator is for creating a local helm chart for an existing p
 
 #### Available options:
 
-| name           | type      | default     | description                                                                                                                                                |
-| -------------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `project`      | `string`  |             | Required. The name of the project to add helm to.                                                                                                          |
-| `createValues` | `boolean` | `true`      | Whether or not to copy the values file from the chart to use for deployment                                                                                |
-| `environments` | `string?` | `undefined` | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+| name               | type      | default     | description                                                                                                                                                |
+| ------------------ | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `project`          | `string`  |             | Required. The name of the project to add helm to.                                                                                                          |
+| `createValues`     | `boolean` | `true`      | Whether or not to copy the values file from the chart to use for deployment                                                                                |
+| `environments`     | `string?` | `undefined` | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+| `runBuildTarget`   | `string`  |             | An optional build target to call before running the helm chart                                                                                             |
+| `runResourceName`  | `string`  |             | The name of the resource to port-forward to within minikube)                                                                                               |
+| `runHostPort`      | `number`  |             | The host port to use when port-forwarding to minikube                                                                                                      |
+| `runContainerPort` | `number`  |             | The container port to use when port-forwarding to minikube                                                                                                 |
 
 #### Generated files:
 
 The generated files should mostly reflect the same files you'd get from running `helm create`. A helm folder is added within the project directory and it will contain the chart directory and as well as any values files that were created.
 
-#### Updates to `workspace.json`:
+#### Updates to project configuration:
 
-The project's entry in the `workspace.json` will be updated as follows:
+The project's entry in the project configuration will be updated as follows:
 
-- `build` - If a `build` target existed previously then it will be renamed to to `buildSrc`. A new `build` will then be added and is a `chain-execute` which calls the following targets:
-  - `buildSrc` - This is the previous build target and we want it to run first
-  - `copyHelmValues` - Then we want to copy any values files to the dist directory
-  - `packageHelmChart` - For prod configuration only. This packages the chart into an achive
-- `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
-- `packageHelmChart` - this calls the helm `package` executor to create a chart archive file in the dist directory
+- `build` - If a `build` target existed previously then it will be renamed to to `buildSrc`. A new `build` will then be added and is a `chain-execute` with the following stages and targets:
 
-The following is a full example of what's added to the `workspace.json` for a project when adding helm to it:
+  🚩  Note: If no `build` target exists before running the `local-chart` generator the no root stage will be added.
+
+  - The `root` stage:
+    - `buildSrc` - This is the previous build target and we want it to run first
+  - The `helmChart` stage:
+    - `lintHelmChart` - This calls the docker `lint` target to test the helm chart
+
+- `package` - If a `package` target existed previously then it will be renamed to to `packageSrc`. A new `package` will then be added and is a `chain-execute` with the following stages and targets:
+
+  🚩  Note: If no `package` target exists before running the `local-chart` generator the no root stage will be added.
+
+  - The `root` stage:
+    - `packageSrc` - This is the previous package target and we want it to run first
+  - The `helmChart` stage:
+    - `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
+    - `packageHelmChart` - this calls the helm `package` executor to create a chart archive file in the dist directory
+
+- `runHelmChart` - this calls a `chain-execute` with the following stages and targets:
+
+  - The `build` stage (only if a build target was specified):
+    - The build target specified is added as a regular target of the stage.
+  - The `root` stage:
+    - `installHelmChart` - This calls the helm `installLocalChart` target to install the helm chart into kubernetes
+    - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
+    - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
+
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+
+The following is a full example of what's added to the project configuration for a project when adding helm to it:
 
 ```jsonc
 //workspace.json BEFORE
@@ -429,8 +456,12 @@ The following is a full example of what's added to the `workspace.json` for a pr
         "build": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "targets": ["buildSrc", "copyHelmValues"],
-            "additionalTargets": ["packageHelmChart"]
+            "targets": ["buildSrc"],
+            "stages": {
+              "helmChart": {
+                "targets": ["lintHelmChart"]
+              }
+            }
           }
         },
         "buildSrc": {
@@ -444,12 +475,62 @@ The following is a full example of what's added to the `workspace.json` for a pr
             "distPath": "dist/apps/my-app/helm/values"
           }
         },
+        "installHelmChart": {
+          "executor": "@nx-boat-tools/helm:installLocalChart",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm",
+            "valuesFilePaths": ["apps/my-app/helm/values.yaml"]
+          }
+        },
+        "lintHelmChart": {
+          "executor": "@nx-boat-tools/helm:lint",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm"
+          }
+        },
+        "package": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "targets": ["packageSrc"],
+            "stages": {
+              "helmChart": {
+                "targets": ["copyHelmValues", "packageHelmChart"]
+              }
+            }
+          }
+        },
         "packageHelmChart": {
           "executor": "@nx-boat-tools/helm:package",
           "options": {
             "projectHelmPath": "apps/my-app/helm",
             "distPath": "dist/apps/my-app/helm/chart"
           }
+        },
+        "packageSrc": {
+          "executor": "@nrwl/node:package"
+          //...
+        },
+        "portForwardToMinikube": {
+          "executor": "@nx-boat-tools/helm:portForward",
+          "options": {
+            "resourceName": "service/my-app",
+            "hostPort": 8080,
+            "containerPort": 80
+          }
+        },
+        "runHelmChart": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "additionalTargets": [
+              "installHelmChart",
+              "portForwardToMinikube",
+              "uninstallHelmChart"
+            ]
+          }
+        },
+        "uninstallHelmChart": {
+          "executor": "@nx-boat-tools/helm:uninstall",
+          "options": {}
         }
       },
       "tags": ""
@@ -476,27 +557,46 @@ The `repo-chart` generator is for adding a helm chart from a repository to your 
 
 #### Available options:
 
-| name           | type      | default     | description                                                                                                          |
-| -------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `project`      | `string`  |             | Required. The name of the project to add helm to.                                                                    |
-| `repository`   | `string`  |             | Required. The name of the repository containing the chart                                                            |
-| `chart`        | `string`  |             | Required. The name of the chart to use (without the repository)                                                      |
-| `environments` | `string?` | `undefined` | This is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+| name               | type      | default     | description                                                                                                          |
+| ------------------ | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `project`          | `string`  |             | Required. The name of the project to add helm to.                                                                    |
+| `repository`       | `string`  |             | Required. The name of the repository containing the chart                                                            |
+| `chart`            | `string`  |             | Required. The name of the chart to use (without the repository)                                                      |
+| `environments`     | `string?` | `undefined` | This is a comma seperated list of environment names that can be used to create a copy for each environment specified |
+| `runBuildTarget`   | `string`  |             | An optional build target to call before running the helm chart                                                       |
+| `runResourceName`  | `string`  |             | The name of the resource to port-forward to within minikube)                                                         |
+| `runHostPort`      | `number`  |             | The host port to use when port-forwarding to minikube                                                                |
+| `runContainerPort` | `number`  |             | The container port to use when port-forwarding to minikube                                                           |
 
 #### Generated files:
 
 A helm folder is added within the project directory containing the values files that were created.
 
-#### Updates to `workspace.json`:
+#### Updates to project configuration:
 
-The project's entry in the `workspace.json` will be updated as follows:
+The project's entry in the project configuration will be updated as follows:
 
-- `build` - If a `build` target existed previously then it will be renamed to to `buildSrc`. A new `build` will then be added and is a `chain-execute` which calls the following targets:
-  - `buildSrc` - This is the previous build target and we want it to run first
-  - `copyHelmValues` - Then we want to copy any values files to the dist directory
-- `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
+- `package` - If a `package` target existed previously then it will be renamed to to `packageSrc`. A new `package` will then be added and is a `chain-execute` with the following stages and targets:
 
-The following is a full example of what's added to the `workspace.json` for a project when adding helm to it:
+  🚩  Note: If no `package` target exists before running the `repo-chart` generator the no root stage will be added.
+
+  - The `root` stage:
+    - `packageSrc` - This is the previous package target and we want it to run first
+  - The `helmChart` stage:
+    - `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
+
+- `runHelmChart` - this calls a `chain-execute` with the following stages and targets:
+
+  - The `build` stage (only if a build target was specified):
+    - The build target specified is added as a regular target of the stage.
+  - The `root` stage:
+    - `installHelmChart` - This calls the helm `installRepoChart` target to install the helm chart into kubernetes
+    - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
+    - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
+
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+
+The following is a full example of what's added to the project configuration for a project when adding helm to it:
 
 ```jsonc
 //workspace.json BEFORE
@@ -532,12 +632,6 @@ The following is a full example of what's added to the `workspace.json` for a pr
       "sourceRoot": "apps/my-app/src",
       "targets": {
         "build": {
-          "executor": "@nx-boat-tools/common:chain-execute",
-          "options": {
-            "targets": ["buildSrc", "copyHelmValues"]
-          }
-        },
-        "buildSrc": {
           "executor": "@nrwl/node:package"
           //...
         },
@@ -547,6 +641,51 @@ The following is a full example of what's added to the `workspace.json` for a pr
             "projectHelmPath": "apps/my-app/helm",
             "distPath": "dist/apps/my-app/helm/values"
           }
+        },
+        "installHelmChart": {
+          "executor": "@nx-boat-tools/helm:installRepoChart",
+          "options": {
+            "repository": "bitnami",
+            "chart": "mysql",
+            "valuesFilePaths": ["apps/my-app/helm/values.yaml"]
+          }
+        },
+        "package": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "targets": ["packageSrc"],
+            "stages": {
+              "helmChart": {
+                "targets": ["copyHelmValues"]
+              }
+            }
+          }
+        },
+        "packageSrc": {
+          "executor": "@nrwl/node:package"
+          //...
+        },
+        "portForwardToMinikube": {
+          "executor": "@nx-boat-tools/helm:portForward",
+          "options": {
+            "resourceName": "service/my-app",
+            "hostPort": 8080,
+            "containerPort": 80
+          }
+        },
+        "runHelmChart": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "additionalTargets": [
+              "installHelmChart",
+              "portForwardToMinikube",
+              "uninstallHelmChart"
+            ]
+          }
+        },
+        "uninstallHelmChart": {
+          "executor": "@nx-boat-tools/helm:uninstall",
+          "options": {}
         }
       },
       "tags": ""
@@ -573,30 +712,51 @@ The `local-chart-project` generator is for creating new project containing a loc
 
 #### Available options:
 
-| name           | type      | default     | description                                                                                                                                                                                                                   |
-| -------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`         | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                       |
-| `tags`         | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
-| `directory`    | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
-| `createValues` | `boolean` | `true`      | Whether or not to copy the values file from the chart to use for deployment                                                                                                                                                   |
-| `environments` | `string?` | `undefined` | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                    |
+| name                 | type      | default               | description                                                                                                                                                                                                                   |
+| -------------------- | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. The name of the project that's being created.                                                                                                                                                                       |
+| `tags`               | `string?` | `undefined`           | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
+| `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
+| `createValues`       | `boolean` | `true`                | Whether or not to copy the values file from the chart to use for deployment                                                                                                                                                   |
+| `environments`       | `string?` | `undefined`           | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                    |
+| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
+| `runBuildTarget`     | `string`  |                       | An optional build target to call before running the helm chart                                                                                                                                                                |
+| `runResourceName`    | `string`  |                       | The name of the resource to port-forward to within minikube)                                                                                                                                                                  |
+| `runHostPort`        | `number`  |                       | The host port to use when port-forwarding to minikube                                                                                                                                                                         |
+| `runContainerPort`   | `number`  |                       | The container port to use when port-forwarding to minikube                                                                                                                                                                    |
 
 #### Generated files:
 
 Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `helm create`. The project will contain a helm folder which will contain the chart directory and as well as any values files that were created.
 
-#### Updates to `workspace.json`:
+#### Updates to project configuration:
 
-The project is added to the `workspace.json` with the following high-level targets defined:
+The project is added to the project configuration with the following high-level targets defined:
 
-- `build` - This is a `chain-execute` which calls the following targets:
-  - `copyHelmValues` - Then we want to copy any values files to the dist directory
-  - `packageHelmChart` - Only called when the `prod` configuration is used, this packages the chart into an achive
-- `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
-- `packageHelmChart` - this calls the helm `package` executor to create a chart archive file in the dist directory
+- `build` - This calls a `chain-execute` with the following stages and targets:
+  - The `helmChart` stage:
+    - `lintHelmChart` - This calls the docker `lint` target to test the helm chart
+
+- `package` - This calls a `chain-execute` with the following stages and targets:
+
+  - The `helmChart` stage:
+    - `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
+    - `packageHelmChart` - this calls the helm `package` executor to create a chart archive file in the dist directory
+
+- `runHelmChart` - this calls a `chain-execute` with the following stages and targets:
+
+  - The `build` stage (only if a build target was specified):
+    - The build target specified is added as a regular target of the stage.
+  - The `root` stage:
+    - `installHelmChart` - This calls the helm `installLocalChart` target to install the helm chart into kubernetes
+    - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
+    - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
+
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+
 - `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
 
-The following is a full example of what's added to the `workspace.json` when adding a helm local-chart project:
+The following is a full example of what's added to the project configuration when adding a helm local-chart project:
 
 ```jsonc
 //workspace.json
@@ -612,8 +772,11 @@ The following is a full example of what's added to the `workspace.json` when add
         "build": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "targets": ["copyHelmValues"],
-            "additionalTargets": ["packageHelmChart"]
+            "stages": {
+              "helmChart": {
+                "targets": ["lintHelmChart"]
+              }
+            }
           }
         },
         "copyHelmValues": {
@@ -623,12 +786,57 @@ The following is a full example of what's added to the `workspace.json` when add
             "distPath": "dist/apps/my-app/helm/values"
           }
         },
+        "installHelmChart": {
+          "executor": "@nx-boat-tools/helm:installLocalChart",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm",
+            "valuesFilePaths": ["apps/my-app/helm/values.yaml"]
+          }
+        },
+        "lintHelmChart": {
+          "executor": "@nx-boat-tools/helm:lint",
+          "options": {
+            "projectHelmPath": "apps/my-app/helm"
+          }
+        },
+        "package": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "stages": {
+              "helmChart": {
+                "targets": ["copyHelmValues", "packageHelmChart"]
+              }
+            }
+          }
+        },
         "packageHelmChart": {
           "executor": "@nx-boat-tools/helm:package",
           "options": {
             "projectHelmPath": "apps/my-app/helm",
             "distPath": "dist/apps/my-app/helm/chart"
           }
+        },
+        "portForwardToMinikube": {
+          "executor": "@nx-boat-tools/helm:portForward",
+          "options": {
+            "resourceName": "service/my-app",
+            "hostPort": 8080,
+            "containerPort": 80
+          }
+        },
+        "runHelmChart": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "additionalTargets": [
+              "installHelmChart",
+              "portForwardToMinikube",
+              "uninstallHelmChart"
+            ]
+          }
+        },
+        "uninstallHelmChart": {
+          "executor": "@nx-boat-tools/helm:uninstall",
+          "options": {}
         },
         "version": {
           "executor": "@@jscutlery/semver:version",
@@ -661,27 +869,47 @@ The `repo-chart-project` generator is for creating new project utilizing a helm 
 
 #### Available options:
 
-| name           | type      | default     | description                                                                                                                                                                                                                   |
-| -------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`         | `string`  |             | Required. The name of the project that's being created.                                                                                                                                                                       |
-| `tags`         | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
-| `directory`    | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
-| `repository`   | `string`  |             | Required. The name of the repository containing the chart                                                                                                                                                                     |
-| `chart`        | `string`  |             | Required. The name of the chart to use (without the repository)                                                                                                                                                               |
-| `environments` | `string?` | `undefined` | THis is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                                                          |
+| name                 | type      | default               | description                                                                                                                                                                                                                   |
+| -------------------- | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. The name of the project that's being created.                                                                                                                                                                       |
+| `tags`               | `string?` | `undefined`           | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
+| `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
+| `repository`         | `string`  |                       | Required. The name of the repository containing the chart                                                                                                                                                                     |
+| `chart`              | `string`  |                       | Required. The name of the chart to use (without the repository)                                                                                                                                                               |
+| `environments`       | `string?` | `undefined`           | This is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                                                          |
+| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
+| `runBuildTarget`     | `string`  |                       | An optional build target to call before running the helm chart                                                                                                                                                                |
+| `runResourceName`    | `string`  |                       | The name of the resource to port-forward to within minikube)                                                                                                                                                                  |
+| `runHostPort`        | `number`  |                       | The host port to use when port-forwarding to minikube                                                                                                                                                                         |
+| `runContainerPort`   | `number`  |                       | The container port to use when port-forwarding to minikube                                                                                                                                                                    |
 
 #### Generated files:
 
 Other than the addition of a `package.json` file for the project, a helm folder is added within the project directory containing the values files that were created.
 
-#### Updates to `workspace.json`:
+#### Updates to project configuration:
 
-The project is added to the `workspace.json` with the following high-level targets defined:
+The project is added to the project configuration with the following high-level targets defined:
 
-- `build` - Since no other build targets exists, here `build` is not a chain execute and simply calls the helm `copyValues` target to copy any values files to the dist directory.
+- `package` - This calls a `chain-execute` with the following stages and targets:
+
+  - The `helmChart` stage:
+    - `copyHelmValues` - This calls the helm `copyValues` target to copy any values files to the dist directory.
+
+- `runHelmChart` - this calls a `chain-execute` with the following stages and targets:
+
+  - The `build` stage (only if a build target was specified):
+    - The build target specified is added as a regular target of the stage.
+  - The `root` stage:
+    - `installHelmChart` - This calls the helm `installRepoChart` target to install the helm chart into kubernetes
+    - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
+    - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
+
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+
 - `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
 
-The following is a full example of what's added to the `workspace.json` when adding a helm repo-chart project:
+The following is a full example of what's added to the project configuration when adding a helm repo-chart project:
 
 ```jsonc
 //workspace.json
@@ -694,12 +922,52 @@ The following is a full example of what's added to the `workspace.json` when add
       "projectType": "application",
       "sourceRoot": "apps/my-app/src",
       "targets": {
-        "build": {
+        "copyHelmValues": {
           "executor": "@nx-boat-tools/helm:copyValues",
           "options": {
             "projectHelmPath": "apps/my-app/helm",
             "distPath": "dist/apps/my-app/helm/values"
           }
+        },
+        "installHelmChart": {
+          "executor": "@nx-boat-tools/helm:installRepoChart",
+          "options": {
+            "repository": "bitnami",
+            "chart": "mysql",
+            "valuesFilePaths": ["apps/my-app/helm/values.yaml"]
+          }
+        },
+        "package": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "stages": {
+              "helmChart": {
+                "targets": ["copyHelmValues"]
+              }
+            }
+          }
+        },
+        "portForwardToMinikube": {
+          "executor": "@nx-boat-tools/helm:portForward",
+          "options": {
+            "resourceName": "service/my-app",
+            "hostPort": 8080,
+            "containerPort": 80
+          }
+        },
+        "runHelmChart": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "additionalTargets": [
+              "installHelmChart",
+              "portForwardToMinikube",
+              "uninstallHelmChart"
+            ]
+          }
+        },
+        "uninstallHelmChart": {
+          "executor": "@nx-boat-tools/helm:uninstall",
+          "options": {}
         },
         "version": {
           "executor": "@@jscutlery/semver:version",

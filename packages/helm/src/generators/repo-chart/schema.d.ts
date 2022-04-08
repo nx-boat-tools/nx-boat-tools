@@ -3,4 +3,8 @@ export interface HelmRepoChartGeneratorSchema {
   environments?: string;
   repository: string;
   chart: string;
+  runBuildTarget?: string;
+  runResourceName?: string;
+  runHostPort?: number;
+  runContainerPort?: number;
 }

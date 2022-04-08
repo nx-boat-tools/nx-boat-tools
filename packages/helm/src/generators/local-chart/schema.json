@@ -9,7 +9,8 @@
       "type": "string",
       "description": "The name of the project.",
       "$default": {
-        "$source": "projectName"
+        "$source": "argv",
+        "index": 0
       }
     },
     "createValues": {
@@ -20,6 +21,22 @@
     "environments": {
       "type": "string",
       "description": "A comma seperated list of environments to add values for."
+    },
+    "runBuildTarget": {
+      "type": "string",
+      "description": "An optional build target to call before running the helm chart."
+    },
+    "runResourceName": {
+      "type": "string",
+      "description": "The name of the resource to port-forward to within minikube)."
+    },
+    "runHostPort": {
+      "type": "number",
+      "description": "The host port to use when port-forwarding to minikube."
+    },
+    "runContainerPort": {
+      "type": "number",
+      "description": "The container port to use when port-forwarding to minikube."
     }
   },
   "required": ["project"]

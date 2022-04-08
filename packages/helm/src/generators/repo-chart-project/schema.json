@@ -37,6 +37,26 @@
       "type": "string",
       "description": "The name of the chart to use (without the repository).",
       "x-prompt": "What is the name of the chart to use (without the repository)?"
+    },
+    "runBuildTarget": {
+      "type": "string",
+      "description": "An optional build target to call before running the helm chart."
+    },
+    "runResourceName": {
+      "type": "string",
+      "description": "The name of the resource to port-forward to within minikube)."
+    },
+    "runHostPort": {
+      "type": "number",
+      "description": "The host port to use when port-forwarding to minikube."
+    },
+    "runContainerPort": {
+      "type": "number",
+      "description": "The container port to use when port-forwarding to minikube."
+    },
+    "isStandaloneConfig": {
+      "type": "boolean",
+      "description": "should the project use package.json? If false, the project config is inside workspace.json."
     }
   },
   "required": ["name", "repository", "chart"]
