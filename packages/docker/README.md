@@ -341,6 +341,10 @@ The `docker` generator adds docker support to an existing Nx project. It creates
 | ------------------ | --------- | ------- | -------------------------------------------------------------------------------------------- |
 | `project`          | `string`  |         | Required. The name of the project to add docker to.                                          |
 | `dockerRepoOrUser` | `string`  |         | Required. This is used for the publish target and is the user or repo to upload the image to |
+| `baseDockerImage` | `string` | | The base docker image to use in the generated dockerfile |
+| `runPortMappings` | `string` | | When running the docker image, this is an comma delimited string used to create port mappings to pass into the container |
+| `runVolumeMounts` | `string` | | When running the docker image, this is an comma delimited string used to create volume mount mappings to pass into the container |
+| `runVariables` | `string` | | When running the docker image, this is an comma delimited string used to set environment variables within the container |
 | `minikube`         | `boolean` |         | Whether or not to add additional targets for minikube.                                       |
 
 #### Generated files:
@@ -349,23 +353,30 @@ The `dockerfile` and `.dockerignore` files that are generated are just placehold
 
 #### Updates to `workspace.json`:
 
-The project's entry in the `workspace.json` will be updated as follows:
+The project configuration will be updated as follows:
 
-- `build` - If a `build` target existed previously then it will be renamed to to `buildSrc`. A new `build` will then be added and is a `chain-execute` which calls the following targets:
+- `build` - If a `build` target existed previously then it will be renamed to to `buildSrc`. A new `build` will then be added and is a `chain-execute` with the following stages and targets:
 
-  - `buildSrc` - This is the previous build target and we want it to run first
-  - `copyDockerFiles` - Then we want to copy the `dockerfile` and `.dockerignore` to prepare for building the image
+  🚩  Note: If no `build` target exists before running the `docker` generator the no root stage will be added.
 
-  🚩  Note: By default the `buildDockerImage` is not added to the build chain
+  - The `root` stage:
+    - `buildSrc` - This is the previous build target and we want it to run first
+  - The `dockerImage` stage:
+    - `copyDockerFiles` - This calls the docker `copyFiles` target to copy the `dockerfile` to the dist directory to prepare for building the image
+    - `buildDockerImage` - This calls the docker `build` target to build the docker image
+  - The `minikubeImage` stage (only added if `--minikube=true`):
+    - `buildMinikubeImage` - THis calls the docker `buildMinikube` target to build the docker image within minikube
 
-- `buildDockerImage` - This calls the docker `build` target to build the docker image
-- `copyDockerFiles` - This calls the docker `copyFiles` target to copy the `dockerfile` to the dist directory.
+- `package` - If a `package` target existed previously then it will be renamed to to `packageSrc`. A new `package` will then be added and is a `chain-execute` with the following stages and targets:
 
-  🚩  Note: If no `build` target exists before running the `docker` generator then this will be named `build` instead.
+  🚩  Note: If no `package` target exists before running the `docker` generator the no root stage will be added.
 
-- `publishDockerImage` - this calls the docker `publish` executor to upload the docker image to a repo
+  - The `root` stage
+    - `buildSrc` - This is the previous package target and we want it to run first
+  - The `dockerImage` stage
+    - `publishDockerImage` - Added as an additional target, this calls the docker `publish` executor to upload the docker image to a repo
+
 - `runDockerImage` - this calls the docker `run` target to run the docker image
-- `buildMinikubeImage` - Added if `--minikube=true`, calls the docker `buildMinikube` target to build the docker image within minikube
 
 The following is a full example of what's added to the `workspace.json` for a project when adding docker to it:
 
@@ -405,7 +416,15 @@ The following is a full example of what's added to the `workspace.json` for a pr
         "build": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "targets": ["buildSrc", "copyDockerFiles"]
+            "targets": ["buildSrc"],
+            "stages": {
+              "dockerImage": {
+                "targets": ["copyDockerFiles", "buildDockerImage"]
+              },
+              "minikubeImage": {
+                "explicit": true,
+                "targets": ["copyDockerFiles", "buildMinikubeImage"]
+              }
           }
         },
         "buildDockerImage": {
@@ -422,6 +441,16 @@ The following is a full example of what's added to the `workspace.json` for a pr
           "executor": "@nx-boat-tools/docker:copyFiles",
           "options": {
             "distPath": "dist/apps/my-app"
+          }
+        },
+        "package": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "stages": {
+              "dockerImage": {
+                "additionalTargets": ["publishDockerImage"]
+              }
+            }
           }
         },
         "publishDockerImage": {

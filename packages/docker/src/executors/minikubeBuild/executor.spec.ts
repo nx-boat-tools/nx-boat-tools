@@ -15,11 +15,10 @@ console = new Console(process.stdout, process.stderr); //mockFs messes with the 
 
 const runExecutorSpy = jest.spyOn(buildDocker, 'dockerBuildExecutor');
 const mockedRunExecutor = jest.fn(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (
-    options: BuildExecutorSchema,
-    context: ExecutorContext,
-    spawnArgs?: child_process.SpawnSyncOptions
+    options: BuildExecutorSchema, // eslint-disable-line @typescript-eslint/no-unused-vars
+    context: ExecutorContext, // eslint-disable-line @typescript-eslint/no-unused-vars
+    spawnArgs?: child_process.SpawnSyncOptions // eslint-disable-line @typescript-eslint/no-unused-vars
   ) => {
     return { success: true };
   }
@@ -86,7 +85,7 @@ describe('Minikube Build Executor', () => {
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(1);
 
-    const firstCall: any[] = mockedRunExecutor.mock.calls[0];
+    const firstCall: any[] = mockedRunExecutor.mock.calls[0]; //eslint-disable-line
     const optionsArg: BuildExecutorSchema = firstCall[0];
     const contextArg: ExecutorContext = firstCall[1];
     const spawnArgs: child_process.SpawnSyncOptions = firstCall[2];

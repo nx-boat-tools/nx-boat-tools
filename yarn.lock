@@ -818,7 +818,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jscutlery/semver@npm:^2.20.1":
+"@jscutlery/semver@npm:^2.21.6":
   version: 2.21.6
   resolution: "@jscutlery/semver@npm:2.21.6"
   dependencies:
@@ -9362,7 +9362,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "src@workspace:."
   dependencies:
-    "@jscutlery/semver": ^2.20.1
+    "@jscutlery/semver": ^2.21.6
     "@nrwl/cli": 13.9.6
     "@nrwl/devkit": 13.9.6
     "@nrwl/eslint-plugin-nx": 13.9.6
