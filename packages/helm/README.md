@@ -75,6 +75,157 @@ nx run example:copyHelmValues
 
 This would result in copying the all the values files from `apps/example/helm` to `dist/apps/example/helm/values`. This will not include `apps/example/helm/chart` or any other nested folders in the project helm directory
 
+### `installLocalChart`
+
+Used for local helm charts, the `installLocalChart` executor runs a Helm upgrade command to install a helm chart from the filesystem.
+
+#### Available options:
+
+| name              | type       | default | description                                                                       |
+| ----------------- | ---------- | ------- | --------------------------------------------------------------------------------- |
+| `projectHelmPath` | `string`   |         | Required. The path to the helm directory of a project                             |
+| `valuesFilePaths` | `string[]` |         | The path to any values files to use with the chart                                |
+| `dryRun`          | `boolean`  | `false` | Whether or not to perform a dry run instead of actually installing the helm chart |
+
+#### Example:
+
+The following workspace configuration illustrates a possible helm `installLocalChart` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "installHelmChart": {
+          "executor": "@nx-boat-tools/helm:installLocalChart",
+          "options": {
+            "projectHelmPath": "apps/example/helm",
+            "valuesFilePaths": "apps/example/helm/values.yaml"
+          },
+          "configurations": {
+            "dev": {
+              "valuesFilePaths": "apps/example/helm/values-dev.yaml"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To run this we just need to execute the `installHelmChart` target...
+
+```bash
+nx installHelmChart example
+# OR
+nx run example:installHelmChart
+```
+
+This would result in installing the helm chart located in the project's helm directory and would use the `values.yaml` values file.
+
+### `installRepoChart`
+
+Used for repo helm charts, the `installRepoChart` executor runs a Helm upgrade command to install a helm chart from a repository.
+
+#### Available options:
+
+| name              | type       | default | description                                                                       |
+| ----------------- | ---------- | ------- | --------------------------------------------------------------------------------- |
+| `repository`      | `string`   |         | Required. The name of the repository containing your chart                        |
+| `chart`           | `string`   |         | Required. The name of the chart to use (without the repository)                   |
+| `valuesFilePaths` | `string[]` |         | The path to any values files to use with the chart                                |
+| `dryRun`          | `boolean`  | `false` | Whether or not to perform a dry run instead of actually installing the helm chart |
+
+#### Example:
+
+The following workspace configuration illustrates a possible helm `installRepoChart` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "installHelmChart": {
+          "executor": "@nx-boat-tools/helm:installRepoChart",
+          "options": {
+            "repository": "bitnami",
+            "chart": "mysql",
+            "valuesFilePaths": "apps/example/helm/values.yaml"
+          },
+          "configurations": {
+            "dev": {
+              "valuesFilePaths": "apps/example/helm/values-dev.yaml"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To run this we just need to execute the `installHelmChart` target...
+
+```bash
+nx installHelmChart example
+# OR
+nx run example:installHelmChart
+```
+
+This would result in installing the mysql helm chart from the bitnami helm repository and would use the `values.yaml` values file.
+
+### `lint`
+
+Only for local helm charts, the `lint` executor will call the helm `lint` command to verify that the chart is well-formed.
+
+#### Available options:
+
+| name              | type     | default | description                                           |
+| ----------------- | -------- | ------- | ----------------------------------------------------- |
+| `projectHelmPath` | `string` |         | Required. The path to the helm directory of a project |
+
+#### Example:
+
+The following workspace configuration illustrates a possible helm `lint` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "lintHelmChart": {
+          "executor": "@nx-boat-tools/helm:lint",
+          "options": {
+            "projectHelmPath": "apps/example/helm"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To verify the local helm chart, we just need to execute the `lintHelmChart` target...
+
+```bash
+nx lintHelmChart example
+# OR
+nx run lintHelmChart:package
+```
+
 ### `package`
 
 Only for local helm charts, the `package` executor will call the helm `package` command to create a versioned chart archive file.
@@ -121,6 +272,95 @@ nx run example:package
 ```
 
 Both of the above would result in a chart archive file being created at `dist/apps/example/helm/chart/example-X.X.X.tgz` where `X.X.X` is the versions specified in the project's `package.json`. If no version exists then the filename would just be `dist/apps/example/helm/chart/example.tgz`
+
+### `portForward`
+
+The `portForward` executor will run a `kubectl portForward` command so the helm chart can be tested locally.
+
+#### Available options:
+
+| name            | type      | default | description                                     |
+| --------------- | --------- | ------- | ----------------------------------------------- |
+| `resourceName`  | `string`  |         | Required. The kubernetes resource to forward to |
+| `hostPort`      | `integer` |         | Required. The port to map to on the host        |
+| `containerPort` | `integer` |         | Required. The port exposed by the container     |
+
+#### Example:
+
+The following workspace configuration illustrates a possible helm `portForward` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "portForwardToMinikube": {
+          "executor": "@nx-boat-tools/helm:portForward",
+          "options": {
+            "resourceName": "service/example/",
+            "hostPort": 8080,
+            "containerPort": 80
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To create the chart archive file we just need to execute the `portForwardToMinikube` target...
+
+```bash
+nx portForwardToMinikube example
+# OR
+nx run example:portForwardToMinikube
+```
+
+Both of the above would allow the service to be accessed via `http://localhost:8080`
+
+### `uninstall`
+
+The `uninstall` executor will call the helm `uninstall` command to remove the helm deployment for the project.
+
+#### Available options:
+
+| name     | type      | default | description                                                                       |
+| -------- | --------- | ------- | --------------------------------------------------------------------------------- |
+| `dryRun` | `boolean` | `false` | Whether or not to perform a dry run instead of actually installing the helm chart |
+
+#### Example:
+
+The following workspace configuration illustrates a possible helm `uninstall` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "uninstallHelmChart": {
+          "executor": "@nx-boat-tools/helm:uninstall"
+        }
+      }
+    }
+  }
+}
+```
+
+To verify the local helm chart, we just need to execute the `uninstallHelmChart` target...
+
+```bash
+nx uninstallHelmChart example
+# OR
+nx run uninstallHelmChart:package
+```
 
 ## ✍️  Generators
 

@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Helm Install executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "projectHelmPath": {
+      "type": "string",
+      "description": "The path to the helm directory of a project"
+    },
+    "valuesFilePaths": {
+      "type": "array",
+      "description": "A list containing the paths to each values file to install along with the chart."
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether or not to perferom a dry run instead of actually installing."
+    }
+  },
+  "required": ["projectHelmPath"]
+}

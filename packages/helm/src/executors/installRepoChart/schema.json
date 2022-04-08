@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Helm Install executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "repository": {
+      "type": "string",
+      "description": "The name of the repository containing your chart."
+    },
+    "chart": {
+      "type": "string",
+      "description": "The name of the chart to use (without the repository)."
+    },
+    "valuesFilePaths": {
+      "type": "array",
+      "description": "A list containing the paths to each values file to install along with the chart."
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether or not to perferom a dry run instead of actually installing."
+    }
+  },
+  "required": ["repository", "chart"]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Helm PortForward executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "resourceName": {
+      "type": "string",
+      "description": "The kubernetes resource to forward to."
+    },
+    "hostPort": {
+      "type": "number",
+      "description": "The port to map to on the host."
+    },
+    "containerPort": {
+      "type": "number",
+      "description": "The port exposed by the container."
+    }
+  },
+  "required": ["resourceName", "hostPort", "containerPort"]
+}

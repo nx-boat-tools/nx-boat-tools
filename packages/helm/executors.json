@@ -6,10 +6,35 @@
       "schema": "./src/executors/copyValues/schema.json",
       "description": "copyValues executor"
     },
+    "installLocalChart": {
+      "implementation": "./src/executors/installLocalChart/executor",
+      "schema": "./src/executors/installLocalChart/schema.json",
+      "description": "installLocalChart executor"
+    },
+    "installRepoChart": {
+      "implementation": "./src/executors/installRepoChart/executor",
+      "schema": "./src/executors/installRepoChart/schema.json",
+      "description": "installRepoChart executor"
+    },
+    "lint": {
+      "implementation": "./src/executors/lint/executor",
+      "schema": "./src/executors/lint/schema.json",
+      "description": "lint executor"
+    },
     "package": {
       "implementation": "./src/executors/package/executor",
       "schema": "./src/executors/package/schema.json",
       "description": "package executor"
+    },
+    "portForward": {
+      "implementation": "./src/executors/portForward/executor",
+      "schema": "./src/executors/portForward/schema.json",
+      "description": "portForward executor"
+    },
+    "uninstall": {
+      "implementation": "./src/executors/uninstall/executor",
+      "schema": "./src/executors/uninstall/schema.json",
+      "description": "uninstall executor"
     }
   }
 }

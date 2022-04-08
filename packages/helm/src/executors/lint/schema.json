@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Helm Lint executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "projectHelmPath": {
+      "type": "string",
+      "description": "The path to the helm directory of a project"
+    }
+  },
+  "required": ["projectHelmPath"]
+}
