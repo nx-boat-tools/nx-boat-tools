@@ -34,7 +34,7 @@ describe('Chain Executor', () => {
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
   });
 
-  it('executes all expected targets in order', async () => {
+  it('executes all expected targets in order (without stages)', async () => {
     const options: ChainExecutorSchema = {
       targets: ['build', 'test'],
     };
@@ -63,21 +63,184 @@ describe('Chain Executor', () => {
     });
   });
 
-  it('executes additional targets last', async () => {
+  it('executes all expected targets in order (with implicit stages - no filter)', async () => {
     const options: ChainExecutorSchema = {
-      targets: ['build', 'test'],
-      additionalTargets: ['additional'],
+      targets: ['pre'],
+      additionalTargets: ['post'],
+      stages: {
+        src: {
+          targets: ['build'],
+          additionalTargets: ['test'],
+        },
+        package: {
+          targets: ['package'],
+          additionalTargets: ['publish'],
+        },
+      },
     };
     const context = createTestExecutorContext({
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'package', echo: 'hello from package' },
+        { name: 'pre', echo: 'hello from pre' },
+        { name: 'post', echo: 'hello from post' },
+        { name: 'publish', echo: 'hello from publish' },
         { name: 'test', echo: 'hello from test' },
-        { name: 'additional', echo: 'hello from additional' },
       ],
     });
     const output = await executor(options, context);
 
-    const expectedTargets = ['build', 'test', 'additional'];
+    const expectedTargets = [
+      'pre',
+      'build',
+      'package',
+      'post',
+      'test',
+      'publish',
+    ];
+
+    expect(output.success).toBe(true);
+    expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
+
+    _.each(mockedRunExecutor.mock.calls, (call: any, i: number) => {
+      const targetArg: TargetSummary = call[0];
+      const contextArg: devkit.ExecutorContext = call[2];
+
+      expect(targetArg.project).toBe('my-project');
+      expect(targetArg.target).toBe(expectedTargets[i]);
+      expect(targetArg.configuration).toBe(undefined);
+
+      expect(contextArg).toBe(context);
+    });
+  });
+
+  it('executes all expected targets in order (with implicit stages - filtered)', async () => {
+    const options: ChainExecutorSchema = {
+      run: ['src'],
+      targets: ['pre'],
+      additionalTargets: ['post'],
+      stages: {
+        src: {
+          targets: ['build'],
+          additionalTargets: ['test'],
+        },
+        package: {
+          targets: ['package'],
+          additionalTargets: ['publish'],
+        },
+      },
+    };
+    const context = createTestExecutorContext({
+      targetsMap: [
+        { name: 'build', echo: 'hello from build' },
+        { name: 'package', echo: 'hello from package' },
+        { name: 'pre', echo: 'hello from pre' },
+        { name: 'post', echo: 'hello from post' },
+        { name: 'publish', echo: 'hello from publish' },
+        { name: 'test', echo: 'hello from test' },
+      ],
+    });
+    const output = await executor(options, context);
+
+    const expectedTargets = ['pre', 'build', 'post', 'test'];
+
+    expect(output.success).toBe(true);
+    expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
+
+    _.each(mockedRunExecutor.mock.calls, (call: any, i: number) => {
+      const targetArg: TargetSummary = call[0];
+      const contextArg: devkit.ExecutorContext = call[2];
+
+      expect(targetArg.project).toBe('my-project');
+      expect(targetArg.target).toBe(expectedTargets[i]);
+      expect(targetArg.configuration).toBe(undefined);
+
+      expect(contextArg).toBe(context);
+    });
+  });
+
+  it('executes all expected targets in order (with explicit stage - no filter)', async () => {
+    const options: ChainExecutorSchema = {
+      targets: ['pre'],
+      additionalTargets: ['post'],
+      stages: {
+        src: {
+          targets: ['build'],
+          additionalTargets: ['test'],
+        },
+        package: {
+          explicit: true,
+          targets: ['package'],
+          additionalTargets: ['publish'],
+        },
+      },
+    };
+    const context = createTestExecutorContext({
+      targetsMap: [
+        { name: 'build', echo: 'hello from build' },
+        { name: 'package', echo: 'hello from package' },
+        { name: 'pre', echo: 'hello from pre' },
+        { name: 'post', echo: 'hello from post' },
+        { name: 'publish', echo: 'hello from publish' },
+        { name: 'test', echo: 'hello from test' },
+      ],
+    });
+    const output = await executor(options, context);
+
+    const expectedTargets = ['pre', 'build', 'post', 'test'];
+
+    expect(output.success).toBe(true);
+    expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
+
+    _.each(mockedRunExecutor.mock.calls, (call: any, i: number) => {
+      const targetArg: TargetSummary = call[0];
+      const contextArg: devkit.ExecutorContext = call[2];
+
+      expect(targetArg.project).toBe('my-project');
+      expect(targetArg.target).toBe(expectedTargets[i]);
+      expect(targetArg.configuration).toBe(undefined);
+
+      expect(contextArg).toBe(context);
+    });
+  });
+
+  it('executes all expected targets in order (with explicit stage - filtered)', async () => {
+    const options: ChainExecutorSchema = {
+      run: ['src', 'package'],
+      targets: ['pre'],
+      additionalTargets: ['post'],
+      stages: {
+        src: {
+          targets: ['build'],
+          additionalTargets: ['test'],
+        },
+        package: {
+          explicit: true,
+          targets: ['package'],
+          additionalTargets: ['publish'],
+        },
+      },
+    };
+    const context = createTestExecutorContext({
+      targetsMap: [
+        { name: 'build', echo: 'hello from build' },
+        { name: 'package', echo: 'hello from package' },
+        { name: 'pre', echo: 'hello from pre' },
+        { name: 'post', echo: 'hello from post' },
+        { name: 'publish', echo: 'hello from publish' },
+        { name: 'test', echo: 'hello from test' },
+      ],
+    });
+    const output = await executor(options, context);
+
+    const expectedTargets = [
+      'pre',
+      'build',
+      'package',
+      'post',
+      'test',
+      'publish',
+    ];
 
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
@@ -96,21 +259,40 @@ describe('Chain Executor', () => {
 
   it('executes targets with configuration', async () => {
     const options: ChainExecutorSchema = {
-      targets: ['build', 'test'],
-      additionalTargets: ['additional'],
+      targets: ['pre'],
+      additionalTargets: ['post'],
+      stages: {
+        src: {
+          targets: ['build'],
+          additionalTargets: ['test'],
+        },
+        package: {
+          targets: ['package'],
+          additionalTargets: ['publish'],
+        },
+      },
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'package', echo: 'hello from package' },
+        { name: 'pre', echo: 'hello from pre' },
+        { name: 'post', echo: 'hello from post' },
+        { name: 'publish', echo: 'hello from publish' },
         { name: 'test', echo: 'hello from test' },
-        { name: 'additional', echo: 'hello from additional' },
       ],
     });
-
     const output = await executor(options, context);
 
-    const expectedTargets = ['build', 'test', 'additional'];
+    const expectedTargets = [
+      'pre',
+      'build',
+      'package',
+      'post',
+      'test',
+      'publish',
+    ];
 
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
