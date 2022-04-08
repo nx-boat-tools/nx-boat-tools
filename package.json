@@ -33,6 +33,7 @@
   },
   "private": true,
   "dependencies": {
+    "create-nx-workspace": "^13.9.6",
     "guid-typescript": "^1.0.9",
     "minimist": "^1.2.6",
     "tslib": "^2.3.1",

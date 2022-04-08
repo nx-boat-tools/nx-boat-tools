@@ -18,9 +18,12 @@ endif
 
 .PHONY: build
 build:
-	echo $(NEWLINE)🛠 Building affected projects compared to $(base_ref)...
+	if [ ! -d './packages/helm/src/generators/local-chart/files/generated' ]; then make templates; fi
+
+	echo $(NEWLINE)$(NEWLINE)🛠 Building affected projects compared to $(base_ref)...
 
 	yarn install --immutable
+	yarn dlx nx affected --base=$(base_ref) --target=copyTemplates
 	yarn dlx nx affected:build --base=$(base_ref) --parallel=5
 	yarn dlx nx affected:test --base=$(base_ref) --parallel=5
 
@@ -49,6 +52,7 @@ artifacts:
 
 	yarn install --immutable
 	yarn dlx nx affected --base=$(last_version_hash) --target=updateDependencies
+	yarn dlx nx affected --base=$(last_version_hash) --target=copyTemplates
 	yarn dlx nx affected:build --base=$(last_version_hash) --parallel=5
 
 	echo
@@ -86,6 +90,20 @@ ifeq ($(commit), true)
 	git commit -m 'chore(repo): bumping version to $(new_version)';
 	git push -u origin $(PUSH_BRANCH)
 endif
+
+.PHONY: templates
+clean:
+	rm -rfd ./build
+	rm -rfd ./coverage
+	rm -rfd ./dist
+	rm -rfd ./node_modules
+	rm -rfd ./tmp
+	rm -rfd ./RELEASE_VERSION
+	rm -rfd ./packages/docker/src/generators/docker/files/generated
+	rm -rfd ./packages/dotnet/src/generators/classlib/files/generated
+	rm -rfd ./packages/dotnet/src/generators/console/files/generated
+	rm -rfd ./packages/dotnet/src/generators/webapi/files/generated
+	rm -rfd ./packages/helm/src/generators/local-chart/files/generated
 
 .PHONY: templates
 templates:
@@ -158,6 +176,7 @@ endif
 	make templates
 
 	yarn dlx nx run-many --target=build --all --parallel=5
+	yarn dlx nx run-many --target=copyTemplates --all --parallel=5
 	yarn dlx nx run-many --target=version --all --parallel=5 --to='$(new_version)' --pathPrefix=dist
 	yarn dlx nx run-many --target=updateDependencies --all --parallel=5 --peerVersion='$(new_version)' --pathPrefix=dist
 
@@ -168,11 +187,16 @@ local-registry-workspace:
 
 	rm -rf ./tmp/local-test
 	mkdir -p ./tmp
-	cd ./tmp; npx create-nx-workspace --preset=empty --name=local-test --nxCloud=false
+	cd ./tmp; npm i create-nx-workspace; npx create-nx-workspace --preset=empty --name=local-test --nxCloud=false;
 
 	cp makefile ./tmp/local-test/makefile
 
 	cd ./tmp/local-test; \
 	make local-registry-enable; \
 	npm i -D @nx-boat-tools/dotnet@next; \
-	npx nx g @nx-boat-tools/dotnet:console my-test;
+	npm i -D @nx-boat-tools/docker@next; \
+	npm i -D @nx-boat-tools/helm@next; \
+	npx nx g @nx-boat-tools/dotnet:webapi my-test; \
+	npx nx g @nx-boat-tools/docker:docker my-test --dockerRepoOrUser=my-user --minikube=true --baseDockerImage=mcr.microsoft.com/dotnet/aspnet:latest --runPortMappings=8080:80 --runVolumeMounts=dist/apps/my-test:/app --runVariables=Logging__Console__FormatterName:Simple; \
+	npx nx g @nx-boat-tools/helm:local-chart my-test --environments=dev,prod --runResourceName=service/my-test; \
+	printf "ENV LOGGING__CONSOLE__FORMATTERNAME=Simple\nWORKDIR /app\nCOPY . .\nENTRYPOINT [\"dotnet\", \"MyTest.dll\"]" >> ./apps/my-test/dockerfile

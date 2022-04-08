@@ -48,13 +48,14 @@
             "input": "./packages/dotnet",
             "glob": "executors.json",
             "output": "."
-          },
-          {
-            "input": "./packages/dotnet/src/generators",
-            "glob": "**/files/**/**/*",
-            "output": "./src/generators"
           }
         ]
+      }
+    },
+    "copyTemplates": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "for f in $(find 'packages/dotnet/src' -type f -name '*.template'); do DIR=$(dirname ${f}); mkdir -p dist/${DIR}; cp ${f} dist/${f}; done;"
       }
     },
     "updateDependencies": {

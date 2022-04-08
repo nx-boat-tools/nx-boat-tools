@@ -52,6 +52,12 @@
         ]
       }
     },
+    "copyTemplates": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "for f in $(find 'packages/docker/src' -type f -name '*.template'); do DIR=$(dirname ${f}); mkdir -p dist/${DIR}; cp ${f} dist/${f}; done;"
+      }
+    },
     "updateDependencies": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
