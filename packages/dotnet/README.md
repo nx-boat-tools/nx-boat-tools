@@ -509,33 +509,33 @@ The `project` generator is the heart of all of the dotnet generators. Its job is
 
 #### Available options:
 
-| name          | type      | default     | description                                                                                                                                                                                                                                                                                              |
-| ------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | `string`  |             | Required. The name of the dotnet project that's being created.                                                                                                                                                                                                                                           |
-| `tags`        | `string?` | `undefined` | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
-| `directory`   | `string?` | `undefined` | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
-| `projectType` | `string`  |             | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
-| `ownSolution` | `boolean` | `false`     | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
+| name                 | type      | default               | description                                                                                                                                                                                                                                                                                              |
+| -------------------- | --------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. The name of the dotnet project that's being created.                                                                                                                                                                                                                                           |
+| `tags`               | `string?` | `undefined`           | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                                                                                             |
+| `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
+| `projectType`        | `string`  |                       | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
+| `ownSolution`        | `boolean` | `false`               | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
+| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                                                                                               |
 
 #### Generated files:
 
 What files are generated depend on the `projectType` that's specified but should mostly reflect the same files you'd get from running `dotnet new {projectType}`. Other than the addition of a `package.json` file for the project, the biggest difference is whether or not the solution file is created or if another one is appended to.
 
-#### Updates to `workspace.json`:
+#### Updates to project configuration:
 
-The project is added to the `workspace.json` with the following high-level targets defined:
+The project is added to the project configuration with the following high-level targets defined:
 
-- `build` - This is a `chain-execute` which calls the following targets:
-  - `dotnetVersion` - This runs the `version` executor to ensure the `csproj` versions match the project's `package.json`
-  - `buildDotnet` - This runs the dotnet `build` executor for the project
-  - `package` - For the `prod` condiguration only, this runs the dotnet `package` executor
+- `build` - This runs the dotnet `build` executor for the project
+- `dotnetVersion` - This runs the `version` executor to ensure the `csproj` versions match the project's `package.json`
+- `package` - This runs the dotnet `package` executor
 - `clean` - this calls the dotnet `clean` executor to clean up build output
 - `run` - this calls the dotnet `run` target to run the application
 - `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin. The `dotnetVersion` is added to the `postTargets` parameter so the `csproj` files are updated at the same time.
 
 🚩  Note: The `run` target is not added when `classlib` is specified for `projectType`
 
-The following is a full example of what's added to the `workspace.json` for a dotnet project, in this case for a `projectType` of `console`:
+The following is a full example of what's added to the project configuration for a dotnet project, in this case for a `projectType` of `console`:
 
 ```jsonc
 //workspace.json
@@ -549,18 +549,6 @@ The following is a full example of what's added to the `workspace.json` for a do
       "sourceRoot": "apps/console-app/src",
       "targets": {
         "build": {
-          "executor": "@nx-boat-tools/common:chain-execute",
-          "options": {
-            "targets": ["version", "buildDotnet"]
-          },
-          "configurations": {
-            "dev": {},
-            "prod": {
-              "additionalTargets": ["package"]
-            }
-          }
-        },
-        "buildDotnet": {
           "executor": "@nx-boat-tools/dotnet:build",
           "options": {
             "srcPath": "./workspace-name.sln",
@@ -650,12 +638,13 @@ Creates a dotnet class library project.
 
 #### Available options:
 
-| name          | type      | default     | description                                                                                     |
-| ------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------- |
-| `name`        | `string`  |             | Required. This is passed to the `name` option of the underlying [`project` generator](#project) |
-| `tags`        | `string?` | `undefined` | This is passed to the `tags` option of the underlying [`project` generator](#project)           |
-| `directory`   | `string?` | `undefined` | This is passed to the `directory` option of the underlying [`project` generator](#project)      |
-| `ownSolution` | `boolean` | `false`     | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)    |
+| name                 | type      | default               | description                                                                                         |
+| -------------------- | --------- | --------------------- | --------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. This is passed to the `name` option of the underlying [`project` generator](#project)     |
+| `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
+| `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
+| `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
+| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
 
 #### Generated files:
 
@@ -682,12 +671,13 @@ Creates a dotnet console application project.
 
 #### Available options:
 
-| name          | type      | default     | description                                                                                     |
-| ------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------- |
-| `name`        | `string`  |             | Required. This is passed to the `name` option of the underlying [`project` generator](#project) |
-| `tags`        | `string?` | `undefined` | This is passed to the `tags` option of the underlying [`project` generator](#project)           |
-| `directory`   | `string?` | `undefined` | This is passed to the `directory` option of the underlying [`project` generator](#project)      |
-| `ownSolution` | `boolean` | `false`     | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)    |
+| name                 | type      | default               | description                                                                                         |
+| -------------------- | --------- | --------------------- | --------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. This is passed to the `name` option of the underlying [`project` generator](#project)     |
+| `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
+| `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
+| `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
+| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
 
 #### Generated files:
 
@@ -714,12 +704,13 @@ Creates a dotnet web API project.
 
 #### Available options:
 
-| name          | type      | default     | description                                                                                     |
-| ------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------- |
-| `name`        | `string`  |             | Required. This is passed to the `name` option of the underlying [`project` generator](#project) |
-| `tags`        | `string?` | `undefined` | This is passed to the `tags` option of the underlying [`project` generator](#project)           |
-| `directory`   | `string?` | `undefined` | This is passed to the `directory` option of the underlying [`project` generator](#project)      |
-| `ownSolution` | `boolean` | `false`     | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)    |
+| name                 | type      | default               | description                                                                                         |
+| -------------------- | --------- | --------------------- | --------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. This is passed to the `name` option of the underlying [`project` generator](#project)     |
+| `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
+| `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
+| `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
+| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
 
 #### Generated files:
 

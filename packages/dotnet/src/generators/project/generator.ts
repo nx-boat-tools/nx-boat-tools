@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { Guid } from 'guid-typescript';
 import {
+  ProjectConfiguration,
   ProjectType,
   Tree,
   addDependenciesToPackageJson,
@@ -50,6 +51,8 @@ function normalizeOptions(
   tree: Tree,
   options: DotnetGeneratorSchema
 ): NormalizedSchema {
+  const layout = getWorkspaceLayout(tree);
+
   const rootDir = tree.root;
   const { fileName, className } = names(options.name);
   const projectDirectory = options.directory
@@ -57,8 +60,8 @@ function normalizeOptions(
     : fileName;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
   const projectRoot = `${getProjectDirectoryPrefix(
-    tree,
-    options.projectType
+    options.projectType,
+    layout
   )}/${projectDirectory}`;
   const projectDistPath = path.join('dist', projectRoot);
   const projectPathFromSln = !options.ownSolution ? projectRoot + path.sep : '';
@@ -74,6 +77,8 @@ function normalizeOptions(
   const pkgName = names(pkg.name).className;
 
   const dotnetPluginVersion = getDotnetPluginVersion();
+
+  options.isStandaloneConfig ??= layout.standaloneAsDefault;
 
   return {
     ...options,
@@ -108,14 +113,17 @@ function getNxProjectType(tree: Tree, projectType: string): ProjectType {
   }
 }
 
-function getProjectDirectoryPrefix(tree: Tree, projectType: string) {
+function getProjectDirectoryPrefix(
+  projectType: string,
+  workspaceLayout: { libsDir: string; appsDir: string }
+) {
   switch (projectType) {
     case 'classlib':
-      return getWorkspaceLayout(tree).libsDir;
+      return workspaceLayout.libsDir;
     case 'webapi':
     case 'console':
     default:
-      return getWorkspaceLayout(tree).appsDir;
+      return workspaceLayout.appsDir;
   }
 }
 
@@ -285,24 +293,12 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     commitMessageFormat: 'chore(${projectName}): release version ${version}',
   });
   versionTarget.options.postTargets = ['dotnetVersion'];
-  addProjectConfiguration(tree, normalizedOptions.projectName, {
+  const projectConfig: ProjectConfiguration = {
     root: normalizedOptions.projectRoot,
     projectType: normalizedOptions.nxProjectType,
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
-        executor: '@nx-boat-tools/common:chain-execute',
-        options: {
-          targets: ['dotnetVersion', 'buildDotnet'],
-        },
-        configurations: {
-          dev: {},
-          prod: {
-            additionalTargets: ['package'],
-          },
-        },
-      },
-      buildDotnet: {
         executor: '@nx-boat-tools/dotnet:build',
         options: {
           ...dotnetOptions,
@@ -333,7 +329,13 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
       version: versionTarget,
     },
     tags: normalizedOptions.parsedTags,
-  });
+  };
+  addProjectConfiguration(
+    tree,
+    normalizedOptions.projectName,
+    projectConfig,
+    normalizedOptions.isStandaloneConfig
+  );
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
   installPackagesTask(

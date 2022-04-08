@@ -51,7 +51,7 @@ describe('Dotnet webapi Generator', () => {
 
     expect(mockedRunExecutor.mock.calls.length).toBe(1);
 
-    const firstCall: any[] = mockedRunExecutor.mock.calls[0];
+    const firstCall: any[] = mockedRunExecutor.mock.calls[0]; //eslint-disable-line
     const schemaArg: DotnetGeneratorSchema = firstCall[1];
 
     expect(schemaArg.projectType).toBe('webapi');

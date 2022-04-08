@@ -32,6 +32,10 @@
       "type": "boolean",
       "description": "When set to true, the project will have its own solution file which will be in the project directory. When set to false, it will be added to a solution file at the workspace root.",
       "default": false
+    },
+    "isStandaloneConfig": {
+      "type": "boolean",
+      "description": "should the project use package.json? If false, the project config is inside workspace.json."
     }
   },
   "required": ["name", "projectType"]

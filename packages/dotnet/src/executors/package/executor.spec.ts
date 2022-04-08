@@ -10,12 +10,9 @@ import { PackageDotnetExecutorSchema } from './schema';
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(runDotnetCommandExecutor, 'runDotnetCommand');
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockedRunExecutor = jest.fn(
-  async (options: DotNetCommandExecutorSchema, context: ExecutorContext) => {
-    return { success: true };
-  }
-);
+const mockedRunExecutor = jest.fn(async () => {
+  return { success: true };
+});
 
 describe('Dotnet Package Executor', () => {
   beforeAll(() => {
@@ -56,7 +53,7 @@ describe('Dotnet Package Executor', () => {
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(1);
 
-    const firstCall: any[] = mockedRunExecutor.mock.calls[0];
+    const firstCall: any[] = mockedRunExecutor.mock.calls[0]; //eslint-disable-line
     const optionsArg: DotNetCommandExecutorSchema = firstCall[0];
     const contextArg: ExecutorContext = firstCall[1];
 
