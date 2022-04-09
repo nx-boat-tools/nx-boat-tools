@@ -1,15 +1,56 @@
 import * as _ from 'underscore';
-import { ExecutorContext, runExecutor } from '@nrwl/devkit';
+import {
+  ExecutorContext,
+  readProjectConfiguration,
+  runExecutor,
+} from '@nrwl/devkit';
+import { FsTree } from 'nx/src/shared/tree';
 
 import { ChainExecutorSchema } from './schema';
 import { asyncIteratorToArray } from '../../utilities/iterableHelpers';
+
+type TargetSpecification = {
+  project: string;
+  target: string;
+  configuration?: string;
+};
 
 const toTarget = (project: string, target: string, configuration?: string) => {
   return {
     project: project,
     target: target,
     configuration: configuration,
-  };
+  } as TargetSpecification;
+};
+
+const negotiateTargetConfigurations = (
+  targets: Array<TargetSpecification>,
+  context: ExecutorContext
+): Array<TargetSpecification> => {
+  if (context.configurationName === undefined) {
+    return targets;
+  }
+
+  console.log('\n🤝 Negotiating target configurations...\n')
+
+  const tree = new FsTree(context.root, false);
+  const projectConfig = readProjectConfiguration(tree, context.projectName);
+
+  return _.map(targets, (targetSpec) => {
+    const projectTarget = projectConfig.targets[targetSpec.target];
+
+    const negotiatedConfig = _.contains(
+      _.keys(projectTarget.configurations),
+      context.configurationName
+    )
+      ? context.configurationName
+      : undefined;
+
+    return {
+      ...targetSpec,
+      configuration: negotiatedConfig,
+    };
+  });
 };
 
 export default async function (
@@ -60,9 +101,10 @@ export default async function (
     targets = targets.concat(_.uniq(additionalTargets));
   }
 
-  const targetsToRun = _.map(targets, (target) =>
+  let targetsToRun = _.map(targets, (target) =>
     toTarget(projectName, target, configurationName)
   );
+  targetsToRun = negotiateTargetConfigurations(targetsToRun, context);
 
   let stack: Promise<{ success: boolean }> = Promise.resolve({
     success: false,
@@ -71,7 +113,9 @@ export default async function (
   _.each(targetsToRun, (target) => {
     stack = stack
       .then(async () => {
-        console.log(`\n⛓ Running chained target '${target.target}'...\n`);
+        const targetString = (target.configuration !== undefined) ? `${target.target}:${target.configuration}` : target.target;
+        
+        console.log(`\n⛓ Running chained target '${targetString}'...\n`);
 
         const asyncResults = await runExecutor(
           target,

@@ -1,5 +1,7 @@
 import * as _ from 'underscore';
 import * as devkit from '@nrwl/devkit';
+import * as mockFs from 'mock-fs';
+import * as path from 'path';
 import { Console } from 'console';
 
 import executor from './executor';
@@ -9,6 +11,7 @@ import {
   createFakeExecutor,
   createTestExecutorContext,
 } from '../../utilities/executorTestHelpers';
+import { FsTree } from 'nx/src/shared/tree';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
@@ -29,6 +32,8 @@ describe('Chain Executor', () => {
   });
 
   afterEach(() => {
+    mockFs.restore();
+
     mockedRunExecutor.mockClear();
 
     console.log(`\nTest '${expect.getState().currentTestName}' Complete!\n`);
@@ -276,13 +281,39 @@ describe('Chain Executor', () => {
       configurationName: 'prod',
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
-        { name: 'package', echo: 'hello from package' },
+        {
+          name: 'package',
+          echo: 'hello from package',
+          configurations: { prod: { echo: 'hello from package prod' } },
+        },
         { name: 'pre', echo: 'hello from pre' },
         { name: 'post', echo: 'hello from post' },
-        { name: 'publish', echo: 'hello from publish' },
-        { name: 'test', echo: 'hello from test' },
+        {
+          name: 'publish',
+          echo: 'hello from publish',
+          configurations: { prod: { echo: 'hello from publish prod' } },
+        },
+        {
+          name: 'test',
+          echo: 'hello from test',
+          configurations: { prod: { echo: 'hello from test prod' } },
+        },
       ],
     });
+
+    const fakeFs = {};
+    fakeFs[path.join(context.root, 'workspace.json')] = `{
+      "version": 2,
+      "projects": {
+        "${context.projectName}": ${JSON.stringify(
+      context.workspace.projects[context.projectName]
+    )}}
+    }`;
+
+    console.log('Mocked fs', fakeFs);
+
+    mockFs(fakeFs);
+
     const output = await executor(options, context);
 
     const expectedTargets = [
@@ -294,6 +325,15 @@ describe('Chain Executor', () => {
       'publish',
     ];
 
+    const expectedConfigurations = [
+      undefined,
+      undefined,
+      'prod',
+      undefined,
+      'prod',
+      'prod',
+    ];
+
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
 
@@ -303,7 +343,7 @@ describe('Chain Executor', () => {
 
       expect(targetArg.project).toBe('my-project');
       expect(targetArg.target).toBe(expectedTargets[i]);
-      expect(targetArg.configuration).toBe('prod');
+      expect(targetArg.configuration).toBe(expectedConfigurations[i]);
 
       expect(contextArg).toBe(context);
     });
