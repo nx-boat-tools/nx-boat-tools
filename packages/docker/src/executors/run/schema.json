@@ -5,6 +5,10 @@
   "description": "",
   "type": "object",
   "properties": {
+    "buildTarget": {
+      "type": "string",
+      "description": "An optional build target to call before running the docker image."
+    },
     "vars": {
       "type": "object",
       "description": "This is an object used to create environment variables to pass into the container"

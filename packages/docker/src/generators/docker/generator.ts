@@ -169,7 +169,8 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
     runDockerImage: {
       executor: '@nx-boat-tools/docker:run',
       options: {
-        ...runOptions
+        ...runOptions,
+        buildTarget: 'build',
       },
     },
     ...minikubeTargets,

@@ -197,6 +197,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeUndefined();
     expect(config.targets.runDockerImage.options?.ports['8080']).toBe(80);
     expect(config.targets.runDockerImage.options?.mounts).toBeDefined();
@@ -231,6 +232,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeUndefined();
     expect(config.targets.runDockerImage.options?.ports['5001']).toBe(5000);
     expect(config.targets.runDockerImage.options?.mounts).toBeDefined();
@@ -265,6 +267,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeUndefined();
     expect(config.targets.runDockerImage.options?.ports['5001']).toBe(5000);
     expect(config.targets.runDockerImage.options?.ports['5003']).toBe(5002);
@@ -299,6 +302,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeUndefined();
     expect(config.targets.runDockerImage.options?.ports['8080']).toBe(80);
     expect(config.targets.runDockerImage.options?.mounts).toBeDefined();
@@ -333,6 +337,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeUndefined();
     expect(config.targets.runDockerImage.options?.ports['8080']).toBe(80);
     expect(config.targets.runDockerImage.options?.mounts).toBeDefined();
@@ -370,6 +375,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeDefined();
     expect(config.targets.runDockerImage.options?.vars['SomeVar']).toBe(
       'SomeValue'
@@ -407,6 +413,7 @@ describe('docker generator', () => {
     expect(config.targets.runDockerImage.executor).toBe(
       '@nx-boat-tools/docker:run'
     );
+    expect(config.targets.runDockerImage.options?.buildTarget).toBe('build');
     expect(config.targets.runDockerImage.options?.vars).toBeDefined();
     expect(config.targets.runDockerImage.options?.vars['SomeVar1']).toBe(
       'SomeValue1'

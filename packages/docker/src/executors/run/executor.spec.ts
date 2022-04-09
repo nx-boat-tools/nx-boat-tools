@@ -1,15 +1,20 @@
 import * as child_process from 'child_process';
+import * as devkit from '@nrwl/devkit';
 import * as path from 'path';
 import { Console } from 'console';
-import { createTestExecutorContext, defuse } from '@nx-boat-tools/common';
+import {
+  createTestExecutorContext,
+  defuse,
+  promiseToAsyncIterator,
+} from '@nx-boat-tools/common';
 
 import executor from './executor';
 import { DockerRunExecutorSchema } from './schema';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
-const spy = jest.spyOn(child_process, 'spawnSync');
-const fn = jest.fn((command, args) => {
+const spawnSpy = jest.spyOn(child_process, 'spawnSync');
+const mockSpawn = jest.fn((command, args) => {
   return {
     pid: 1,
     output: [
@@ -22,13 +27,32 @@ const fn = jest.fn((command, args) => {
   };
 });
 
+const nxRunExecutorSpy = jest.spyOn(devkit, 'runExecutor');
+const mockNxRunExecutor = jest.fn(
+  (targetDescription: {
+    project: string;
+    target: string;
+    configuration?: string;
+  }) => {
+    const success = targetDescription.configuration !== 'fail';
+
+    console.log(`Mocking build. Success: ${success}`);
+
+    return Promise.resolve(
+      promiseToAsyncIterator(Promise.resolve({ success: success }))
+    );
+  }
+);
+
 describe('Docker Run Executor', () => {
   beforeAll(() => {
-    spy.mockImplementation(fn);
+    spawnSpy.mockImplementation(mockSpawn);
+    nxRunExecutorSpy.mockImplementation(mockNxRunExecutor);
   });
 
   beforeEach(() => {
-    fn.mockClear();
+    mockSpawn.mockClear();
+    mockNxRunExecutor.mockClear();
 
     console.log(`\nRunning Test '${expect.getState().currentTestName}'...\n`);
   });
@@ -51,6 +75,66 @@ describe('Docker Run Executor', () => {
     );
   });
 
+  it('does not call Docker CLI build command when build target fails', async () => {
+    const options: DockerRunExecutorSchema = {
+      buildTarget: 'build:fail',
+      vars: {
+        MY_VAR: 'some value',
+        ENV: 'prod',
+      },
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(false);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(1);
+    expect(mockSpawn.mock.calls.length).toBe(0);
+  });
+
+  it('calls Docker CLI build command when build target does not fail (no configuration)', async () => {
+    const options: DockerRunExecutorSchema = {
+      buildTarget: 'build',
+      vars: {
+        MY_VAR: 'some value',
+        ENV: 'prod',
+      },
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(1);
+    expect(mockSpawn.mock.calls.length).toBe(1);
+  });
+
+  it('calls Docker CLI build command when build target does not fail (configuration specified)', async () => {
+    const options: DockerRunExecutorSchema = {
+      buildTarget: 'build:prod',
+      vars: {
+        MY_VAR: 'some value',
+        ENV: 'prod',
+      },
+    };
+    const context = createTestExecutorContext({
+      configurationName: 'prod',
+      targetsMap: [{ name: 'build', echo: 'hello from build' }],
+    });
+
+    const output = await executor(options, context);
+
+    expect(output.success).toBe(true);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(1);
+    expect(mockSpawn.mock.calls.length).toBe(1);
+  });
+
   it('creates the correct Docker CLI build command with vars', async () => {
     const options: DockerRunExecutorSchema = {
       vars: {
@@ -66,9 +150,10 @@ describe('Docker Run Executor', () => {
     const output = await executor(options, context);
 
     expect(output.success).toBe(true);
-    expect(fn.mock.calls.length).toBe(1);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(0);
+    expect(mockSpawn.mock.calls.length).toBe(1);
 
-    const firstCall = fn.mock.calls[0];
+    const firstCall = mockSpawn.mock.calls[0];
     const commandArg: string = firstCall[0];
     const argsArg: string[] = firstCall[1];
 
@@ -97,9 +182,10 @@ describe('Docker Run Executor', () => {
     const output = await executor(options, context);
 
     expect(output.success).toBe(true);
-    expect(fn.mock.calls.length).toBe(1);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(0);
+    expect(mockSpawn.mock.calls.length).toBe(1);
 
-    const firstCall = fn.mock.calls[0];
+    const firstCall = mockSpawn.mock.calls[0];
     const commandArg: string = firstCall[0];
     const argsArg: string[] = firstCall[1];
 
@@ -128,9 +214,10 @@ describe('Docker Run Executor', () => {
     const output = await executor(options, context);
 
     expect(output.success).toBe(true);
-    expect(fn.mock.calls.length).toBe(1);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(0);
+    expect(mockSpawn.mock.calls.length).toBe(1);
 
-    const firstCall = fn.mock.calls[0];
+    const firstCall = mockSpawn.mock.calls[0];
     const commandArg: string = firstCall[0];
     const argsArg: string[] = firstCall[1];
 
@@ -170,9 +257,10 @@ describe('Docker Run Executor', () => {
     const output = await executor(options, context);
 
     expect(output.success).toBe(true);
-    expect(fn.mock.calls.length).toBe(1);
+    expect(mockNxRunExecutor.mock.calls.length).toBe(0);
+    expect(mockSpawn.mock.calls.length).toBe(1);
 
-    const firstCall = fn.mock.calls[0];
+    const firstCall = mockSpawn.mock.calls[0];
     const commandArg: string = firstCall[0];
     const argsArg: string[] = firstCall[1];
 

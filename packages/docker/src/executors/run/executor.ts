@@ -1,7 +1,7 @@
 import * as _ from 'underscore';
 import * as path from 'path';
-import { ExecutorContext } from '@nrwl/devkit';
-import { spawnAsync } from '@nx-boat-tools/common';
+import { ExecutorContext, runExecutor as nxRunExecutor } from '@nrwl/devkit';
+import { asyncIteratorToArray, spawnAsync } from '@nx-boat-tools/common';
 
 import { DockerRunExecutorSchema } from './schema';
 
@@ -10,10 +10,31 @@ export default async function runExecutor(
   context: ExecutorContext
 ) {
   let { vars, ports, mounts } = options;
+  const { buildTarget } = options;
   const { projectName } = context;
 
   if (projectName === undefined) {
     throw new Error('No project specified.');
+  }
+
+  if (buildTarget !== undefined) {
+    const [target, configuration] = buildTarget.split(':');
+
+    const buildResultIterator = await nxRunExecutor(
+      {
+        target: target,
+        project: context.projectName,
+        configuration: configuration,
+      },
+      undefined,
+      context
+    );
+    const buildResultArray = await asyncIteratorToArray(buildResultIterator);
+    const buildResult: { success: boolean } = _.first(buildResultArray);
+
+    if (!buildResult.success) {
+      return buildResult;
+    }
   }
 
   vars = vars !== undefined ? vars : {};
