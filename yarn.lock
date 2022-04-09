@@ -3690,9 +3690,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-nx-workspace@npm:^13.9.6":
-  version: 13.9.6
-  resolution: "create-nx-workspace@npm:13.9.6"
+"create-nx-workspace@npm:^13.10.1":
+  version: 13.10.1
+  resolution: "create-nx-workspace@npm:13.10.1"
   dependencies:
     chalk: 4.1.0
     enquirer: ~2.3.6
@@ -3700,10 +3700,10 @@ __metadata:
     ora: 5.3.0
     tmp: ~0.2.1
     tslib: ^2.3.0
-    yargs-parser: 20.0.0
+    yargs: ^17.4.0
   bin:
-    create-nx-workspace: bin/create-nx-workspace.js
-  checksum: f48f342c83dacae38c6393a87b1466faf2002f4b93757167c68e7b1aaccc6c67ce0c58f9d4e7d3e5127d5c350913e04417139a420951c5784af844287d4d2e3a
+    create-nx-workspace: bin/index.js
+  checksum: 4aa14aa42c21e2a6a095e64c8e9910302c98a09715450e998bdeac4aedee069ea71e0c7b517db610972586fa5d609a3e8da14b4d502fd8b42fa525eddd37a51c
   languageName: node
   linkType: hard
 
@@ -4456,9 +4456,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.12.0":
-  version: 8.12.0
-  resolution: "eslint@npm:8.12.0"
+"eslint@npm:8.13.0":
+  version: 8.13.0
+  resolution: "eslint@npm:8.13.0"
   dependencies:
     "@eslint/eslintrc": ^1.2.1
     "@humanwhocodes/config-array": ^0.9.2
@@ -4497,7 +4497,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 111bf9046b7a463049788dd00d7f4cd91e024029982352dff4811ce5dfa8cb1136aa127cd8a7a91508234d3e1b4fb6f638a1f5ef9ea08b1af93a18703a4a8dc1
+  checksum: bc7d2fc9a046d42cb2c8987573ecaf534c1fae14747c4695e32388e179c5f21b83eefdb3e4f35924bf76152e226d7cc9dfb21f12348baf12c803109005b17439
   languageName: node
   linkType: hard
 
@@ -7344,6 +7344,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^7.4.0":
+  version: 7.8.0
+  resolution: "lru-cache@npm:7.8.0"
+  checksum: 7cc046276b668e7b59c10f7f25049d89315cd22fb5205c0eb476583ba29b8542955189452dc8655a771e1a91f6056ddcb29daf4ac35197f77b3ce9a0041d54c9
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^7.7.1":
   version: 7.7.3
   resolution: "lru-cache@npm:7.7.3"
@@ -9227,6 +9234,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.3.6":
+  version: 7.3.6
+  resolution: "semver@npm:7.3.6"
+  dependencies:
+    lru-cache: ^7.4.0
+  bin:
+    semver: bin/semver.js
+  checksum: 9845f96b22268190b30025e02feca391451f2bd49b2c51920c27cc56744f64cbe397df089018fdb347d4b4fd800eabbd85661870eb63eb28055d2b72e457f759
+  languageName: node
+  linkType: hard
+
 "send@npm:0.17.2":
   version: 0.17.2
   resolution: "send@npm:0.17.2"
@@ -9491,11 +9509,11 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.18.0
     "@typescript-eslint/parser": 5.18.0
     commitizen: ^4.2.4
-    create-nx-workspace: ^13.9.6
+    create-nx-workspace: ^13.10.1
     cz-conventional-changelog: ^3.3.0
     cz-customizable: ^6.3.0
     dotenv: ~16.0.0
-    eslint: 8.12.0
+    eslint: 8.13.0
     eslint-config-prettier: 8.5.0
     guid-typescript: ^1.0.9
     husky: ^7.0.4
@@ -9508,7 +9526,7 @@ __metadata:
     pinst: ^3.0.0
     prettier: 2.6.2
     prettier-plugin-import-sort: ^0.0.7
-    semver: ^7.3.5
+    semver: ^7.3.6
     ts-jest: 27.1.4
     tslib: ^2.3.1
     typescript: ~4.6.3
