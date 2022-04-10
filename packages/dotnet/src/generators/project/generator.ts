@@ -256,8 +256,9 @@ function addProjectDependencies(tree: Tree, templateOptions: TemplateOptions) {
 export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const configurations = {
-    dev: {},
-    prod: {},
+    prod: {
+      configuration: 'Release',
+    },
   };
   const dotnetOptions = {
     srcPath: !normalizedOptions.ownSolution
@@ -270,10 +271,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
           `${normalizedOptions.projectClassName}.sln`
         ),
     outputPath: normalizedOptions.projectDistPath,
-    configMap: {
-      dev: 'Debug',
-      prod: 'Release',
-    },
+    configuration: 'Debug',
   };
   const runTarget =
     normalizedOptions.projectType === 'classlib'

@@ -3,6 +3,6 @@ export interface RunDotnetExecutorSchema {
   srcPath: string;
   outputPath: string;
   runtimeID?: string;
-  configMap?: JsonObject;
+  configuration?: string;
   updateVersion: boolean;
 }

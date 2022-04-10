@@ -26,9 +26,9 @@
       "type": "string",
       "description": "This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options"
     },
-    "configMap": {
-      "type": "object",
-      "description": "This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command"
+    "configuration": {
+      "type": "string",
+      "description": "This is the `configuration` param of the CLI command"
     }
   },
   "additionalProperties": true,

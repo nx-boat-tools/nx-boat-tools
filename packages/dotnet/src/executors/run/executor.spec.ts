@@ -40,7 +40,7 @@ describe('Dotnet Run Executor', () => {
       updateVersion: false,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -62,7 +62,7 @@ describe('Dotnet Run Executor', () => {
     expect(optionsArg.outputPath).toBe('dist/apps/my-project');
     expect(optionsArg.runtimeID).toBe('someRuntime');
     expect(optionsArg.additionalArgs).toBe('--test=true');
-    expect(optionsArg.configMap?.dev).toBe('Develop');
+    expect(optionsArg.configuration).toBe('Develop');
     expect(contextArg).toBe(context);
   });
 });

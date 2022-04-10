@@ -46,8 +46,8 @@ export async function runDotnetCommand(
   context: ExecutorContext
 ) {
   let { srcPath, outputPath } = options;
-  const { action, configMap, runtimeID, additionalArgs } = options;
-  const { root, projectName, configurationName } = context;
+  const { action, configuration, runtimeID, additionalArgs } = options;
+  const { root, projectName } = context;
 
   if (projectName === undefined) {
     throw new Error('You must specify a project!');
@@ -87,14 +87,7 @@ export async function runDotnetCommand(
     args.push(`--output ${outputPath}`);
   }
 
-  const hasConfig =
-    configurationName !== undefined &&
-    configMap !== undefined &&
-    configMap !== null;
-  const config =
-    (hasConfig ? configMap[configurationName] : undefined) || configurationName;
-
-  args.push(!hasConfig ? '' : `--configuration ${config}`);
+  args.push(configuration === undefined ? '' : `--configuration ${configuration}`);
   args.push(runtimeID === undefined ? '' : `--runtime ${runtimeID}`);
   args.push(additionalArgs === undefined ? '' : additionalArgs);
 

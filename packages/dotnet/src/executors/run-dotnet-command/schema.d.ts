@@ -4,5 +4,5 @@ export interface DotNetCommandExecutorSchema {
   srcPath: string;
   outputPath: string;
   runtimeID?: string;
-  configMap?: JsonObject;
+  configuration?: string;
 }

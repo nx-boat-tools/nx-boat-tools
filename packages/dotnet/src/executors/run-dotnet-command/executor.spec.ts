@@ -55,7 +55,7 @@ describe('Run Dotnet Command Executor', () => {
       outputPath: 'dist/apps/my-project',
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -80,7 +80,7 @@ describe('Run Dotnet Command Executor', () => {
         outputPath: 'dist/apps/my-project',
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
-        configMap: { dev: 'Develop' },
+        configuration: 'Develop',
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',
@@ -104,7 +104,7 @@ describe('Run Dotnet Command Executor', () => {
         outputPath: outputPath,
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
-        configMap: { dev: 'Develop' },
+        configuration: 'Develop',
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',
@@ -137,7 +137,7 @@ describe('Run Dotnet Command Executor', () => {
         outputPath: undefined, //outputPath is undefined so valid actions don't execute
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
-        configMap: { dev: 'Develop' },
+        configuration: 'Develop',
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',
@@ -157,7 +157,7 @@ describe('Run Dotnet Command Executor', () => {
       outputPath: 'dist/apps/my-project',
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -200,7 +200,7 @@ describe('Run Dotnet Command Executor', () => {
         outputPath: 'dist/apps/my-project',
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
-        configMap: { dev: 'Develop' },
+        configuration: 'Develop',
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',
@@ -229,7 +229,7 @@ describe('Run Dotnet Command Executor', () => {
       outputPath: 'dist/apps/my-project',
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -265,7 +265,7 @@ describe('Run Dotnet Command Executor', () => {
       outputPath: 'dist/apps/my-project',
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -338,7 +338,7 @@ describe('Run Dotnet Command Executor', () => {
         outputPath: 'dist/apps/my-project',
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
-        configMap: { dev: 'Develop' },
+        configuration: 'Develop',
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',
@@ -369,7 +369,7 @@ describe('Run Dotnet Command Executor', () => {
       outputPath: 'dist/apps/my-project',
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configMap: { dev: 'Develop' },
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',
@@ -401,7 +401,7 @@ describe('Run Dotnet Command Executor', () => {
     expect(argsArg[1]).toBe('--project');
     expect(argsArg[2]).toBe(path.join(context.root, options.srcPath));
     expect(argsArg[3]).toBe('--configuration');
-    expect(argsArg[4]).toBe('prod');
+    expect(argsArg[4]).toBe('Develop');
     expect(argsArg[5]).toBe('--runtime');
     expect(argsArg[6]).toBe('someRuntime');
     expect(argsArg[7]).toBe('--test=true');
@@ -416,7 +416,7 @@ describe('Run Dotnet Command Executor', () => {
         outputPath: 'dist/apps/my-project',
         runtimeID: 'someRuntime',
         additionalArgs: '--test=true',
-        configMap: { dev: 'Develop' },
+        configuration: 'Release',
       };
       const context = createTestExecutorContext({
         configurationName: 'prod',
@@ -449,64 +449,10 @@ describe('Run Dotnet Command Executor', () => {
       expect(argsArg[2]).toBe('--output');
       expect(argsArg[3]).toBe(path.join(context.root, options.outputPath));
       expect(argsArg[4]).toBe('--configuration');
-      expect(argsArg[5]).toBe('prod');
+      expect(argsArg[5]).toBe('Release');
       expect(argsArg[6]).toBe('--runtime');
       expect(argsArg[7]).toBe('someRuntime');
       expect(argsArg[8]).toBe('--test=true');
-    }
-  );
-
-  each([
-    ['dev', 'Develop'],
-    ['DEV', 'DEV'],
-    ['prod', 'Release'],
-    ['production', 'production'],
-    ['random', 'random'],
-  ]).it(
-    'maps configuration to configMap correctly (%s)',
-    async (configurationName, expected) => {
-      const options: DotNetCommandExecutorSchema = {
-        action: 'run',
-        srcPath: 'apps/my-project.csproj',
-        outputPath: 'dist/apps/my-project',
-        runtimeID: 'someRuntime',
-        additionalArgs: '--test=true',
-        configMap: { dev: 'Develop', prod: 'Release' },
-      };
-      const context = createTestExecutorContext({
-        configurationName: configurationName,
-        targetsMap: [
-          { name: 'run-dotnet-command', echo: 'hello from run-dotnet-command' },
-        ],
-      });
-
-      const fakeFs = {};
-      fakeFs[path.join(context.root, options.srcPath)] =
-        createTestCsprojContent();
-
-      console.log('Mocked fs', fakeFs);
-
-      mockFs(fakeFs);
-
-      const output = await executor(options, context);
-
-      expect(output.success).toBe(true);
-
-      expect(fn.mock.calls.length).toBe(1);
-
-      const firstCall = fn.mock.calls[0];
-      const commandArg: string = firstCall[0];
-      const argsArg: string[] = firstCall[1];
-
-      expect(commandArg).toBe('dotnet');
-      expect(argsArg[0]).toBe('run');
-      expect(argsArg[1]).toBe('--project');
-      expect(argsArg[2]).toBe(path.join(context.root, options.srcPath));
-      expect(argsArg[3]).toBe('--configuration');
-      expect(argsArg[4]).toBe(expected);
-      expect(argsArg[5]).toBe('--runtime');
-      expect(argsArg[6]).toBe('someRuntime');
-      expect(argsArg[7]).toBe('--test=true');
     }
   );
 

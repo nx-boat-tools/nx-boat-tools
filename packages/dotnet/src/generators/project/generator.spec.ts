@@ -231,12 +231,10 @@ describe('dotnet project generator', () => {
           expect(config.targets.build.options?.outputPath).toBe(
             path.join('dist', config.root)
           );
-          expect(config.targets.build.options?.configMap).toBeDefined();
-          expect(config.targets.build.options?.configMap.dev).toBe('Debug');
-          expect(config.targets.build.options?.configMap.prod).toBe('Release');
+          expect(config.targets.build.options?.configuration).toBe('Debug');
 
-          expect(config.targets.build.configurations?.dev).toBeDefined();
           expect(config.targets.build.configurations?.prod).toBeDefined();
+          expect(config.targets.build.configurations?.prod?.configuration).toBe('Release');
         });
 
         it('adds build to project config (ownSolution true)', async () => {
@@ -262,12 +260,10 @@ describe('dotnet project generator', () => {
           expect(config.targets.build.options?.outputPath).toBe(
             path.join('dist', config.root)
           );
-          expect(config.targets.build.options?.configMap).toBeDefined();
-          expect(config.targets.build.options?.configMap.dev).toBe('Debug');
-          expect(config.targets.build.options?.configMap.prod).toBe('Release');
+          expect(config.targets.build.options?.configuration).toBe('Debug');
 
-          expect(config.targets.build.configurations?.dev).toBeDefined();
           expect(config.targets.build.configurations?.prod).toBeDefined();
+          expect(config.targets.build.configurations?.prod?.configuration).toBe('Release');
         });
 
         it('adds clean to project config (ownSolution false)', async () => {
@@ -293,12 +289,10 @@ describe('dotnet project generator', () => {
           expect(config.targets.clean.options?.outputPath).toBe(
             path.join('dist', config.root)
           );
-          expect(config.targets.clean.options?.configMap).toBeDefined();
-          expect(config.targets.clean.options?.configMap.dev).toBe('Debug');
-          expect(config.targets.clean.options?.configMap.prod).toBe('Release');
+          expect(config.targets.clean.options?.configuration).toBe('Debug');
 
-          expect(config.targets.clean.configurations?.dev).toBeDefined();
           expect(config.targets.clean.configurations?.prod).toBeDefined();
+          expect(config.targets.clean.configurations?.prod?.configuration).toBe('Release');
         });
 
         it('adds clean to project config (ownSolution true)', async () => {
@@ -324,12 +318,10 @@ describe('dotnet project generator', () => {
           expect(config.targets.clean.options?.outputPath).toBe(
             path.join('dist', config.root)
           );
-          expect(config.targets.clean.options?.configMap).toBeDefined();
-          expect(config.targets.clean.options?.configMap.dev).toBe('Debug');
-          expect(config.targets.clean.options?.configMap.prod).toBe('Release');
+          expect(config.targets.clean.options?.configuration).toBe('Debug');
 
-          expect(config.targets.clean.configurations?.dev).toBeDefined();
           expect(config.targets.clean.configurations?.prod).toBeDefined();
+          expect(config.targets.clean.configurations?.prod?.configuration).toBe('Release');
         });
 
         it('adds package to project config (ownSolution false)', async () => {
@@ -355,14 +347,10 @@ describe('dotnet project generator', () => {
           expect(config.targets.package.options?.outputPath).toBe(
             path.join('dist', config.root)
           );
-          expect(config.targets.package.options?.configMap).toBeDefined();
-          expect(config.targets.package.options?.configMap.dev).toBe('Debug');
-          expect(config.targets.package.options?.configMap.prod).toBe(
-            'Release'
-          );
+          expect(config.targets.package.options?.configuration).toBe('Debug');
 
-          expect(config.targets.package.configurations?.dev).toBeDefined();
           expect(config.targets.package.configurations?.prod).toBeDefined();
+          expect(config.targets.package.configurations?.prod?.configuration).toBe('Release');
         });
 
         it('adds package to project config (ownSolution true)', async () => {
@@ -388,14 +376,10 @@ describe('dotnet project generator', () => {
           expect(config.targets.package.options?.outputPath).toBe(
             path.join('dist', config.root)
           );
-          expect(config.targets.package.options?.configMap).toBeDefined();
-          expect(config.targets.package.options?.configMap.dev).toBe('Debug');
-          expect(config.targets.package.options?.configMap.prod).toBe(
-            'Release'
-          );
+          expect(config.targets.package.options?.configuration).toBe('Debug');
 
-          expect(config.targets.package.configurations?.dev).toBeDefined();
           expect(config.targets.package.configurations?.prod).toBeDefined();
+          expect(config.targets.package.configurations?.prod?.configuration).toBe('Release');
         });
 
         it('adds dotnetVersion to project config (ownSolution false)', async () => {
@@ -832,12 +816,10 @@ describe('dotnet project generator', () => {
         expect(config.targets.run.options?.outputPath).toBe(
           path.join('dist', config.root)
         );
-        expect(config.targets.run.options?.configMap).toBeDefined();
-        expect(config.targets.run.options?.configMap.dev).toBe('Debug');
-        expect(config.targets.run.options?.configMap.prod).toBe('Release');
+        expect(config.targets.run.options?.configuration).toBe('Debug');
 
-        expect(config.targets.run.configurations?.dev).toBeDefined();
         expect(config.targets.run.configurations?.prod).toBeDefined();
+        expect(config.targets.run.configurations?.prod?.configuration).toBe('Release');
       });
 
       it('adds run to project config (ownSolution true)', async () => {
@@ -861,12 +843,10 @@ describe('dotnet project generator', () => {
         expect(config.targets.run.options?.outputPath).toBe(
           path.join('dist', config.root)
         );
-        expect(config.targets.run.options?.configMap).toBeDefined();
-        expect(config.targets.run.options?.configMap.dev).toBe('Debug');
-        expect(config.targets.run.options?.configMap.prod).toBe('Release');
+        expect(config.targets.run.options?.configuration).toBe('Debug');
 
-        expect(config.targets.run.configurations?.dev).toBeDefined();
         expect(config.targets.run.configurations?.prod).toBeDefined();
+        expect(config.targets.run.configurations?.prod?.configuration).toBe('Release');
       });
     });
 

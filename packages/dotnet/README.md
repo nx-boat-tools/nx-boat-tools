@@ -56,7 +56,7 @@ The `run-dotnet-command` is the heart of most of the dotnet executors and is mea
 | `outputPath`     | `string`      |             | Required. This maps to the `output` param of the CLI command and is the path to where build output should be created                                                                                                                                                            |
 | `runtimeID`      | `string?`     | `undefined` | This maps to the `runtime` param of the CLI command. For a list of Runtime Identifiers (RIDs), see the [RID catalog](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)                                                                                                  |
 | `additionalArgs` | `string?`     | `undefined` | This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options                                                                                                             |
-| `configMap`      | `JsonObject?` | `undefined` | This is a json object used for mapping Nx configurations to values for the `configuration` param of the CLI command. The json key represents the Nx configuration and the value is expected to be a string representing the dotnet configuration to use. Ex: `{ dev: "Debug" }` |
+| `configuration`      | `string?` | `undefined` | This is the `configuration` param of the CLI command. Ex: `Debug` |
 
 #### Example:
 
@@ -94,7 +94,7 @@ The `build` executor reflects calling the `dotnet build` command with the dotnet
 | `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
 | `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 | `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -114,14 +114,11 @@ The following workspace configuration illustrates a possible dotnet `build` targ
           "options": {
             "srcPath": "apps/example/example.sln",
             "outputPath": "dist/apps/example",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
-            "dev": {},
             "prod": {
+              "configuration": "Release",
               "additionalArgs": "--nologo"
             }
           }
@@ -170,7 +167,7 @@ The `clean` executor reflects calling the `dotnet clean` command with the dotnet
 | `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
 | `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 | `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -190,14 +187,11 @@ The following workspace configuration illustrates a possible dotnet `clean` targ
           "options": {
             "srcPath": "apps/example/example.sln",
             "outputPath": "dist/apps/example",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
-            "dev": {},
             "prod": {
+              "configuration": "Release",
               "additionalArgs": "--nologo"
             }
           }
@@ -250,7 +244,7 @@ The `csproj` file(s) will be updated to set the `IsPackable` property to `true`.
 | `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
 | `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 | `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -270,14 +264,11 @@ The following workspace configuration illustrates a possible dotnet `package` ta
           "options": {
             "srcPath": "apps/example/example.sln",
             "outputPath": "dist/apps/example",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
-            "dev": {},
             "prod": {
+              "configuration": "Release",
               "additionalArgs": "--nologo"
             }
           }
@@ -326,7 +317,7 @@ The `publish` executor reflects calling the `dotnet publish` command with the do
 | `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
 | `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 | `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -346,14 +337,11 @@ The following workspace configuration illustrates a possible dotnet `publish` ta
           "options": {
             "srcPath": "apps/example/example.sln",
             "outputPath": "dist/apps/example",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
-            "dev": {},
             "prod": {
+              "configuration": "Release",
               "additionalArgs": "--nologo"
             }
           }
@@ -402,7 +390,7 @@ The `run` executor reflects calling the `dotnet run` command with the dotnet CLI
 | `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
 | `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 | `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configMap`      | `JsonObject?` | `undefined` | This is passed to the `configMap` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
 
 #### Example:
 
@@ -422,14 +410,11 @@ The following workspace configuration illustrates a possible dotnet `run` target
           "options": {
             "srcPath": "apps/example/example.sln",
             "outputPath": "dist/apps/example",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
-            "dev": {},
             "prod": {
+              "configuration": "Release",
               "additionalArgs": "--nologo"
             }
           }
@@ -553,10 +538,7 @@ The following is a full example of what's added to the project configuration for
           "options": {
             "srcPath": "./workspace-name.sln",
             "outputPath": "dist/apps/console-app",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
             "dev": {},
@@ -568,10 +550,7 @@ The following is a full example of what's added to the project configuration for
           "options": {
             "srcPath": "./workspace-name.sln",
             "outputPath": "dist/apps/console-app",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
             "dev": {},
@@ -593,10 +572,7 @@ The following is a full example of what's added to the project configuration for
           "options": {
             "srcPath": "./workspace-name.sln",
             "outputPath": "dist/apps/console-app",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
             "dev": {},
@@ -608,10 +584,7 @@ The following is a full example of what's added to the project configuration for
           "options": {
             "srcPath": "./workspace-name.sln",
             "outputPath": "dist/apps/console-app",
-            "configMap": {
-              "dev": "Debug",
-              "prod": "Release"
-            }
+            "configuration": "Debug"
           },
           "configurations": {
             "dev": {},
