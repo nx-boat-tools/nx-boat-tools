@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "Dotnet",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use?"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Add tags to the project (used for linting)",
+      "alias": "t"
+    },
+    "directory": {
+      "type": "string",
+      "description": "A directory where the project is placed",
+      "alias": "d"
+    },
+    "ownSolution": {
+      "type": "boolean",
+      "description": "When set to true, the project will have its own solution file which will be in the project directory. When set to false, it will be added to a solution file at the workspace root.",
+      "default": false
+    },
+    "isStandaloneConfig": {
+      "type": "boolean",
+      "description": "should the project use package.json? If false, the project config is inside workspace.json."
+    },
+    "frameworkVersion": {
+      "type": "string",
+      "description": "The .Net Framework version to use. Valid options are either `latest` or `LTS`.",
+      "default": "LTS"
+    }
+  },
+  "required": ["name"]
+}

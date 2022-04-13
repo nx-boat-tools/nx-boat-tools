@@ -20,7 +20,7 @@ import path = require('path');
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
-const appProjectTypes = ['console', 'webapi'];
+const appProjectTypes = ['console', 'grpc', 'webapi'];
 const libProjectTypes = ['classlib'];
 
 describe('dotnet project generator', () => {

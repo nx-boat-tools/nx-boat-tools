@@ -107,8 +107,9 @@ function getNxProjectType(tree: Tree, projectType: string): ProjectType {
   switch (projectType) {
     case 'classlib':
       return 'library';
-    case 'webapi':
     case 'console':
+    case 'grpc':
+    case 'webapi':
     default:
       return 'application';
   }
@@ -121,8 +122,9 @@ function getProjectDirectoryPrefix(
   switch (projectType) {
     case 'classlib':
       return workspaceLayout.libsDir;
-    case 'webapi':
     case 'console':
+    case 'grpc':
+    case 'webapi':
     default:
       return workspaceLayout.appsDir;
   }

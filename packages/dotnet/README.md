@@ -674,6 +674,40 @@ nx g @nx-dev-tools/dotnet:console my-console-app --ownSolution=true
 nx g @nx-dev-tools/dotnet:console my-console-app --directory=internal
 ```
 
+### `grpc`
+
+Creates a dotnet grpc application project.
+
+#### Available options:
+
+| name                 | type      | default               | description                                                                                         |
+| -------------------- | --------- | --------------------- | --------------------------------------------------------------------------------------------------- |
+| `name`               | `string`  |                       | Required. This is passed to the `name` option of the underlying [`project` generator](#project)     |
+| `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
+| `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
+| `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
+| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
+
+#### Generated files:
+
+Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `dotnet new grpc`. The biggest difference is whether or not the solution file is created or if another one is appended to. The project directory for `grpc` projects will be under the `apps` folder in the workspace.
+
+#### Creating a `grpc` project
+
+The following illustrates how to add a dotnet `grpc` project with various options:
+
+```bash
+#Create a project named my-grpc-app in apps/my-grpc-app and adds it to the workspace.sln
+nx g @nx-dev-tools/dotnet:grpc my-grpc-app
+
+#Create a project named my-grpc-app in apps/my-grpc-app with the solution at apps/my-grpc-app/MygrpcApp.sln
+nx g @nx-dev-tools/dotnet:grpc my-grpc-app --ownSolution=true
+
+#Create a project named my-grpc-app in apps/internal/my-grpc-app and adds it to the workspace.sln
+nx g @nx-dev-tools/dotnet:grpc my-grpc-app --directory=internal
+```
+
 ### `webapi`
 
 Creates a dotnet web API project.

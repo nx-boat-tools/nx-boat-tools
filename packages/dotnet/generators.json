@@ -18,6 +18,11 @@
       "schema": "./src/generators/console/schema.json",
       "description": "dotnet console app generator"
     },
+    "grpc": {
+      "factory": "./src/generators/grpc/generator",
+      "schema": "./src/generators/grpc/schema.json",
+      "description": "dotnet grpc app generator"
+    },
     "webapi": {
       "factory": "./src/generators/webapi/generator",
       "schema": "./src/generators/webapi/schema.json",
