@@ -4,10 +4,10 @@ import {
   readProjectConfiguration,
   runExecutor,
 } from '@nrwl/devkit';
-import { FsTree } from 'nx/src/shared/tree';
 
 import { ChainExecutorSchema } from './schema';
 import { asyncIteratorToArray } from '../../utilities/iterableHelpers';
+import { FsTree } from 'nx/src/config/tree';
 
 type TargetSpecification = {
   project: string;

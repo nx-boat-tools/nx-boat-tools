@@ -196,7 +196,7 @@ local-registry-workspace:
 	npm i -D @nx-boat-tools/dotnet@next; \
 	npm i -D @nx-boat-tools/docker@next; \
 	npm i -D @nx-boat-tools/helm@next; \
-	npx nx g @nx-boat-tools/dotnet:webapi my-test; \
+	npx nx g @nx-boat-tools/dotnet:webapi my-test --frameworkVersion=latest; \
 	npx nx g @nx-boat-tools/docker:docker my-test --dockerRepoOrUser=my-user --minikube=true --baseDockerImage=mcr.microsoft.com/dotnet/aspnet:latest --runPortMappings=8080:80 --runVolumeMounts=dist/apps/my-test:/app --runVariables=Logging__Console__FormatterName:Simple; \
 	npx nx g @nx-boat-tools/helm:local-chart my-test --environments=dev,prod --runResourceName=service/my-test; \
 	printf "ENV LOGGING__CONSOLE__FORMATTERNAME=Simple\nWORKDIR /app\nCOPY . .\nENTRYPOINT [\"dotnet\", \"MyTest.dll\"]" >> ./apps/my-test/dockerfile

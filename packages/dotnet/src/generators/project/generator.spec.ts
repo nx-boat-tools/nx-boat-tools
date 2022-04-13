@@ -548,6 +548,62 @@ describe('dotnet project generator', () => {
           );
         });
 
+        it('adds csproj to project for framework version (latest)', async () => {
+          const options: DotnetGeneratorSchema = {
+            name: 'my-project',
+            directory: 'grouped',
+            projectType: projectType,
+            ownSolution: false,
+            frameworkVersion: 'latest'
+          };
+
+          await generator(appTree, options);
+
+          const config = readProjectConfiguration(
+            appTree,
+            'grouped-my-project'
+          );
+          const projectNames = names(options.name);
+          const projectPath = path.join(
+            config.root,
+            `${projectNames.className}.csproj`
+          );
+
+          expect(appTree.exists(projectPath)).toBe(true);
+
+          const csprojContents = appTree.read(projectPath);
+
+          expect(csprojContents.indexOf('<TargetFramework>net7.0</TargetFramework>')).toBeGreaterThan(0)
+        });
+
+        it('adds csproj to project for framework version (LTS)', async () => {
+          const options: DotnetGeneratorSchema = {
+            name: 'my-project',
+            directory: 'grouped',
+            projectType: projectType,
+            ownSolution: false,
+            frameworkVersion: 'LTS'
+          };
+
+          await generator(appTree, options);
+
+          const config = readProjectConfiguration(
+            appTree,
+            'grouped-my-project'
+          );
+          const projectNames = names(options.name);
+          const projectPath = path.join(
+            config.root,
+            `${projectNames.className}.csproj`
+          );
+
+          expect(appTree.exists(projectPath)).toBe(true);
+
+          const csprojContents = appTree.read(projectPath);
+
+          expect(csprojContents.indexOf('<TargetFramework>net6.0</TargetFramework>')).toBeGreaterThan(0)
+        });
+
         it('adds csproj to project with directory (ownSolition false)', async () => {
           const options: DotnetGeneratorSchema = {
             name: 'my-project',

@@ -49,14 +49,14 @@ The `run-dotnet-command` is the heart of most of the dotnet executors and is mea
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                                                                                                                                                                     |
-| ---------------- | ------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action`         | `string`      |             | Required. The underlying dotnet command to run. Supported values include: `build`, `pack`, `publish`, `run`, `clean`                                                                                                                                                            |
-| `srcPath`        | `string`      |             | Required. The path to the `csproj` or `sln` file for the project                                                                                                                                                                                                                |
-| `outputPath`     | `string`      |             | Required. This maps to the `output` param of the CLI command and is the path to where build output should be created                                                                                                                                                            |
-| `runtimeID`      | `string?`     | `undefined` | This maps to the `runtime` param of the CLI command. For a list of Runtime Identifiers (RIDs), see the [RID catalog](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)                                                                                                  |
-| `additionalArgs` | `string?`     | `undefined` | This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options                                                                                                             |
-| `configuration`      | `string?` | `undefined` | This is the `configuration` param of the CLI command. Ex: `Debug` |
+| name             | type      | default     | description                                                                                                                                                                    |
+| ---------------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `action`         | `string`  |             | Required. The underlying dotnet command to run. Supported values include: `build`, `pack`, `publish`, `run`, `clean`                                                           |
+| `srcPath`        | `string`  |             | Required. The path to the `csproj` or `sln` file for the project                                                                                                               |
+| `outputPath`     | `string`  |             | Required. This maps to the `output` param of the CLI command and is the path to where build output should be created                                                           |
+| `runtimeID`      | `string?` | `undefined` | This maps to the `runtime` param of the CLI command. For a list of Runtime Identifiers (RIDs), see the [RID catalog](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog) |
+| `additionalArgs` | `string?` | `undefined` | This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options            |
+| `configuration`  | `string?` | `undefined` | This is the `configuration` param of the CLI command. Ex: `Debug`                                                                                                              |
 
 #### Example:
 
@@ -88,13 +88,13 @@ The `build` executor reflects calling the `dotnet build` command with the dotnet
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                |
-| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| name             | type      | default     | description                                                                                                                |
+| ---------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`  |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`  |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?` | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?` | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configuration`  | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)        |
 
 #### Example:
 
@@ -161,13 +161,13 @@ The `clean` executor reflects calling the `dotnet clean` command with the dotnet
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                |
-| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| name             | type      | default     | description                                                                                                                |
+| ---------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`  |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`  |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?` | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?` | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configuration`  | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)        |
 
 #### Example:
 
@@ -238,13 +238,13 @@ The `csproj` file(s) will be updated to set the `IsPackable` property to `true`.
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                |
-| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| name             | type      | default     | description                                                                                                                |
+| ---------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`  |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`  |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?` | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?` | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configuration`  | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)        |
 
 #### Example:
 
@@ -311,13 +311,13 @@ The `publish` executor reflects calling the `dotnet publish` command with the do
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                |
-| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| name             | type      | default     | description                                                                                                                |
+| ---------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`  |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`  |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?` | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?` | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configuration`  | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)        |
 
 #### Example:
 
@@ -384,13 +384,13 @@ The `run` executor reflects calling the `dotnet run` command with the dotnet CLI
 
 #### Available options:
 
-| name             | type          | default     | description                                                                                                                |
-| ---------------- | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `srcPath`        | `string`      |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
-| `outputPath`     | `string`      |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
-| `runtimeID`      | `string?`     | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
-| `additionalArgs` | `string?`     | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
-| `configuration`      | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| name             | type      | default     | description                                                                                                                |
+| ---------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string`  |             | Required. This is passed to the `srcPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)    |
+| `outputPath`     | `string`  |             | Required. This is passed to the `outputPath` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command) |
+| `runtimeID`      | `string?` | `undefined` | This is passed to the `runtimeID` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)            |
+| `additionalArgs` | `string?` | `undefined` | This is passed to the `additionalArgs` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)       |
+| `configuration`  | `string?` | `undefined` | This is passed to the `configuration` option of the underlying [`run-dotnet-command` executor](#run-dotnet-command)        |
 
 #### Example:
 
@@ -502,6 +502,7 @@ The `project` generator is the heart of all of the dotnet generators. Its job is
 | `projectType`        | `string`  |                       | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
 | `ownSolution`        | `boolean` | `false`               | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
 | `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                                                                                               |
+| `frameworkVersion`   | `string`  | `LTS`                 | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0).                                                                                                                                                                                                               |
 
 #### Generated files:
 
@@ -618,6 +619,7 @@ Creates a dotnet class library project.
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
 | `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
 
@@ -651,6 +653,7 @@ Creates a dotnet console application project.
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
 | `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
 
@@ -684,6 +687,7 @@ Creates a dotnet web API project.
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
 | `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
 

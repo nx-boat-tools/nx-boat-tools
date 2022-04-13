@@ -5,4 +5,5 @@ export interface DotnetGeneratorSchema {
   projectType: string;
   ownSolution: boolean;
   isStandaloneConfig?: boolean;
+  frameworkVersion?: 'latest' | 'LTS';
 }

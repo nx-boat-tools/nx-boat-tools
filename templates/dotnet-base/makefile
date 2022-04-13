@@ -1,10 +1,17 @@
-FrameworkVersion = "net6.0"
+LatestFrameworkVersion = "7.0"
+LTSFrameworkVersion = "6.0"
 
-default:
+default: 
+	make version template=$(template) out-dir=$(out-dir)/latest framework-version=${LatestFrameworkVersion}
+	echo '{ "sdk": { "version": "6.0.101" }}' > global.json
+	make version template=$(template) out-dir=$(out-dir)/LTS framework-version=${LTSFrameworkVersion}
+	rm -rf global.json
+
+version:
 	rm -rf $(out-dir)
 	# mkdir -p ${out-dir}/sln
 	dotnet new sln -n __className__ -o $(out-dir)/sln --force
-	dotnet new $(template) -f $(FrameworkVersion) -n __className__ -o $(out-dir)/csproj/__className__ --force
+	dotnet new $(template) -n __className__ -o $(out-dir)/csproj/__className__ --force
 	dotnet sln $(out-dir)/sln/__className__.sln add $(out-dir)/csproj/__className__/__className__.csproj
 	rm -rf $(out-dir)/csproj/__className__/obj
 

@@ -79,6 +79,7 @@ function normalizeOptions(
   const dotnetPluginVersion = getDotnetPluginVersion();
 
   options.isStandaloneConfig ??= layout.standaloneAsDefault;
+  options.frameworkVersion ??= 'LTS';
 
   return {
     ...options,
@@ -163,6 +164,7 @@ function addGeneratedProjectFiles(
     templateOptions.projectType,
     'files',
     'generated',
+    templateOptions.frameworkVersion,
     'csproj',
   ];
 
@@ -185,6 +187,7 @@ function addSolutionFiles(tree: Tree, templateOptions: TemplateOptions) {
     templateOptions.projectType,
     'files',
     'generated',
+    templateOptions.frameworkVersion,
     `sln`,
   ];
 

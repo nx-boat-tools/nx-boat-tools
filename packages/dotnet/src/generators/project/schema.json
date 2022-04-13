@@ -36,6 +36,11 @@
     "isStandaloneConfig": {
       "type": "boolean",
       "description": "should the project use package.json? If false, the project config is inside workspace.json."
+    },
+    "frameworkVersion": {
+      "type": "string",
+      "description": "The .Net Framework version to use. Valid options are either `latest` or `LTS`.",
+      "default": "LTS"
     }
   },
   "required": ["name", "projectType"]

@@ -3,4 +3,6 @@ export interface ClassLibraryGeneratorSchema {
   tags?: string;
   directory?: string;
   ownSolution: boolean;
+  isStandaloneConfig?: boolean;
+  frameworkVersion?: 'latest' | 'LTS';
 }
