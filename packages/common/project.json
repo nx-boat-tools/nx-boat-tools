@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/common"],
       "options": {
-        "jestConfig": "packages/common/jest.config.js",
+        "jestConfig": "packages/common/jest.config.ts",
         "passWithNoTests": true,
         "coverage": true,
         "coverageReporters": ["cobertura"]

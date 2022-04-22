@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/helm"],
       "options": {
-        "jestConfig": "packages/helm/jest.config.js",
+        "jestConfig": "packages/helm/jest.config.ts",
         "passWithNoTests": true,
         "coverage": true,
         "coverageReporters": ["cobertura"]

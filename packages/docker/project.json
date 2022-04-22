@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/docker"],
       "options": {
-        "jestConfig": "packages/docker/jest.config.js",
+        "jestConfig": "packages/docker/jest.config.ts",
         "passWithNoTests": true,
         "coverage": true,
         "coverageReporters": ["cobertura"]
