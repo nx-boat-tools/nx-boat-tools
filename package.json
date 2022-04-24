@@ -37,7 +37,7 @@
     "guid-typescript": "^1.0.9",
     "minimist": "^1.2.6",
     "tslib": "^2.4.0",
-    "underscore": "^1.13.2",
+    "underscore": "^1.13.3",
     "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
@@ -65,7 +65,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^6.3.0",
     "dotenv": "~16.0.0",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "eslint-config-prettier": "8.5.0",
     "husky": "^7.0.4",
     "import-sort-style-renke": "^6.0.0",
