@@ -282,7 +282,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     normalizedOptions.projectType === 'classlib'
       ? {}
       : {
-          run: {
+          runSrc: {
             executor: '@nx-boat-tools/dotnet:run',
             options: {
               ...dotnetOptions,

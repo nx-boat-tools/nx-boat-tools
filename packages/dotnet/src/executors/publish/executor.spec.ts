@@ -37,7 +37,6 @@ describe('Dotnet Publish Executor', () => {
     const options: PublishDotnetExecutorSchema = {
       srcPath: 'apps/my-project',
       outputPath: 'dist/apps/my-project',
-      updateVersion: false,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configuration: 'Develop' ,

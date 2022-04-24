@@ -4,5 +4,4 @@ export interface CleanDotnetExecutorSchema {
   outputPath: string;
   runtimeID?: string;
   configuration?: string;
-  updateVersion: boolean;
 }

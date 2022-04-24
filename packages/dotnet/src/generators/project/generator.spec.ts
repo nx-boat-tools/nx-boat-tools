@@ -851,7 +851,7 @@ describe('dotnet project generator', () => {
         );
       });
 
-      it('adds run to project config (ownSolution false)', async () => {
+      it('adds runSrc to project config (ownSolution false)', async () => {
         const options: DotnetGeneratorSchema = {
           name: 'my-project',
           projectType: projectType,
@@ -863,22 +863,22 @@ describe('dotnet project generator', () => {
 
         const config = readProjectConfiguration(appTree, 'my-project');
 
-        expect(config?.targets?.run).toBeDefined();
-        expect(config.targets.run.executor).toBe('@nx-boat-tools/dotnet:run');
+        expect(config?.targets?.runSrc).toBeDefined();
+        expect(config.targets.runSrc.executor).toBe('@nx-boat-tools/dotnet:run');
 
-        expect(config.targets.build.options?.srcPath).toBe(
-          `${config.root}/${projectNames.className}.csproj`
+        expect(config.targets.runSrc.options?.srcPath).toBe(
+          `${config.sourceRoot}/${projectNames.className}.csproj`
         );
-        expect(config.targets.run.options?.outputPath).toBe(
+        expect(config.targets.runSrc.options?.outputPath).toBe(
           path.join('dist', config.root)
         );
-        expect(config.targets.run.options?.configuration).toBe('Debug');
+        expect(config.targets.runSrc.options?.configuration).toBe('Debug');
 
-        expect(config.targets.run.configurations?.prod).toBeDefined();
-        expect(config.targets.run.configurations?.prod?.configuration).toBe('Release');
+        expect(config.targets.runSrc.configurations?.prod).toBeDefined();
+        expect(config.targets.runSrc.configurations?.prod?.configuration).toBe('Release');
       });
 
-      it('adds run to project config (ownSolution true)', async () => {
+      it('adds runSrc to project config (ownSolution true)', async () => {
         const options: DotnetGeneratorSchema = {
           name: 'my-project',
           projectType: projectType,
@@ -890,19 +890,19 @@ describe('dotnet project generator', () => {
 
         const config = readProjectConfiguration(appTree, 'my-project');
 
-        expect(config?.targets?.run).toBeDefined();
-        expect(config.targets.run.executor).toBe('@nx-boat-tools/dotnet:run');
+        expect(config?.targets?.runSrc).toBeDefined();
+        expect(config.targets.runSrc.executor).toBe('@nx-boat-tools/dotnet:run');
 
-        expect(config.targets.build.options?.srcPath).toBe(
+        expect(config.targets.runSrc.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.sln`
         );
-        expect(config.targets.run.options?.outputPath).toBe(
+        expect(config.targets.runSrc.options?.outputPath).toBe(
           path.join('dist', config.root)
         );
-        expect(config.targets.run.options?.configuration).toBe('Debug');
+        expect(config.targets.runSrc.options?.configuration).toBe('Debug');
 
-        expect(config.targets.run.configurations?.prod).toBeDefined();
-        expect(config.targets.run.configurations?.prod?.configuration).toBe('Release');
+        expect(config.targets.runSrc.configurations?.prod).toBeDefined();
+        expect(config.targets.runSrc.configurations?.prod?.configuration).toBe('Release');
       });
     });
 

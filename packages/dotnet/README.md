@@ -146,7 +146,7 @@ dotnet build projectRoot/apps/example/example.sln --output projectRoot/dist/apps
 Here's another example but this time using a configuration...
 
 ```bash
-nx run example:build:production
+nx run example:build:prod
 ```
 
 Which would run the following dotnet CLI command
@@ -219,7 +219,7 @@ dotnet clean projectRoot/apps/example/example.sln --output projectRoot/dist/apps
 Here's another example but this time using a configuration...
 
 ```bash
-nx run example:clean:production
+nx run example:clean:prod
 ```
 
 Which would run the following dotnet CLI command
@@ -296,7 +296,7 @@ dotnet package projectRoot/apps/example/example.sln --output projectRoot/dist/ap
 Here's another example but this time using a configuration...
 
 ```bash
-nx run example:package:production
+nx run example:package:prod
 ```
 
 Which would run the following dotnet CLI command
@@ -369,7 +369,7 @@ dotnet publish projectRoot/apps/example/example.sln --output projectRoot/dist/ap
 Here's another example but this time using a configuration...
 
 ```bash
-nx run example:publish:production
+nx run example:publish:prod
 ```
 
 Which would run the following dotnet CLI command
@@ -405,7 +405,7 @@ The following workspace configuration illustrates a possible dotnet `run` target
     "example": {
       //...
       "targets": {
-        "run": {
+        "runSrc": {
           "executor": "@nx-boat-tools/dotnet:run",
           "options": {
             "srcPath": "apps/example/example.sln",
@@ -425,12 +425,12 @@ The following workspace configuration illustrates a possible dotnet `run` target
 }
 ```
 
-To run our dotnet project we just need to execute the `run` target...
+To run our dotnet project we just need to execute the `runSrc` target...
 
 ```bash
-nx run example
+nx runSrc example
 # OR
-nx run example:run
+nx run example:runSrc
 ```
 
 Both of the above would run the following dotnet CLI command
@@ -442,7 +442,7 @@ dotnet run projectRoot/apps/example/example.sln --output projectRoot/dist/apps/e
 Here's another example but this time using a configuration...
 
 ```bash
-nx run example:run:production
+nx run example:runSrc:prod
 ```
 
 Which would run the following dotnet CLI command

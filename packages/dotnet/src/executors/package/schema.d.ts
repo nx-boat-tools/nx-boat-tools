@@ -4,5 +4,4 @@ export interface PackageDotnetExecutorSchema {
   outputPath: string;
   runtimeID?: string;
   configuration?: string;
-  updateVersion: boolean;
 }

@@ -37,7 +37,6 @@ describe('Dotnet Run Executor', () => {
     const options: RunDotnetExecutorSchema = {
       srcPath: 'apps/my-project',
       outputPath: 'dist/apps/my-project',
-      updateVersion: false,
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
       configuration: 'Develop',
