@@ -23,6 +23,11 @@
       "schema": "./src/generators/grpc/schema.json",
       "description": "dotnet grpc app generator"
     },
+    "test": {
+      "factory": "./src/generators/test/generator",
+      "schema": "./src/generators/test/schema.json",
+      "description": "dotnet test generator"
+    },
     "webapi": {
       "factory": "./src/generators/webapi/generator",
       "schema": "./src/generators/webapi/schema.json",

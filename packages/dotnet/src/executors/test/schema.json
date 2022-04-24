@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Test executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "srcPath": {
+      "type": "string",
+      "description": "The path to the `csproj` or `sln` file for the test project"
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "This maps to the `output` param of the CLI command and is the path to where build output should be created"
+    },
+    "coveragePath": {
+      "type": "string",
+      "description": "This maps to the `results-directory` param of the CLI command but the folder structure of the results will be flattened"
+    },
+    "collector": {
+      "type": "string",
+      "description": "This is the `collector` param of the CLI command"
+    },
+    "runtimeID": {
+      "type": "string",
+      "description": "This maps to the `runtime` param of the CLI command"
+    },
+    "additionalArgs": {
+      "type": "string",
+      "description": "This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options"
+    },
+    "configuration": {
+      "type": "string",
+      "description": "This is the `configuration` param of the CLI command"
+    }
+  },
+  "additionalProperties": true,
+  "required": ["srcPath", "outputPath"]
+}

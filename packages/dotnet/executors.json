@@ -26,6 +26,11 @@
       "schema": "./src/executors/run-dotnet-command/schema.json",
       "description": "run a dotnet cli command"
     },
+    "test": {
+      "implementation": "./src/executors/test/executor",
+      "schema": "./src/executors/test/schema.json",
+      "description": "update the test for the dotnet project"
+    },
     "version": {
       "implementation": "./src/executors/version/executor",
       "schema": "./src/executors/version/schema.json",

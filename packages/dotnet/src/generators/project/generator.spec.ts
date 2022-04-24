@@ -226,7 +226,7 @@ describe('dotnet project generator', () => {
           );
 
           expect(config.targets.build.options?.srcPath).toBe(
-            `${config.root}/${projectNames.className}.csproj`
+            `${config.sourceRoot}/${projectNames.className}.csproj`
           );
           expect(config.targets.build.options?.outputPath).toBe(
             path.join('dist', config.root)
@@ -284,7 +284,7 @@ describe('dotnet project generator', () => {
           );
 
           expect(config.targets.build.options?.srcPath).toBe(
-            `${config.root}/${projectNames.className}.csproj`
+            `${config.sourceRoot}/${projectNames.className}.csproj`
           );
           expect(config.targets.clean.options?.outputPath).toBe(
             path.join('dist', config.root)
@@ -342,7 +342,7 @@ describe('dotnet project generator', () => {
           );
 
           expect(config.targets.build.options?.srcPath).toBe(
-            `${config.root}/${projectNames.className}.csproj`
+            `${config.sourceRoot}/${projectNames.className}.csproj`
           );
           expect(config.targets.package.options?.outputPath).toBe(
             path.join('dist', config.root)
@@ -399,7 +399,7 @@ describe('dotnet project generator', () => {
             '@nx-boat-tools/dotnet:version'
           );
           expect(config.targets.build.options?.srcPath).toBe(
-            `${config.root}/${projectNames.className}.csproj`
+            `${config.sourceRoot}/${projectNames.className}.csproj`
           );
         });
 
@@ -465,7 +465,7 @@ describe('dotnet project generator', () => {
           const config = readProjectConfiguration(appTree, 'my-project');
           const projectNames = names(options.name);
           const projectPath = path.join(
-            config.root,
+            config.sourceRoot,
             `${projectNames.className}.csproj`
           );
 
@@ -484,7 +484,7 @@ describe('dotnet project generator', () => {
           const config = readProjectConfiguration(appTree, 'my-project');
           const projectNames = names(options.name);
           const projectPath = path.join(
-            config.root,
+            config.sourceRoot,
             projectNames.className,
             `${projectNames.className}.csproj`
           );
@@ -513,7 +513,7 @@ describe('dotnet project generator', () => {
           );
 
           expect(slnProjects).toContain(
-            path.join(config.root, `${projectNames.className}.csproj`)
+            path.join(config.sourceRoot, `${projectNames.className}.csproj`)
           );
         });
 
@@ -542,6 +542,7 @@ describe('dotnet project generator', () => {
 
           expect(slnProjects).toContain(
             path.join(
+              'src',
               projectNames.className,
               `${projectNames.className}.csproj`
             )
@@ -565,7 +566,7 @@ describe('dotnet project generator', () => {
           );
           const projectNames = names(options.name);
           const projectPath = path.join(
-            config.root,
+            config.sourceRoot,
             `${projectNames.className}.csproj`
           );
 
@@ -593,7 +594,7 @@ describe('dotnet project generator', () => {
           );
           const projectNames = names(options.name);
           const projectPath = path.join(
-            config.root,
+            config.sourceRoot,
             `${projectNames.className}.csproj`
           );
 
@@ -620,7 +621,7 @@ describe('dotnet project generator', () => {
           );
           const projectNames = names(options.name);
           const projectPath = path.join(
-            config.root,
+            config.sourceRoot,
             `${projectNames.className}.csproj`
           );
 
@@ -643,7 +644,7 @@ describe('dotnet project generator', () => {
           );
           const projectNames = names(options.name);
           const projectPath = path.join(
-            config.root,
+            config.sourceRoot,
             projectNames.className,
             `${projectNames.className}.csproj`
           );
@@ -676,7 +677,7 @@ describe('dotnet project generator', () => {
           );
 
           expect(slnProjects).toContain(
-            path.join(config.root, `${projectNames.className}.csproj`)
+            path.join(config.sourceRoot, `${projectNames.className}.csproj`)
           );
         });
 
@@ -709,6 +710,7 @@ describe('dotnet project generator', () => {
 
           expect(slnProjects).toContain(
             path.join(
+              'src',
               projectNames.className,
               `${projectNames.className}.csproj`
             )

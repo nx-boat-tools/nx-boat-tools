@@ -23,6 +23,7 @@ version:
 
 	for f in $$(find "$(out-dir)" -type f); do sed -i.bak 's/__className__/\<\%\= className \%\>/g' "$$f"; done;
 	for f in $$(find "$(out-dir)" -type f -name "*.sln.template"); do sed -i.bak 's/..\\csproj\\/\<\%\= projectPathFromSln \%\>/g' "$$f"; done;
+	for f in $$(find "$(out-dir)" -type f -name "*.sln.template"); do sed -i.bak 's/\\/\<\%\= pathSep \%\>/g' "$$f"; done;
 	for f in $$(find "$(out-dir)" -type f -name "*.sln.template"); do PROJECT_GUID=$$(sed -n 's/.*.csproj\"\, \"{\(.*\)}\".*/\1/p' "$$f"); sed -i.bak 's/'"$$PROJECT_GUID"'/\<\%\= projectGuid \%\>/g' "$$f"; done;
 
 	for f in $$(find "$(out-dir)" -type f -name "*.bak"); do rm -rf $$f; done;

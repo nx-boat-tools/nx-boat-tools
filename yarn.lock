@@ -1419,6 +1419,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/glob@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@types/glob@npm:7.2.0"
+  dependencies:
+    "@types/minimatch": "*"
+    "@types/node": "*"
+  checksum: 6ae717fedfdfdad25f3d5a568323926c64f52ef35897bcac8aca8e19bc50c0bd84630bbd063e5d52078b2137d8e7d3c26eabebd1a2f03ff350fff8a91e79fc19
+  languageName: node
+  linkType: hard
+
 "@types/graceful-fs@npm:^4.1.2":
   version: 4.1.5
   resolution: "@types/graceful-fs@npm:4.1.5"
@@ -1474,6 +1484,13 @@ __metadata:
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
   checksum: e60b153664572116dfea673c5bda7778dbff150498f44f998e34b5886d8afc47f16799280e4b6e241c0472aef1bc36add771c569c68fc5125fc2ae519a3eb9ac
+  languageName: node
+  linkType: hard
+
+"@types/minimatch@npm:*":
+  version: 3.0.5
+  resolution: "@types/minimatch@npm:3.0.5"
+  checksum: c41d136f67231c3131cf1d4ca0b06687f4a322918a3a5adddc87ce90ed9dbd175a3610adee36b106ae68c0b92c637c35e02b58c8a56c424f71d30993ea220b92
   languageName: node
   linkType: hard
 
@@ -3452,23 +3469,6 @@ __metadata:
     path-type: ^4.0.0
     yaml: ^1.10.0
   checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
-  languageName: node
-  linkType: hard
-
-"create-nx-workspace@npm:^14.0.1":
-  version: 14.0.1
-  resolution: "create-nx-workspace@npm:14.0.1"
-  dependencies:
-    chalk: 4.1.0
-    enquirer: ~2.3.6
-    flat: ^5.0.2
-    ora: 5.3.0
-    tmp: ~0.2.1
-    tslib: ^2.3.0
-    yargs: ^17.4.0
-  bin:
-    create-nx-workspace: bin/index.js
-  checksum: fd05ce33e4faf6f8b81dedc3c92c05061875d1ec3c91536cb916d30df3b1ff798288eb1abb2b1e204ca5af864831794accc24bd3196bafd51cad073cc8e33c63
   languageName: node
   linkType: hard
 
@@ -7005,7 +7005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"log-symbols@npm:^4.0.0, log-symbols@npm:^4.1.0":
+"log-symbols@npm:^4.1.0":
   version: 4.1.0
   resolution: "log-symbols@npm:4.1.0"
   dependencies:
@@ -7692,6 +7692,58 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nx-boat-tools@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "nx-boat-tools@workspace:."
+  dependencies:
+    "@jscutlery/semver": ^2.22.0
+    "@nrwl/cli": 14.0.1
+    "@nrwl/devkit": 14.0.1
+    "@nrwl/eslint-plugin-nx": 14.0.1
+    "@nrwl/jest": 14.0.1
+    "@nrwl/linter": 14.0.1
+    "@nrwl/node": 14.0.1
+    "@nrwl/nx-plugin": 14.0.1
+    "@nrwl/workspace": 14.0.1
+    "@types/cross-spawn": ^6.0.2
+    "@types/glob": ^7.2.0
+    "@types/jest": 27.4.1
+    "@types/minimist": ^1.2.2
+    "@types/mock-fs": ^4.13.1
+    "@types/node": 17.0.25
+    "@types/underscore": ^1.11.4
+    "@types/xml2js": ^0.4.11
+    "@types/yargs-parser": ^21.0.0
+    "@typescript-eslint/eslint-plugin": 5.20.0
+    "@typescript-eslint/parser": 5.20.0
+    commitizen: ^4.2.4
+    cz-conventional-changelog: ^3.3.0
+    cz-customizable: ^6.3.0
+    dotenv: ~16.0.0
+    eslint: ^8.13.0
+    eslint-config-prettier: 8.5.0
+    glob: ^8.0.1
+    guid-typescript: ^1.0.9
+    husky: ^7.0.4
+    import-sort-style-renke: ^6.0.0
+    jest: 27.5.1
+    jest-each: ^27.5.1
+    minimist: ^1.2.6
+    mock-fs: ^5.1.2
+    nx: 14.0.1
+    pinst: ^3.0.0
+    prettier: 2.6.2
+    prettier-plugin-import-sort: ^0.0.7
+    semver: ^7.3.7
+    ts-jest: 27.1.4
+    tslib: ^2.4.0
+    typescript: ^4.6.3
+    underscore: ^1.13.2
+    verdaccio: ^5.9.0
+    xmlbuilder2: ^3.0.2
+  languageName: unknown
+  linkType: soft
+
 "nx@npm:13.10.2":
   version: 13.10.2
   resolution: "nx@npm:13.10.2"
@@ -7867,22 +7919,6 @@ __metadata:
     type-check: ^0.4.0
     word-wrap: ^1.2.3
   checksum: dbc6fa065604b24ea57d734261914e697bd73b69eff7f18e967e8912aa2a40a19a9f599a507fa805be6c13c24c4eae8c71306c239d517d42d4c041c942f508a0
-  languageName: node
-  linkType: hard
-
-"ora@npm:5.3.0":
-  version: 5.3.0
-  resolution: "ora@npm:5.3.0"
-  dependencies:
-    bl: ^4.0.3
-    chalk: ^4.1.0
-    cli-cursor: ^3.1.0
-    cli-spinners: ^2.5.0
-    is-interactive: ^1.0.0
-    log-symbols: ^4.0.0
-    strip-ansi: ^6.0.0
-    wcwidth: ^1.0.1
-  checksum: 60ec956843def482e2a9a78e98b6bfb19129cbf683fa4e4daca41423f9a098332a8a33b4ca335151b1e6836ff746e3b96e09441f3aea72151e4060990966daad
   languageName: node
   linkType: hard
 
@@ -9183,57 +9219,6 @@ __metadata:
   checksum: 19d79aec211f09b99ec3099b5b2ae2f6e9cdefe50bc91ac4c69144b6d3928a640bb6ae5b3def70c2e85a2c3d9f5ec2719921e3a59d3ca3ef4b2fd1a4656a0df3
   languageName: node
   linkType: hard
-
-"src@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "src@workspace:."
-  dependencies:
-    "@jscutlery/semver": ^2.22.0
-    "@nrwl/cli": 14.0.1
-    "@nrwl/devkit": 14.0.1
-    "@nrwl/eslint-plugin-nx": 14.0.1
-    "@nrwl/jest": 14.0.1
-    "@nrwl/linter": 14.0.1
-    "@nrwl/node": 14.0.1
-    "@nrwl/nx-plugin": 14.0.1
-    "@nrwl/workspace": 14.0.1
-    "@types/cross-spawn": ^6.0.2
-    "@types/jest": 27.4.1
-    "@types/minimist": ^1.2.2
-    "@types/mock-fs": ^4.13.1
-    "@types/node": 17.0.25
-    "@types/underscore": ^1.11.4
-    "@types/xml2js": ^0.4.11
-    "@types/yargs-parser": ^21.0.0
-    "@typescript-eslint/eslint-plugin": 5.20.0
-    "@typescript-eslint/parser": 5.20.0
-    commitizen: ^4.2.4
-    create-nx-workspace: ^14.0.1
-    cz-conventional-changelog: ^3.3.0
-    cz-customizable: ^6.3.0
-    dotenv: ~16.0.0
-    eslint: ^8.13.0
-    eslint-config-prettier: 8.5.0
-    guid-typescript: ^1.0.9
-    husky: ^7.0.4
-    import-sort-style-renke: ^6.0.0
-    jest: 27.5.1
-    jest-each: ^27.5.1
-    minimist: ^1.2.6
-    mock-fs: ^5.1.2
-    nx: 14.0.1
-    pinst: ^3.0.0
-    prettier: 2.6.2
-    prettier-plugin-import-sort: ^0.0.7
-    semver: ^7.3.7
-    ts-jest: 27.1.4
-    tslib: ^2.4.0
-    typescript: ^4.6.3
-    underscore: ^1.13.2
-    verdaccio: ^5.9.0
-    xmlbuilder2: ^3.0.2
-  languageName: unknown
-  linkType: soft
 
 "sshpk@npm:^1.7.0":
   version: 1.17.0

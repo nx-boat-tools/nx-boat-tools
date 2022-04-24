@@ -276,8 +276,8 @@ describe('Run Dotnet Command Executor', () => {
 
     const fakeFs = {};
     fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
-      'SampleProject1',
-      'SampleProject2',
+      { name: 'SampleProject1', root: 'SampleProject1' },
+      { name: 'SampleProject2', root: 'SampleProject2' },
     ]);
     fakeFs[
       path.join(

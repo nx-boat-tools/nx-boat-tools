@@ -250,8 +250,8 @@ describe('Run Dotnet Command Executor', () => {
 
     const fakeFs = {};
     fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
-      'SampleProject1',
-      'SampleProject2',
+      { name: 'SampleProject1', root: 'SampleProject1' },
+      { name: 'SampleProject2', root: 'SampleProject2' },
     ]);
     fakeFs[
       path.join(
@@ -296,8 +296,8 @@ describe('Run Dotnet Command Executor', () => {
     fakeFs[path.join(context.root, 'apps', 'my-project', 'package.json')] =
       '{}';
     fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
-      'SampleProject1',
-      'SampleProject2',
+      { name: 'SampleProject1', root: 'SampleProject1' },
+      { name: 'SampleProject2', root: 'SampleProject2' },
     ]);
     fakeFs[
       path.join(
@@ -368,8 +368,8 @@ describe('Run Dotnet Command Executor', () => {
     fakeFs[path.join(context.root, 'apps', 'my-project', 'package.json')] =
       '{ "version": "1.2.3" }';
     fakeFs[path.join(context.root, options.srcPath)] = createTestSlnContent([
-      'SampleProject1',
-      'SampleProject2',
+      { name: 'SampleProject1', root: 'SampleProject1' },
+      { name: 'SampleProject2', root: 'SampleProject2' },
     ]);
     fakeFs[
       path.join(

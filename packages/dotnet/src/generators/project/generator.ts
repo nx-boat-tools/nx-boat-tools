@@ -11,7 +11,6 @@ import {
   getWorkspaceLayout,
   installPackagesTask,
   names,
-  offsetFromRoot,
 } from '@nrwl/devkit';
 import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
 import { getVersionForProject } from '@nx-boat-tools/common';
@@ -26,6 +25,7 @@ interface NormalizedSchema extends DotnetGeneratorSchema {
   projectName: string;
   projectRoot: string;
   projectDirectory: string;
+  projectSrcPath: string;
   projectDistPath: string;
   projectPathFromSln: string;
   nxProjectType: ProjectType;
@@ -42,9 +42,8 @@ interface TemplateOptions extends NormalizedSchema {
   propertyName: string;
   constantName: string;
   fileName: string;
-  offsetFromRoot: string;
+  pathSep: string;
   projectGuid: string;
-  template: string;
 }
 
 function normalizeOptions(
@@ -63,8 +62,9 @@ function normalizeOptions(
     options.projectType,
     layout
   )}/${projectDirectory}`;
+  const projectSrcPath = path.join(projectRoot, 'src');
   const projectDistPath = path.join('dist', projectRoot);
-  const projectPathFromSln = !options.ownSolution ? projectRoot + path.sep : '';
+  const projectPathFromSln = !options.ownSolution ? `${projectSrcPath}${path.sep}` : `src${path.sep}`;
   const nxProjectType = getNxProjectType(tree, options.projectType);
 
   const parsedTags = options.tags
@@ -87,6 +87,7 @@ function normalizeOptions(
     projectName,
     projectRoot,
     projectDirectory,
+    projectSrcPath,
     projectDistPath,
     projectPathFromSln,
     nxProjectType,
@@ -134,9 +135,8 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
   const templateOptions: TemplateOptions = {
     ...options,
     ...names(options.name),
-    offsetFromRoot: offsetFromRoot(options.projectRoot),
+    pathSep: path.sep,
     projectGuid: Guid.create().toString(),
-    template: '',
   };
   addManualProjectFiles(tree, templateOptions);
   addGeneratedProjectFiles(tree, templateOptions);
@@ -177,7 +177,7 @@ function addGeneratedProjectFiles(
   generateFiles(
     tree,
     path.join(...pathParts),
-    templateOptions.projectRoot,
+    templateOptions.projectSrcPath,
     templateOptions
   );
 }
@@ -218,11 +218,6 @@ function moveSolutionFileIfNeeded(
   const projectSlnBuffer = tree.read(projectSlnPath);
   let projectSlnContent =
     projectSlnBuffer === null ? '' : projectSlnBuffer.toString();
-
-  projectSlnContent = projectSlnContent.replace(
-    `${templateOptions.className}\\${templateOptions.className}.csproj`,
-    `${templateOptions.className}${path.sep}${templateOptions.className}.csproj`
-  );
 
   projectSlnContent = projectSlnContent.replace(
     `${templateOptions.className}${path.sep}${templateOptions.className}.csproj`,
@@ -268,7 +263,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const dotnetOptions = {
     srcPath: !normalizedOptions.ownSolution
       ? path.join(
-          normalizedOptions.projectRoot,
+          normalizedOptions.projectSrcPath,
           `${normalizedOptions.projectClassName}.csproj`
         )
       : path.join(
@@ -299,7 +294,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const projectConfig: ProjectConfiguration = {
     root: normalizedOptions.projectRoot,
     projectType: normalizedOptions.nxProjectType,
-    sourceRoot: `${normalizedOptions.projectRoot}/src`,
+    sourceRoot: normalizedOptions.projectSrcPath,
     targets: {
       build: {
         executor: '@nx-boat-tools/dotnet:build',

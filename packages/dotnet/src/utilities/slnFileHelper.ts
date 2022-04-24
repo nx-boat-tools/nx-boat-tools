@@ -90,11 +90,25 @@ export function appendGlobalSectionToSolution(
   return rootParts.join('');
 }
 
-export function createTestSlnContent(projectNames: Array<string>): string {
+export function createTestSlnContent(projects: Array<{root: string, name: string}>): string {
+  const projectSpecs = _.map(projects, (project) => {
+    return {
+      ...project,
+      guid: Guid.create(),
+    };
+  });
   const projectLines = _.map(
-    projectNames,
+    projectSpecs,
     (project) =>
-      `Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${project}", "${project}\\${project}.csproj", "{${Guid.create()}}"\nEndProject`
+      `Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${project.name}", "${project.root}${path.sep}${project.name}.csproj", "{${project.guid}}"\nEndProject`
+  );
+  const globalLines = _.map(
+    projectSpecs,
+    (project) => `
+\t\t{${project.guid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+\t\t{${project.guid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+\t\t{${project.guid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+\t\t{${project.guid}}.Release|Any CPU.Build.0 = Release|Any CPU`
   );
 
   return `
@@ -103,5 +117,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 ${projectLines.join('\n')}
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution\r${globalLines}\r
+	EndGlobalSection
+EndGlobal
   `;
 }

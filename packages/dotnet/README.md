@@ -14,6 +14,7 @@ The "net" in the Nx Boat Tools toolbox. The `dotnet` plugin adds .Net project su
   - [`package`](#package)
   - [`publish`](#publish)
   - [`run`](#run)
+  - [`test`](#test)
   - [`version`](#version)
 - [Generators](#generators)
   - [`project`](#project)
@@ -451,6 +452,80 @@ Which would run the following dotnet CLI command
 dotnet run projectRoot/apps/example/example.sln --output projectRoot/dist/apps/example --configuration Release --nologo
 ```
 
+### `test`
+
+The `test` executor is a utility function that updates the versions in all `csproj` files associaciated with the project to match the version specified in the project's `package.json`
+
+#### Available options:
+
+| name             | type     | default                | description                                                                                                                                                         |
+| ---------------- | -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `srcPath`        | `string` |                        | Required. This is the `csproj` or `sln` file associated with the project                                                                                            |
+| `outputPath`     | `string` |                        | Required. This maps to the `output` param of the CLI command and is the path to where build output should be created                                                |
+| `coveragePath`   | `string` | coverage/{projectRoot} | This maps to the `results-directory` param of the CLI command but the folder structure of the results will be flattened                                             |
+| `collector`      | `string` | XPlat Code Coverage    | This is the `collector` param of the CLI command                                                                                                                    |
+| `configuration`  | `string` |                        | This is the `configuration` param of the CLI command                                                                                                                |
+| `runtimeID`      | `string` |                        | This maps to the `runtime` param of the CLI command                                                                                                                 |
+| `additionalArgs` | `string` |                        | This is a string that is added to the end of the dotnet command and can be used for any available parameters that aren't explicitly defined in the executor options |
+
+#### Example:
+
+The following workspace configuration illustrates a possible dotnet `test` target for a given project.
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "example": {
+      //...
+      "targets": {
+        "testSrc": {
+          "executor": "@nx-boat-tools/dotnet:test",
+          "options": {
+            "srcPath": "apps/example/tests/Example.Tests/Example.Tests.csproj",
+            "outputPath": "dist/apps/example",
+            "configuration": "Debug"
+          },
+          "configurations": {
+            "prod": {
+              "configuration": "Release"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To test our dotnet project we just need to execute the `testSrc` target...
+
+```bash
+nx test example
+# OR
+nx run example:test
+```
+
+Both of the above would run the following dotnet CLI command
+
+```bash
+dotnet test projectRoot/apps/example/tests/Example.Tests/Example.Tests.csproj --output projectRoot/dist/apps/example --results-directory projectRoot/coverage/apps/example --collector "XPlat Code Coverage" --configuration Debug
+```
+
+Here's another example but this time using the prod configuration...
+
+```bash
+nx run example:test:prod
+```
+
+Which would run the following dotnet CLI command
+
+```bash
+dotnet test projectRoot/apps/example/tests/Example.Tests/Example.Tests.csproj --output projectRoot/dist/apps/example --results-directory projectRoot/coverage/apps/example --collector "XPlat Code Coverage" --configuration Release
+```
+
 ### `version`
 
 The `version` executor is a utility function that updates the versions in all `csproj` files associaciated with the project to match the version specified in the project's `package.json`
@@ -740,4 +815,36 @@ nx g @nx-dev-tools/dotnet:webapi my-api --ownSolution=true
 
 #Create a project named my-api in apps/internal/my-api and adds it to the workspace.sln
 nx g @nx-dev-tools/dotnet:webapi my-api --directory=internal
+```
+
+### `test`
+
+Adds a dotnet test project to an existing Nx project. The type of test project can be mstest, nunit, or xunit and is specified by the `testType` option which corresponds to test template values used in the `dotnet new` command.
+
+#### Available options:
+
+| name               | type      | default | description                                                                                |
+| ------------------ | --------- | ------- | ------------------------------------------------------------------------------------------ | -------- | ---------------------------------- |
+| `project`          | `string`  |         | Required. The name of the Nx project to add tests to                                       |
+| `testType`         | `mstest`  | `nunit` | `xunit`                                                                                    | `mstest` | The type of test project to create |
+| `testPrefix`       | `string?` |         | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`             |
+| `frameworkVersion` | `string`  | `LTS`   | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0). |
+
+#### Generated files:
+
+The generated files should mostly reflect the same files you'd get from running `dotnet new mstest`, `dotnet new nunit`, or `dotnet new xunit` respectively. The project will be created in a `tests` directory within the project's root, for example: `apps/my-project/tests`.
+
+#### Creating a `test` project
+
+The following illustrates how to add a dotnet `test` project with various options:
+
+```bash
+#Add a dotnet mstest project to the Nx my-api project
+nx g @nx-dev-tools/dotnet:test my-api
+
+#Add a dotnet mstest project to the Nx my-api project with a test prefix
+nx g @nx-dev-tools/dotnet:test my-api --testPrefix=acceptance
+
+#Add a dotnet 7.0 xunit project to the Nx my-api project with a test prefix
+nx g @nx-dev-tools/dotnet:test my-api --testType=xunit --testPrefix=acceptance --frameworkVersion=latest
 ```
