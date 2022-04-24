@@ -12,3 +12,15 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "chore(repo):"
+    ignore:
+      # We'll leave nx commented out so we're notified of updates
+      # We just don't want to be flooded w/ them all since we upgrade them together
+      # - dependency-name: "nx": "14.0.2",
+      - dependency-name: "@nrwl/cli" 
+      - dependency-name: "@nrwl/devkit"
+      - dependency-name: "@nrwl/eslint-plugin-nx"
+      - dependency-name: "@nrwl/jest"
+      - dependency-name: "@nrwl/linter"
+      - dependency-name: "@nrwl/node"
+      - dependency-name: "@nrwl/nx-plugin"
+      - dependency-name: "@nrwl/workspace"
