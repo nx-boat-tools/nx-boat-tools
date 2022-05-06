@@ -70,7 +70,7 @@
     "husky": "^7.0.4",
     "import-sort-style-renke": "^6.0.0",
     "jest": "27.5.1",
-    "jest-each": "^27.5.1",
+    "jest-each": "^28.1.0",
     "mock-fs": "^5.1.2",
     "nx": "14.0.2",
     "pinst": "^3.0.0",
