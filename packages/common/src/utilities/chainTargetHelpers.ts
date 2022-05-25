@@ -4,6 +4,7 @@ import { TargetConfiguration } from '@nrwl/devkit';
 import { NamedChainExecutorStages } from '../executors/chain-execute/schema';
 
 export interface AppendToBuildTargetAdditions {
+  preTargetsToAdd?: Array<string>;
   targetsToAdd?: Array<string>;
   postTargetsToAdd?: Array<string>;
   stagesToAdd?: NamedChainExecutorStages;
@@ -18,8 +19,9 @@ export function appendToChainTargets(
     const targetSrc = `${target}Src`;
 
     const { stagesToAdd } = addition[1];
-    let { targetsToAdd, postTargetsToAdd } = addition[1];
+    let { preTargetsToAdd, targetsToAdd, postTargetsToAdd } = addition[1];
 
+    preTargetsToAdd = preTargetsToAdd || [];
     targetsToAdd = targetsToAdd || [];
     postTargetsToAdd = postTargetsToAdd || [];
 
@@ -36,6 +38,14 @@ export function appendToChainTargets(
         executor: '@nx-boat-tools/common:chain-execute',
         options: {},
       };
+    }
+
+    if (_.some(preTargetsToAdd)) {
+      projectTargets[target].options.preTargets =
+        projectTargets[target].options.preTargets || [];
+
+      projectTargets[target].options.preTargets =
+        projectTargets[target].options.preTargets.concat(preTargetsToAdd);
     }
 
     if (_.some(targetsToAdd)) {
