@@ -834,6 +834,58 @@ Adds a dotnet test project to an existing Nx project. The type of test project c
 
 The generated files should mostly reflect the same files you'd get from running `dotnet new mstest`, `dotnet new nunit`, or `dotnet new xunit` respectively. The project will be created in a `tests` directory within the project's root, for example: `apps/my-project/tests`.
 
+#### Updates to project configuration:
+
+The project's entry in the project configuration will be updated as follows:
+
+- `test` - This calls a `chain-execute` with the a target for the test being added. The target name depends on if the `testPrefix` option was specified. If it was, then the target name is `test` plus the prefix in camel-casing. For example, given a prefix of `integration`, the target name would be `testIntegration`. If the `testPrefix` option was not specified, the target name will be `testSrc`.
+
+The following is a full example of what's added to the project configuration when adding dotnet tests:
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "test": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "targets": ["testUnit", "testIntegration"]
+          }
+        },
+        "testIntegration": {
+          "executor": "@nx-boat-tools/dotnet:test",
+          "options": {
+            "srcPath": "apps/my-app/tests/MyApp.IntegrationTests/MyApp.IntegrationTests.csproj",
+            "outputPath": "dist/apps/my-app"
+          }
+        },
+        "testUnit": {
+          "executor": "@nx-boat-tools/dotnet:test",
+          "options": {
+            "srcPath": "apps/my-app/tests/MyApp.UnitTests/MyApp.UnitTests.csproj",
+            "outputPath": "dist/apps/my-app"
+          }
+        },
+        "version": {
+          "executor": "@@jscutlery/semver:version",
+          "options": {
+            "commitMessageFormat": "chore(${projectName}): release version ${version}"
+          }
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
 #### Creating a `test` project
 
 The following illustrates how to add a dotnet `test` project with various options:
@@ -847,4 +899,93 @@ nx g @nx-dev-tools/dotnet:test my-api --testPrefix=acceptance
 
 #Add a dotnet 7.0 xunit project to the Nx my-api project with a test prefix
 nx g @nx-dev-tools/dotnet:test my-api --testType=xunit --testPrefix=acceptance --frameworkVersion=latest
+```
+
+### `test-project`
+
+Creates an Nx project specifically for a dotnet test project. The type of test project can be mstest, nunit, or xunit and is specified by the `testType` option which corresponds to test template values used in the `dotnet new` command.
+
+#### Available options:
+
+| name               | type      | default | description                                                                                |
+| ------------------ | --------- | ------- | ------------------------------------------------------------------------------------------ | -------- | ---------------------------------- |
+| `name`               | `string`  |                       | Required. The name of the project that's being created.                                                                                                                                                                       |
+| `tags`               | `string?` | `undefined`           | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
+| `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
+| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
+| `testType`         | `mstest`  | `nunit` | `xunit`                                                                                    | `mstest` | The type of test project to create |
+| `testPrefix`       | `string?` |         | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`             |
+| `frameworkVersion` | `string`  | `LTS`   | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0). |
+
+#### Generated files:
+
+Other than the addition of a `package.json` file for the project, the generated files should mostly reflect the same files you'd get from running `dotnet new mstest`, `dotnet new nunit`, or `dotnet new xunit` respectively. The dotnet project will be created in a `tests` directory within the project's root, for example: `apps/my-project/tests`. 
+
+#### Updates to project configuration:
+
+The project is added to the project configuration with the following high-level targets defined:
+
+- `test` - This calls a `chain-execute` with the a target for the test being added. The target name depends on if the `testPrefix` option was specified. If it was, then the target name is `test` plus the prefix in camel-casing. For example, given a prefix of `integration`, the target name would be `testIntegration`. If the `testPrefix` option was not specified, the target name will be `testSrc`.
+
+- `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
+
+The following is a full example of what's added to the project configuration when adding a dotnet test project:
+
+```jsonc
+//workspace.json
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "test": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "targets": ["testUnit", "testIntegration"]
+          }
+        },
+        "testIntegration": {
+          "executor": "@nx-boat-tools/dotnet:test",
+          "options": {
+            "srcPath": "apps/my-app/tests/MyApp.IntegrationTests/MyApp.IntegrationTests.csproj",
+            "outputPath": "dist/apps/my-app"
+          }
+        },
+        "testUnit": {
+          "executor": "@nx-boat-tools/dotnet:test",
+          "options": {
+            "srcPath": "apps/my-app/tests/MyApp.UnitTests/MyApp.UnitTests.csproj",
+            "outputPath": "dist/apps/my-app"
+          }
+        },
+        "version": {
+          "executor": "@@jscutlery/semver:version",
+          "options": {
+            "commitMessageFormat": "chore(${projectName}): release version ${version}"
+          }
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+#### Creating a `test-project` project
+
+The following illustrates how to add a dotnet `test-project` project with various options:
+
+```bash
+#Create a dotnet mstest project
+nx g @nx-dev-tools/dotnet:test-project my-api
+
+#Create a dotnet mstest project with a test prefix
+nx g @nx-dev-tools/dotnet:test-project my-api --testPrefix=acceptance
+
+#Create a dotnet 7.0 xunit project with a test prefix
+nx g @nx-dev-tools/dotnet:test-project my-api --testType=xunit --testPrefix=acceptance --frameworkVersion=latest
 ```

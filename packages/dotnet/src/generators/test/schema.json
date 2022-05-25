@@ -22,6 +22,10 @@
       "type": "string",
       "description": "The .Net Framework version to use. Valid options are either `latest` or `LTS`.",
       "default": "LTS"
+    },
+    "testPrefix": {
+      "type": "string",
+      "description": "An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`"
     }
   },
   "required": ["project"]
