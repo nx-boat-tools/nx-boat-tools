@@ -416,7 +416,7 @@ The project's entry in the project configuration will be updated as follows:
     - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
     - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
 
-  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as post targets on the `root` stage, the build target will always run first.
 
 The following is a full example of what's added to the project configuration for a project when adding helm to it:
 
@@ -521,7 +521,7 @@ The following is a full example of what's added to the project configuration for
         "runHelmChart": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "additionalTargets": [
+            "postTargets": [
               "installHelmChart",
               "portForwardToMinikube",
               "uninstallHelmChart"
@@ -594,7 +594,7 @@ The project's entry in the project configuration will be updated as follows:
     - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
     - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
 
-  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as post targets on the `root` stage, the build target will always run first.
 
 The following is a full example of what's added to the project configuration for a project when adding helm to it:
 
@@ -676,7 +676,7 @@ The following is a full example of what's added to the project configuration for
         "runHelmChart": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "additionalTargets": [
+            "postTargets": [
               "installHelmChart",
               "portForwardToMinikube",
               "uninstallHelmChart"
@@ -752,7 +752,7 @@ The project is added to the project configuration with the following high-level 
     - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
     - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
 
-  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as post targets on the `root` stage, the build target will always run first.
 
 - `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
 
@@ -827,7 +827,7 @@ The following is a full example of what's added to the project configuration whe
         "runHelmChart": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "additionalTargets": [
+            "postTargets": [
               "installHelmChart",
               "portForwardToMinikube",
               "uninstallHelmChart"
@@ -905,7 +905,7 @@ The project is added to the project configuration with the following high-level 
     - `portForwardToMinikube` - this calls the helm `portForward` executor to allow the chart to be tested locally
     - `uninstallHelmChart` - this calls the helm `uninstall` executor to uninstall the chart from kubernetes
 
-  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as additional targets on the `root` stage, the build target will always run first.
+  ℹ️  Since the build target is added as a regular target to a `build stage` and all run targets are added as post targets on the `root` stage, the build target will always run first.
 
 - `version` - This updates the project version utilizing the [@jscutlery/semver](https://github.com/jscutlery/semver) community plugin.
 
@@ -958,7 +958,7 @@ The following is a full example of what's added to the project configuration whe
         "runHelmChart": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
-            "additionalTargets": [
+            "postTargets": [
               "installHelmChart",
               "portForwardToMinikube",
               "uninstallHelmChart"

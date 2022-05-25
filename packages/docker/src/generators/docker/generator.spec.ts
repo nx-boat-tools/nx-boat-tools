@@ -953,11 +953,11 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets
+      config.targets.package.options?.stages?.dockerImage?.postTargets
         .length
     ).toBe(1);
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets[0]
+      config.targets.package.options?.stages?.dockerImage?.postTargets[0]
     ).toBe('publishDockerImage');
   });
 
@@ -990,11 +990,11 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets
+      config.targets.package.options?.stages?.dockerImage?.postTargets
         .length
     ).toBe(1);
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets[0]
+      config.targets.package.options?.stages?.dockerImage?.postTargets[0]
     ).toBe('publishDockerImage');
   });
 
@@ -1037,11 +1037,11 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets
+      config.targets.package.options?.stages?.dockerImage?.postTargets
         .length
     ).toBe(1);
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets[0]
+      config.targets.package.options?.stages?.dockerImage?.postTargets[0]
     ).toBe('publishDockerImage');
   });
 
@@ -1097,11 +1097,11 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets
+      config.targets.package.options?.stages?.dockerImage?.postTargets
         ?.length
     ).toBe(1);
     expect(
-      config.targets.package.options?.stages?.dockerImage?.additionalTargets[0]
+      config.targets.package.options?.stages?.dockerImage?.postTargets[0]
     ).toBe('publishDockerImage');
   });
 

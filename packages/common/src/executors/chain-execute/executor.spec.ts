@@ -69,15 +69,15 @@ describe('Chain Executor', () => {
   it('executes all expected targets in order (with implicit stages - no filter)', async () => {
     const options: ChainExecutorSchema = {
       targets: ['pre'],
-      additionalTargets: ['post'],
+      postTargets: ['post'],
       stages: {
         src: {
           targets: ['build'],
-          additionalTargets: ['test'],
+          postTargets: ['test'],
         },
         package: {
           targets: ['package'],
-          additionalTargets: ['publish'],
+          postTargets: ['publish'],
         },
       },
     };
@@ -121,15 +121,15 @@ describe('Chain Executor', () => {
     const options: ChainExecutorSchema = {
       run: ['src'],
       targets: ['pre'],
-      additionalTargets: ['post'],
+      postTargets: ['post'],
       stages: {
         src: {
           targets: ['build'],
-          additionalTargets: ['test'],
+          postTargets: ['test'],
         },
         package: {
           targets: ['package'],
-          additionalTargets: ['publish'],
+          postTargets: ['publish'],
         },
       },
     };
@@ -165,16 +165,16 @@ describe('Chain Executor', () => {
   it('executes all expected targets in order (with explicit stage - no filter)', async () => {
     const options: ChainExecutorSchema = {
       targets: ['pre'],
-      additionalTargets: ['post'],
+      postTargets: ['post'],
       stages: {
         src: {
           targets: ['build'],
-          additionalTargets: ['test'],
+          postTargets: ['test'],
         },
         package: {
           explicit: true,
           targets: ['package'],
-          additionalTargets: ['publish'],
+          postTargets: ['publish'],
         },
       },
     };
@@ -211,16 +211,16 @@ describe('Chain Executor', () => {
     const options: ChainExecutorSchema = {
       run: ['src', 'package'],
       targets: ['pre'],
-      additionalTargets: ['post'],
+      postTargets: ['post'],
       stages: {
         src: {
           targets: ['build'],
-          additionalTargets: ['test'],
+          postTargets: ['test'],
         },
         package: {
           explicit: true,
           targets: ['package'],
-          additionalTargets: ['publish'],
+          postTargets: ['publish'],
         },
       },
     };
@@ -263,15 +263,15 @@ describe('Chain Executor', () => {
   it('executes targets with configuration', async () => {
     const options: ChainExecutorSchema = {
       targets: ['pre'],
-      additionalTargets: ['post'],
+      postTargets: ['post'],
       stages: {
         src: {
           targets: ['build'],
-          additionalTargets: ['test'],
+          postTargets: ['test'],
         },
         package: {
           targets: ['package'],
-          additionalTargets: ['publish'],
+          postTargets: ['publish'],
         },
       },
     };

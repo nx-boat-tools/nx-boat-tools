@@ -329,16 +329,16 @@ describe('local-chart generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
     expect(config.targets.runHelmChart.options?.targets).toBeUndefined();
-    expect(config.targets.runHelmChart.options?.additionalTargets?.length).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets?.length).toBe(
       3
     );
-    expect(config.targets.runHelmChart.options?.additionalTargets[0]).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets[0]).toBe(
       'installHelmChart'
     );
-    expect(config.targets.runHelmChart.options?.additionalTargets[1]).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets[1]).toBe(
       'portForwardToMinikube'
     );
-    expect(config.targets.runHelmChart.options?.additionalTargets[2]).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets[2]).toBe(
       'uninstallHelmChart'
     );
     expect(config.targets.runHelmChart.options?.stages).toBeUndefined();
@@ -370,22 +370,22 @@ describe('local-chart generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
     expect(config.targets.runHelmChart.options?.targets).toBeUndefined();
-    expect(config.targets.runHelmChart.options?.additionalTargets?.length).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets?.length).toBe(
       3
     );
-    expect(config.targets.runHelmChart.options?.additionalTargets[0]).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets[0]).toBe(
       'installHelmChart'
     );
-    expect(config.targets.runHelmChart.options?.additionalTargets[1]).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets[1]).toBe(
       'portForwardToMinikube'
     );
-    expect(config.targets.runHelmChart.options?.additionalTargets[2]).toBe(
+    expect(config.targets.runHelmChart.options?.postTargets[2]).toBe(
       'uninstallHelmChart'
     );
     expect(config.targets.runHelmChart.options?.stages).toBeDefined();
     expect(config.targets.runHelmChart.options?.stages['build']).toBeDefined();
     expect(
-      config.targets.runHelmChart.options?.stages['build']?.additionalTargets
+      config.targets.runHelmChart.options?.stages['build']?.postTargets
     ).toBeUndefined();
     expect(
       config.targets.runHelmChart.options?.stages['build']?.targets?.length

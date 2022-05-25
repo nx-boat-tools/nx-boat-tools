@@ -345,7 +345,7 @@ The `docker` generator adds docker support to an existing Nx project. It creates
 | `runPortMappings` | `string` | | When running the docker image, this is an comma delimited string used to create port mappings to pass into the container |
 | `runVolumeMounts` | `string` | | When running the docker image, this is an comma delimited string used to create volume mount mappings to pass into the container |
 | `runVariables` | `string` | | When running the docker image, this is an comma delimited string used to set environment variables within the container |
-| `minikube`         | `boolean` |         | Whether or not to add additional targets for minikube.                                       |
+| `minikube`         | `boolean` |         | Whether or not to add post targets for minikube.                                       |
 
 #### Generated files:
 
@@ -448,7 +448,7 @@ The following is a full example of what's added to the `workspace.json` for a pr
           "options": {
             "stages": {
               "dockerImage": {
-                "additionalTargets": ["publishDockerImage"]
+                "postTargets": ["publishDockerImage"]
               }
             }
           }

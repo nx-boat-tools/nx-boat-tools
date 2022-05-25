@@ -57,11 +57,11 @@ export default async function (
   options: ChainExecutorSchema,
   context: ExecutorContext
 ) {
-  let { additionalTargets, run, stages, targets } = options;
+  let { postTargets, run, stages, targets } = options;
   const { projectName, configurationName } = context;
 
   targets = targets || [];
-  additionalTargets = additionalTargets || [];
+  postTargets = postTargets || [];
 
   if (projectName === undefined) {
     throw new Error('You must specify a project!');
@@ -91,14 +91,14 @@ export default async function (
         targets = targets.concat(stage.targets);
       }
 
-      if (stage.additionalTargets !== undefined) {
-        additionalTargets = additionalTargets.concat(stage.additionalTargets);
+      if (stage.postTargets !== undefined) {
+        postTargets = postTargets.concat(stage.postTargets);
       }
     });
   }
 
-  if (additionalTargets !== undefined) {
-    targets = targets.concat(_.uniq(additionalTargets));
+  if (postTargets !== undefined) {
+    targets = targets.concat(_.uniq(postTargets));
   }
 
   let targetsToRun = _.map(targets, (target) =>

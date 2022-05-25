@@ -5,7 +5,7 @@ import { NamedChainExecutorStages } from '../executors/chain-execute/schema';
 
 export interface AppendToBuildTargetAdditions {
   targetsToAdd?: Array<string>;
-  additionalTargetsToAdd?: Array<string>;
+  postTargetsToAdd?: Array<string>;
   stagesToAdd?: NamedChainExecutorStages;
 }
 
@@ -18,10 +18,10 @@ export function appendToChainTargets(
     const targetSrc = `${target}Src`;
 
     const { stagesToAdd } = addition[1];
-    let { targetsToAdd, additionalTargetsToAdd } = addition[1];
+    let { targetsToAdd, postTargetsToAdd } = addition[1];
 
     targetsToAdd = targetsToAdd || [];
-    additionalTargetsToAdd = additionalTargetsToAdd || [];
+    postTargetsToAdd = postTargetsToAdd || [];
 
     if (
       projectTargets[target]?.executor !== '@nx-boat-tools/common:chain-execute'
@@ -46,13 +46,13 @@ export function appendToChainTargets(
         projectTargets[target].options.targets.concat(targetsToAdd);
     }
 
-    if (_.some(additionalTargetsToAdd)) {
-      projectTargets[target].options.additionalTargets =
-        projectTargets[target].options.additionalTargets || [];
+    if (_.some(postTargetsToAdd)) {
+      projectTargets[target].options.postTargets =
+        projectTargets[target].options.postTargets || [];
 
-      projectTargets[target].options.additionalTargets = projectTargets[
+      projectTargets[target].options.postTargets = projectTargets[
         target
-      ].options.additionalTargets.concat(additionalTargetsToAdd);
+      ].options.postTargets.concat(postTargetsToAdd);
     }
 
     if (stagesToAdd !== undefined && _.keys(stagesToAdd)?.length > 0) {

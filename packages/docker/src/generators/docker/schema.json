@@ -20,7 +20,7 @@
     },
     "minikube": {
       "type": "boolean",
-      "description": "Whether or not to add additional targets for minikube.",
+      "description": "Whether or not to add post targets for minikube.",
       "default": false
     },
     "baseDockerImage": {

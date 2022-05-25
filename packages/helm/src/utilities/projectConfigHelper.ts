@@ -109,7 +109,7 @@ export function getHelmAppendedBuildTargets(
         },
       },
       runHelmChart: {
-        additionalTargetsToAdd: [
+        postTargetsToAdd: [
           installHelmChart,
           portForwardToMinikube,
           uninstallHelmChart,

@@ -9,7 +9,7 @@
       "type": "array",
       "description": "An array containing the other executors to call."
     },
-    "additionalTargets": {
+    "postTargets": {
       "type": "array",
       "description": "An array containing additional builders to call (for configurations)."
     },

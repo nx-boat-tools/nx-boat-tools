@@ -23,7 +23,7 @@ Chain execute is an essential building block for the rest of Nx Boat Tools. With
 | name                | type       | default                 | description                                                          |
 | ------------------- | ---------- | ----------------------- | -------------------------------------------------------------------- |
 | `targets`           | `string[]` | `[]`                    | An array containing the other executors to call                      |
-| `additionalTargets` | `string[]` | `[]`                    | An array containing additional builders to call (for configurations) |
+| `postTargets` | `string[]` | `[]`                    | An array containing additional builders to call after the main targets list |
 | `stages`            | `object`   |                         | The stage definitions for the chain. See [Using Stages]() below.     |
 | `run`               | `string[]` | all non-explicit stages | An array what stages to run. See [Using Stages]() below.             |
 
@@ -59,7 +59,7 @@ First let's take a look at the workspace configuration below. It illustrates a `
           },
           "configurations": {
             "production": {
-              "additionalTargets": ["special"]
+              "postTargets": ["special"]
             }
           }
         }
@@ -124,16 +124,16 @@ Stages allow you to control what parts of a chain get ran apart from configurati
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
             "targets": ["buildSrc"],
-            "additionalTargets": ["lint"],
+            "postTargets": ["lint"],
             "stages": {
               "special": {
                 "targets": ["special"],
-                "additionalTargets": ["special_post"]
+                "postTargets": ["special_post"]
               },
               "package": {
                 "explicit": true,
                 "targets": ["package"],
-                "additionalTargets": ["package_post"]
+                "postTargets": ["package_post"]
               }
             }
           }
@@ -144,7 +144,7 @@ Stages allow you to control what parts of a chain get ran apart from configurati
 }
 ```
 
-When the chain is executed, it starts by executing any regular targets, in order. It then will execute the targets for each stage in the order the stage is defined, skipping any stages that aren't in the run argument or fail the explicit requirement. Once all targets have been executed, it will then do the same thing with the additionalTargets, executing the regular additionalTargets and then those from the relevant stages, all in the order defined.
+When the chain is executed, it starts by executing, in order, any "root" targets--that is any targets not inside a stage. It then will execute the targets for each stage in the order the stage is defined, skipping any stages that aren't in the run argument or fail the explicit requirement. Once all targets have been executed, it will then do the same thing with the postTargets, executing the root postTargets and then those from the relevant stages, all in the order defined.
 
 Let's look at some examples of how to use the above config.
 

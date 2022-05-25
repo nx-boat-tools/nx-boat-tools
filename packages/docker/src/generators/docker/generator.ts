@@ -139,7 +139,7 @@ export default async function (tree: Tree, options: DockerGeneratorSchema) {
       package: {
         stagesToAdd: {
           dockerImage: {
-            additionalTargets: [publishDockerImage],
+            postTargets: [publishDockerImage],
           } as ChainExecutorStage,
         },
       },
