@@ -68,14 +68,17 @@ describe('Chain Executor', () => {
 
   it('executes all expected targets in order (with implicit stages - no filter)', async () => {
     const options: ChainExecutorSchema = {
-      targets: ['pre'],
+      preTargets: ['pre'],
+      targets: ['root'],
       postTargets: ['post'],
       stages: {
         src: {
+          preTargets: ['lint'],
           targets: ['build'],
           postTargets: ['test'],
         },
         package: {
+          preTargets: ['copy'],
           targets: ['package'],
           postTargets: ['publish'],
         },
@@ -84,10 +87,13 @@ describe('Chain Executor', () => {
     const context = createTestExecutorContext({
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'copy', echo: 'hello from copy' },
+        { name: 'lint', echo: 'hello from lint' },
         { name: 'package', echo: 'hello from package' },
         { name: 'pre', echo: 'hello from pre' },
         { name: 'post', echo: 'hello from post' },
         { name: 'publish', echo: 'hello from publish' },
+        { name: 'root', echo: 'hello from root' },
         { name: 'test', echo: 'hello from test' },
       ],
     });
@@ -95,6 +101,9 @@ describe('Chain Executor', () => {
 
     const expectedTargets = [
       'pre',
+      'lint',
+      'copy',
+      'root',
       'build',
       'package',
       'post',
@@ -120,14 +129,17 @@ describe('Chain Executor', () => {
   it('executes all expected targets in order (with implicit stages - filtered)', async () => {
     const options: ChainExecutorSchema = {
       run: ['src'],
-      targets: ['pre'],
+      preTargets: ['pre'],
+      targets: ['root'],
       postTargets: ['post'],
       stages: {
         src: {
+          preTargets: ['lint'],
           targets: ['build'],
           postTargets: ['test'],
         },
         package: {
+          preTargets: ['copy'],
           targets: ['package'],
           postTargets: ['publish'],
         },
@@ -136,16 +148,19 @@ describe('Chain Executor', () => {
     const context = createTestExecutorContext({
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'copy', echo: 'hello from copy' },
+        { name: 'lint', echo: 'hello from lint' },
         { name: 'package', echo: 'hello from package' },
         { name: 'pre', echo: 'hello from pre' },
         { name: 'post', echo: 'hello from post' },
         { name: 'publish', echo: 'hello from publish' },
+        { name: 'root', echo: 'hello from root' },
         { name: 'test', echo: 'hello from test' },
       ],
     });
     const output = await executor(options, context);
 
-    const expectedTargets = ['pre', 'build', 'post', 'test'];
+    const expectedTargets = ['pre', 'lint', 'root', 'build', 'post', 'test'];
 
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
@@ -164,15 +179,18 @@ describe('Chain Executor', () => {
 
   it('executes all expected targets in order (with explicit stage - no filter)', async () => {
     const options: ChainExecutorSchema = {
-      targets: ['pre'],
+      preTargets: ['pre'],
+      targets: ['root'],
       postTargets: ['post'],
       stages: {
         src: {
+          preTargets: ['lint'],
           targets: ['build'],
           postTargets: ['test'],
         },
         package: {
           explicit: true,
+          preTargets: ['copy'],
           targets: ['package'],
           postTargets: ['publish'],
         },
@@ -181,16 +199,19 @@ describe('Chain Executor', () => {
     const context = createTestExecutorContext({
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'copy', echo: 'hello from copy' },
+        { name: 'lint', echo: 'hello from lint' },
         { name: 'package', echo: 'hello from package' },
         { name: 'pre', echo: 'hello from pre' },
         { name: 'post', echo: 'hello from post' },
         { name: 'publish', echo: 'hello from publish' },
+        { name: 'root', echo: 'hello from root' },
         { name: 'test', echo: 'hello from test' },
       ],
     });
     const output = await executor(options, context);
 
-    const expectedTargets = ['pre', 'build', 'post', 'test'];
+    const expectedTargets = ['pre', 'lint', 'root', 'build', 'post', 'test'];
 
     expect(output.success).toBe(true);
     expect(mockedRunExecutor.mock.calls.length).toBe(expectedTargets.length);
@@ -210,15 +231,18 @@ describe('Chain Executor', () => {
   it('executes all expected targets in order (with explicit stage - filtered)', async () => {
     const options: ChainExecutorSchema = {
       run: ['src', 'package'],
-      targets: ['pre'],
+      preTargets: ['pre'],
+      targets: ['root'],
       postTargets: ['post'],
       stages: {
         src: {
+          preTargets: ['lint'],
           targets: ['build'],
           postTargets: ['test'],
         },
         package: {
           explicit: true,
+          preTargets: ['copy'],
           targets: ['package'],
           postTargets: ['publish'],
         },
@@ -227,10 +251,13 @@ describe('Chain Executor', () => {
     const context = createTestExecutorContext({
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'copy', echo: 'hello from copy' },
+        { name: 'lint', echo: 'hello from lint' },
         { name: 'package', echo: 'hello from package' },
         { name: 'pre', echo: 'hello from pre' },
         { name: 'post', echo: 'hello from post' },
         { name: 'publish', echo: 'hello from publish' },
+        { name: 'root', echo: 'hello from root' },
         { name: 'test', echo: 'hello from test' },
       ],
     });
@@ -238,6 +265,9 @@ describe('Chain Executor', () => {
 
     const expectedTargets = [
       'pre',
+      'lint',
+      'copy',
+      'root',
       'build',
       'package',
       'post',
@@ -262,14 +292,17 @@ describe('Chain Executor', () => {
 
   it('executes targets with configuration', async () => {
     const options: ChainExecutorSchema = {
-      targets: ['pre'],
+      preTargets: ['pre'],
+      targets: ['root'],
       postTargets: ['post'],
       stages: {
         src: {
+          preTargets: ['lint'],
           targets: ['build'],
           postTargets: ['test'],
         },
         package: {
+          preTargets: ['copy'],
           targets: ['package'],
           postTargets: ['publish'],
         },
@@ -279,6 +312,8 @@ describe('Chain Executor', () => {
       configurationName: 'prod',
       targetsMap: [
         { name: 'build', echo: 'hello from build' },
+        { name: 'copy', echo: 'hello from copy' },
+        { name: 'lint', echo: 'hello from lint' },
         {
           name: 'package',
           echo: 'hello from package',
@@ -291,6 +326,7 @@ describe('Chain Executor', () => {
           echo: 'hello from publish',
           configurations: { prod: { echo: 'hello from publish prod' } },
         },
+        { name: 'root', echo: 'hello from root' },
         {
           name: 'test',
           echo: 'hello from test',
@@ -316,6 +352,9 @@ describe('Chain Executor', () => {
 
     const expectedTargets = [
       'pre',
+      'lint',
+      'copy',
+      'root',
       'build',
       'package',
       'post',
@@ -324,6 +363,9 @@ describe('Chain Executor', () => {
     ];
 
     const expectedConfigurations = [
+      undefined,
+      undefined,
+      undefined,
       undefined,
       undefined,
       'prod',

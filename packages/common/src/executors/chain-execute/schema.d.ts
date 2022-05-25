@@ -1,7 +1,8 @@
 export type NamedChainExecutorStages = { [stage: string]: ChainExecutorStage };
 
 export interface RootChainExecutorStage {
-  targets: Array<string>;
+  targets?: Array<string>;
+  preTargets?: Array<string>;
   postTargets?: Array<string>;
 }
 

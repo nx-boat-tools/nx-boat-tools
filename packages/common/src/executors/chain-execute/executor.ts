@@ -57,9 +57,10 @@ export default async function (
   options: ChainExecutorSchema,
   context: ExecutorContext
 ) {
-  let { postTargets, run, stages, targets } = options;
+  let { preTargets, postTargets, run, stages, targets } = options;
   const { projectName, configurationName } = context;
 
+  preTargets = preTargets || [];
   targets = targets || [];
   postTargets = postTargets || [];
 
@@ -87,6 +88,10 @@ export default async function (
     stages = _.pick(stages, ...stagesToRun);
 
     _.each(_.values(stages), (stage) => {
+      if (stage.preTargets !== undefined) {
+        preTargets = preTargets.concat(stage.preTargets);
+      }
+
       if (stage.targets !== undefined) {
         targets = targets.concat(stage.targets);
       }
@@ -95,6 +100,10 @@ export default async function (
         postTargets = postTargets.concat(stage.postTargets);
       }
     });
+  }
+
+  if (preTargets !== undefined) {
+    targets = _.uniq(preTargets).concat(targets);
   }
 
   if (postTargets !== undefined) {

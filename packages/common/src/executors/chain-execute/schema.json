@@ -9,9 +9,13 @@
       "type": "array",
       "description": "An array containing the other executors to call."
     },
+    "preTargets": {
+      "type": "array",
+      "description": "An array containing additional builders to call before the main target block."
+    },
     "postTargets": {
       "type": "array",
-      "description": "An array containing additional builders to call (for configurations)."
+      "description": "An array containing additional builders to call after the main target block."
     },
     "stages": {
       "type": "object",

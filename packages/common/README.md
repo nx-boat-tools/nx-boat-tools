@@ -23,7 +23,8 @@ Chain execute is an essential building block for the rest of Nx Boat Tools. With
 | name                | type       | default                 | description                                                          |
 | ------------------- | ---------- | ----------------------- | -------------------------------------------------------------------- |
 | `targets`           | `string[]` | `[]`                    | An array containing the other executors to call                      |
-| `postTargets` | `string[]` | `[]`                    | An array containing additional builders to call after the main targets list |
+| `preTargets` | `string[]` | `[]`                    | An array containing additional targets to call before the main target block |
+| `postTargets` | `string[]` | `[]`                    | An array containing additional targets to call after the main target block |
 | `stages`            | `object`   |                         | The stage definitions for the chain. See [Using Stages]() below.     |
 | `run`               | `string[]` | all non-explicit stages | An array what stages to run. See [Using Stages]() below.             |
 
@@ -40,6 +41,10 @@ First let's take a look at the workspace configuration below. It illustrates a `
     "example": {
       //...
       "targets": {
+        "setup": {
+          "executor": "some-setup-executor"
+          //...
+        },
         "lint": {
           "executor": "@nrwl/linter:eslint"
           //...
@@ -59,6 +64,7 @@ First let's take a look at the workspace configuration below. It illustrates a `
           },
           "configurations": {
             "production": {
+              "preTargets": ["setup"],
               "postTargets": ["special"]
             }
           }
@@ -80,7 +86,7 @@ nx run example:build # will also call lint and then buildSrc
 
 # OR, for production...
 
-nx run example:build:production # will call lint, then buildSrc, and lastly special
+nx run example:build:production # will call setup first, then lint and buildSrc, and lastly special
 ```
 
 #### Using Stages
@@ -96,6 +102,10 @@ Stages allow you to control what parts of a chain get ran apart from configurati
     "example": {
       //...
       "targets": {
+        "clean": {
+          "executor": "some-clean-executor"
+          //...
+        },
         "lint": {
           "executor": "@nrwl/linter:eslint"
           //...
@@ -104,36 +114,47 @@ Stages allow you to control what parts of a chain get ran apart from configurati
           "executor": "@nrwl/node:package"
           //...
         },
+        "preSpecial": {
+          "executor": "some-special-executor"
+          //...
+        },
         "special": {
           "executor": "some-special-executor"
           //...
         },
-        "special_post": {
+        "postSpecial": {
           "executor": "some-special-executor"
+          //...
+        },
+        "prePackage": {
+          "executor": "some-package-executor"
           //...
         },
         "package": {
           "executor": "some-package-executor"
           //...
         },
-        "package_post": {
+        "pastPackage": {
           "executor": "some-package-executor"
           //...
         },
         "build": {
           "executor": "@nx-boat-tools/common:chain-execute",
           "options": {
+            "preTargets": ["clean"],
             "targets": ["buildSrc"],
             "postTargets": ["lint"],
             "stages": {
               "special": {
+                "targets": ["preSpecial"],
                 "targets": ["special"],
-                "postTargets": ["special_post"]
+                "postTargets": ["postSpecial"]
               },
               "package": {
                 "explicit": true,
+                "targets": ["prePackage"],
                 "targets": ["package"],
-                "postTargets": ["package_post"]
+                "postTargets": ["postPackage"]
               }
             }
           }
@@ -144,25 +165,25 @@ Stages allow you to control what parts of a chain get ran apart from configurati
 }
 ```
 
-When the chain is executed, it starts by executing, in order, any "root" targets--that is any targets not inside a stage. It then will execute the targets for each stage in the order the stage is defined, skipping any stages that aren't in the run argument or fail the explicit requirement. Once all targets have been executed, it will then do the same thing with the postTargets, executing the root postTargets and then those from the relevant stages, all in the order defined.
+When the chain is executed, it will run any `preTargets` defined, then any regular `targets`, followed by any `postTargets`. For each "block", it starts by executing, in order, any "root" targets--that is any targets not inside a stage. It then will execute the targets for each stage in the order the stage is defined, skipping any stages that aren't in the run argument or fail the explicit requirement.
 
 Let's look at some examples of how to use the above config.
 
 ```bash
 nx build example
-# This will call the following targets, in order: buildSrc, special, lint, special_post
+# This will call the following targets, in order: clean, preSpecial, buildSrc, special, lint, postSpecial
 # Note that, since the run arg wasn't specified, the package stage wasn't explicitly requested so it was skipped.
 
 nx build example --run=special
-# This is the same as the above command, running in order: buildSrc, special, lint, special_post
+# This is the same as the above command, running in order: clean, preSpecial, buildSrc, special, lint, postSpecial
 # Note that, since the run arg didn't include the package stage, it wasn't explicitly requested so it was skipped.
 
 nx build example --run=package
-# This will call the following targets, in order: buildSrc, package, lint, package_post
+# This will call the following targets, in order: clean, prePackage, buildSrc, package, lint, postPackage
 # Note that, since the run arg included the package stage, it was executed. Because the special stage wasn't, it was skipped.
 
 nx build example --run=special,package
-# This will call the following targets, in order: buildSrc, special, package, lint, special_post, package_post
+# This will call the following targets, in order: clean, preSpecial, prePackage, buildSrc, special, package, lint, postSpecial, postPackage
 # Note that, since the run arg included both the special and package stages, they were both executed.
 
 ```
