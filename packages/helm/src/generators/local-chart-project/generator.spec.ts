@@ -114,11 +114,11 @@ describe('local-chart-project generator', () => {
       expect(config).toBeDefined();
     });
 
-    it('saves configuration to project.json when isStandaloneConfig is true', async () => {
+    it('saves configuration to project.json when standaloneConfig is true', async () => {
       const options: HelmLocalChartProjectGeneratorSchema = {
         name: 'my-project',
         createValues: false,
-        isStandaloneConfig: true,
+        standaloneConfig: true,
       };
 
       await generator(appTree, options);
@@ -134,11 +134,11 @@ describe('local-chart-project generator', () => {
       expect(config).toBeDefined();
     });
 
-    it('saves configuration to workspace.json when isStandaloneConfig is false', async () => {
+    it('saves configuration to workspace.json when standaloneConfig is false', async () => {
       const options: HelmLocalChartProjectGeneratorSchema = {
         name: 'my-project',
         createValues: false,
-        isStandaloneConfig: false,
+        standaloneConfig: false,
       };
 
       await generator(appTree, options);

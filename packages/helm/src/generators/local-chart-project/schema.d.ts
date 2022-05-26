@@ -8,5 +8,5 @@ export interface HelmLocalChartProjectGeneratorSchema {
   runResourceName?: string;
   runHostPort?: number;
   runContainerPort?: number;
-  isStandaloneConfig?: boolean;
+  standaloneConfig?: boolean;
 }

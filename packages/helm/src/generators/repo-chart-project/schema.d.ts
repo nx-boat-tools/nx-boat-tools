@@ -9,5 +9,5 @@ export interface HelmRepoChartProjectGeneratorSchema {
   runResourceName?: string;
   runHostPort?: number;
   runContainerPort?: number;
-  isStandaloneConfig?: boolean;
+  standaloneConfig?: boolean;
 }

@@ -1,18 +1,30 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Helm",
-  "title": "",
+  "$id": "HelmRepoChartProject",
+  "title": "Create a repo helm chart project",
+  "description": "The `repo-chart-project` generator is for creating new project utilizing a helm chart from a repository.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/helm:repo-chart-project my-project --repo=bitnami --chart=mysql --createValues=true",
+      "description": "Create a project named my-project with a repo helm chart and a single values file, values.yaml"
+    },
+    {
+      "command": "nx g @nx-dev-tools/helm:repo-chart-project my-project --repo=bitnami --chart=mysql --createValues=true --environments=dev,prod",
+      "description": "Create a project named my-project with a local helm chart and two values files, values-dev.yaml and values-prod.yaml"
+    }
+  ],
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "description": "",
+      "description": "The name of the project.",
       "$default": {
         "$source": "argv",
         "index": 0
       },
-      "x-prompt": "What name would you like to use?"
+      "x-prompt": "What name would you like to use for the project?",
+      "pattern": "^[a-zA-Z].*$"
     },
     "tags": {
       "type": "string",
@@ -21,16 +33,22 @@
     },
     "directory": {
       "type": "string",
-      "description": "A directory where the project is placed",
-      "alias": "d"
+      "description": "The directory of the new project.",
+      "alias": "dir"
+    },
+    "standaloneConfig": {
+      "type": "boolean",
+      "description": "Split the project configuration into `<projectRoot>/project.json` rather than including it inside `workspace.json`."
     },
     "environments": {
       "type": "string",
-      "description": "A comma seperated list of environments to add values for."
+      "description": "A comma seperated list of environments to add values for.",
+      "alias": "env"
     },
     "repository": {
       "type": "string",
       "description": "The name of the repository containing your chart.",
+      "alias": "repo",
       "x-prompt": "What is the name of the repository containing your chart?"
     },
     "chart": {
@@ -53,10 +71,6 @@
     "runContainerPort": {
       "type": "number",
       "description": "The container port to use when port-forwarding to minikube."
-    },
-    "isStandaloneConfig": {
-      "type": "boolean",
-      "description": "should the project use package.json? If false, the project config is inside workspace.json."
     }
   },
   "required": ["name", "repository", "chart"]

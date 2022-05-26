@@ -51,7 +51,7 @@ function normalizeOptions(
 
   const projectDistPath = path.join('dist', projectRoot);
 
-  options.isStandaloneConfig ??= layout.standaloneAsDefault;
+  options.standaloneConfig ??= layout.standaloneAsDefault;
 
   return {
     ...options,
@@ -118,7 +118,7 @@ export default async function (
     tree,
     normalizedOptions.projectName,
     projectConfig,
-    normalizedOptions.isStandaloneConfig
+    normalizedOptions.standaloneConfig
   );
   addFiles(tree, normalizedOptions);
   await localChartGenerator(tree, {

@@ -1,25 +1,39 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Helm",
-  "title": "",
+  "$id": "HelmRepoChart",
+  "title": "Add a repo helm chart to a project",
+  "description": "The `repo-chart` generator is for adding a helm chart from a repository to your project.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/helm:repo-chart --project=my-project --repo=bitnami --chart=mysql",
+      "description": "Add a helm chart to a project named my-project with a single values file, values.yaml"
+    },
+    {
+      "command": "nx g @nx-dev-tools/helm:repo-chart --project=my-project --repo=bitnami --chart=mysql --environments=dev,prod",
+      "description": "Add a helm chart to a project named my-project with two values files, values-dev.yaml and values-prod.yaml"
+    }
+  ],
   "type": "object",
   "properties": {
     "project": {
       "type": "string",
       "description": "The name of the project.",
+      "alias": "p",
       "$default": {
-        "$source": "argv",
-        "index": 0
-      }
+        "$source": "projectName"
+      },
+      "x-prompt": "What project should the helm chart be added to?"
     },
     "environments": {
       "type": "string",
-      "description": "A comma seperated list of environments to add values for."
+      "description": "A comma seperated list of environments to add values for.",
+      "alias": "env"
     },
     "repository": {
       "type": "string",
       "description": "The name of the repository containing your chart.",
+      "alias": "repo",
       "x-prompt": "What is the name of the repository containing your chart?"
     },
     "chart": {

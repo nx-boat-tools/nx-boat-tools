@@ -545,10 +545,10 @@ The following illustrates how to add a local helm chart to a project:
 
 ```bash
 #Add a helm chart to a project named my-project with a single values file, values.yaml
-nx g @nx-dev-tools/helm:local-chart my-project --createValues=true
+nx g @nx-dev-tools/helm:local-chart --project=my-project --createValues=true
 
 #Add a helm chart to a project named my-project with two values files, values-dev.yaml and values-prod.yaml
-nx g @nx-dev-tools/helm:local-chart my-project --createValues=true --environments=dev,prod
+nx g @nx-dev-tools/helm:local-chart --project=my-project --createValues=true --environments=dev,prod
 ```
 
 ### `repo-chart`
@@ -700,10 +700,10 @@ The following illustrates how to add a support for a remote helm chart to a proj
 
 ```bash
 #Add a helm chart to a project named my-project with a single values file, values.yaml
-nx g @nx-dev-tools/helm:repo-chart my-project --repo=bitnami --chart=mysql
+nx g @nx-dev-tools/helm:repo-chart --project=my-project --repo=bitnami --chart=mysql
 
 #Add a helm chart to a project named my-project with two values files, values-dev.yaml and values-prod.yaml
-nx g @nx-dev-tools/helm:repo-chart my-project --repo=bitnami --chart=mysql --environments=dev,prod
+nx g @nx-dev-tools/helm:repo-chart --project=my-project --repo=bitnami --chart=mysql --environments=dev,prod
 ```
 
 ### `local-chart-project`
@@ -719,7 +719,7 @@ The `local-chart-project` generator is for creating new project containing a loc
 | `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
 | `createValues`       | `boolean` | `true`                | Whether or not to copy the values file from the chart to use for deployment                                                                                                                                                   |
 | `environments`       | `string?` | `undefined`           | When `createValues` is set to `true`, this is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                    |
-| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
+| `standaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
 | `runBuildTarget`     | `string`  |                       | An optional build target to call before running the helm chart                                                                                                                                                                |
 | `runResourceName`    | `string`  |                       | The name of the resource to port-forward to within minikube)                                                                                                                                                                  |
 | `runHostPort`        | `number`  |                       | The host port to use when port-forwarding to minikube                                                                                                                                                                         |
@@ -877,7 +877,7 @@ The `repo-chart-project` generator is for creating new project utilizing a helm 
 | `repository`         | `string`  |                       | Required. The name of the repository containing the chart                                                                                                                                                                     |
 | `chart`              | `string`  |                       | Required. The name of the chart to use (without the repository)                                                                                                                                                               |
 | `environments`       | `string?` | `undefined`           | This is a comma seperated list of environment names that can be used to create a copy for each environment specified                                                                                                          |
-| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
+| `standaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
 | `runBuildTarget`     | `string`  |                       | An optional build target to call before running the helm chart                                                                                                                                                                |
 | `runResourceName`    | `string`  |                       | The name of the resource to port-forward to within minikube)                                                                                                                                                                  |
 | `runHostPort`        | `number`  |                       | The host port to use when port-forwarding to minikube                                                                                                                                                                         |
