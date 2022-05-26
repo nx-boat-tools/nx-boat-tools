@@ -1,5 +1,4 @@
 {
-  "root": "e2e/dotnet-e2e",
   "projectType": "application",
   "sourceRoot": "e2e/dotnet-e2e/src",
   "targets": {

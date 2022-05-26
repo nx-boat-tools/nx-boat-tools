@@ -1,5 +1,4 @@
 {
-  "root": "packages/common",
   "sourceRoot": "packages/common/src",
   "projectType": "library",
   "targets": {

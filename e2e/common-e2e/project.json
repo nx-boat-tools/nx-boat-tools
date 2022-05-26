@@ -1,5 +1,4 @@
 {
-  "root": "e2e/common-e2e",
   "projectType": "application",
   "sourceRoot": "e2e/common-e2e/src",
   "targets": {

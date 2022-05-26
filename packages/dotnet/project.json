@@ -1,5 +1,4 @@
 {
-  "root": "packages/dotnet",
   "sourceRoot": "packages/dotnet/src",
   "projectType": "library",
   "targets": {

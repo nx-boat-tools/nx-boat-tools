@@ -7,7 +7,7 @@ import {
 
 import { ChainExecutorSchema } from './schema';
 import { asyncIteratorToArray } from '../../utilities/iterableHelpers';
-import { FsTree } from 'nx/src/config/tree';
+import { FsTree } from 'nx/src/generators/tree';
 
 type TargetSpecification = {
   project: string;

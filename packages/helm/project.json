@@ -1,5 +1,4 @@
 {
-  "root": "packages/helm",
   "sourceRoot": "packages/helm/src",
   "projectType": "library",
   "targets": {

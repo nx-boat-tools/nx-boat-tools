@@ -1,5 +1,4 @@
 {
-  "root": "packages/docker",
   "sourceRoot": "packages/docker/src",
   "projectType": "library",
   "targets": {
