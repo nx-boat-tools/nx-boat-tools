@@ -1,18 +1,34 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Dotnet",
-  "title": "",
+  "$id": "DotnetProject",
+  "title": "Create a .Net project",
+  "description": "The `project` generator is the heart of all of the dotnet generators. Its job is to take in the various parameters, create the project files based on the corresponding template, and add the project to the `workspace.json` will all the appropriate dotnet targets for the dotnet project type.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/dotnet:project my-classlib --projectType=classlib",
+      "description": "Create a project named my-classlib in libs/my-classlib and adds it to the workspace.sln"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:project my-console-app --projectType=console --ownSolution=true",
+      "description": "Create a project named my-console-app in apps/my-console-app with the solution at apps/my-console-app/MyConsoleApp.sln"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:project my-api --projectType=webapi --directory=internal",
+      "description": "Create a project named my-api in apps/internal/my-api and adds it to the workspace.sln"
+    }
+  ],
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "description": "",
+      "description": "The name of the project.",
       "$default": {
         "$source": "argv",
         "index": 0
       },
-      "x-prompt": "What name would you like to use?"
+      "x-prompt": "What name would you like to use for the project?",
+      "pattern": "^[a-zA-Z].*$"
     },
     "tags": {
       "type": "string",
@@ -21,8 +37,12 @@
     },
     "directory": {
       "type": "string",
-      "description": "A directory where the project is placed",
-      "alias": "d"
+      "description": "The directory of the new project.",
+      "alias": "dir"
+    },
+    "standaloneConfig": {
+      "type": "boolean",
+      "description": "Split the project configuration into `<projectRoot>/project.json` rather than including it inside `workspace.json`."
     },
     "projectType": {
       "type": "string",
@@ -32,10 +52,6 @@
       "type": "boolean",
       "description": "When set to true, the project will have its own solution file which will be in the project directory. When set to false, it will be added to a solution file at the workspace root.",
       "default": false
-    },
-    "isStandaloneConfig": {
-      "type": "boolean",
-      "description": "should the project use package.json? If false, the project config is inside workspace.json."
     },
     "frameworkVersion": {
       "type": "string",

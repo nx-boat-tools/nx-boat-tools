@@ -118,13 +118,13 @@ describe('test-project generator', () => {
       expect(config).toBeDefined();
     });
 
-    it('saves configuration to project.json when isStandaloneConfig is true', async () => {
+    it('saves configuration to project.json when standaloneConfig is true', async () => {
       const options: DotnetTestProjectGeneratorSchema = {
         name: 'my-project',
         testPrefix: 'integration',
         testType: 'xunit',
         frameworkVersion: 'latest',
-        isStandaloneConfig: true,
+        standaloneConfig: true,
       };
 
       await generator(appTree, options);
@@ -140,13 +140,13 @@ describe('test-project generator', () => {
       expect(config).toBeDefined();
     });
 
-    it('saves configuration to workspace.json when isStandaloneConfig is false', async () => {
+    it('saves configuration to workspace.json when standaloneConfig is false', async () => {
       const options: DotnetTestProjectGeneratorSchema = {
         name: 'my-project',
         testPrefix: 'integration',
         testType: 'xunit',
         frameworkVersion: 'latest',
-        isStandaloneConfig: false,
+        standaloneConfig: false,
       };
 
       await generator(appTree, options);

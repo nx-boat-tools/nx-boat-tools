@@ -78,7 +78,7 @@ function normalizeOptions(
 
   const dotnetPluginVersion = getDotnetPluginVersion();
 
-  options.isStandaloneConfig ??= layout.standaloneAsDefault;
+  options.standaloneConfig ??= layout.standaloneAsDefault;
   options.frameworkVersion ??= 'LTS';
 
   return {
@@ -332,7 +332,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     tree,
     normalizedOptions.projectName,
     projectConfig,
-    normalizedOptions.isStandaloneConfig
+    normalizedOptions.standaloneConfig
   );
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);

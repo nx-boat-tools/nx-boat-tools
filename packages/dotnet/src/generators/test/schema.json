@@ -1,17 +1,33 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Dotnet",
-  "title": "",
+  "$id": "DotnetTest",
+  "title": "Add dotnet tests to a project",
+  "description": "Adds a dotnet test project to an existing Nx project. The type of test project can be mstest, nunit, or xunit and is specified by the `testType` option which corresponds to test template values used in the `dotnet new` command.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/dotnet:test --project=my-api",
+      "description": "Create a dotnet mstest project"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:test --project=my-api --testPrefix=acceptance",
+      "description": "Create a dotnet mstest project with a test prefix"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:test --project=my-api --testType=xunit --testPrefix=acceptance --frameworkVersion=latest",
+      "description": "Create a dotnet 7.0 xunit project with a test prefix"
+    }
+  ],
   "type": "object",
   "properties": {
     "project": {
       "type": "string",
       "description": "The name of the project.",
+      "alias": "p",
       "$default": {
-        "$source": "argv",
-        "index": 0
-      }
+        "$source": "projectName"
+      },
+      "x-prompt": "What project should tests be added to?"
     },
     "testType": {
       "type": "string",

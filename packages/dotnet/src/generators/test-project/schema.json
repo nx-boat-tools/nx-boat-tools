@@ -1,18 +1,34 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Dotnet",
-  "title": "",
+  "$id": "DotnetTestProject",
+  "title": "Create a dotnet test project",
+  "description": "Creates an Nx project specifically for a dotnet test project. The type of test project can be mstest, nunit, or xunit and is specified by the `testType` option which corresponds to test template values used in the `dotnet new` command.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/dotnet:test-project my-api",
+      "description": "Create a dotnet mstest project"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:test-project my-api --testPrefix=acceptance",
+      "description": "Create a dotnet mstest project with a test prefix"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:test-project my-api --testType=xunit --testPrefix=acceptance --frameworkVersion=latest",
+      "description": "Create a dotnet 7.0 xunit project with a test prefix"
+    }
+  ],
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "description": "",
+      "description": "The name of the project.",
       "$default": {
         "$source": "argv",
         "index": 0
       },
-      "x-prompt": "What name would you like to use?"
+      "x-prompt": "What name would you like to use for the project?",
+      "pattern": "^[a-zA-Z].*$"
     },
     "tags": {
       "type": "string",
@@ -21,12 +37,12 @@
     },
     "directory": {
       "type": "string",
-      "description": "A directory where the project is placed",
-      "alias": "d"
+      "description": "The directory of the new project.",
+      "alias": "dir"
     },
-    "isStandaloneConfig": {
+    "standaloneConfig": {
       "type": "boolean",
-      "description": "should the project use package.json? If false, the project config is inside workspace.json."
+      "description": "Split the project configuration into `<projectRoot>/project.json` rather than including it inside `workspace.json`."
     },
     "projectType": {
       "type": "string",

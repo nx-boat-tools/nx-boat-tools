@@ -576,7 +576,7 @@ The `project` generator is the heart of all of the dotnet generators. Its job is
 | `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}`                                                                            |
 | `projectType`        | `string`  |                       | This identifies what type of project to create. The values should be the same values as what's passed to the [`TEMPLATE` argument](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new#arguments) of the `dotnet new` command. Currently supported values are: `classlib`, `console`, `webapi` |
 | `ownSolution`        | `boolean` | `false`               | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
-| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                                                                                               |
+| `standaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                                                                                               |
 | `frameworkVersion`   | `string`  | `LTS`                 | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0).                                                                                                                                                                                                               |
 
 #### Generated files:
@@ -693,7 +693,7 @@ Creates a dotnet class library project.
 | `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
-| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
@@ -727,7 +727,7 @@ Creates a dotnet console application project.
 | `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
-| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
@@ -761,7 +761,7 @@ Creates a dotnet grpc application project.
 | `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
-| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
@@ -776,7 +776,7 @@ The following illustrates how to add a dotnet `grpc` project with various option
 #Create a project named my-grpc-app in apps/my-grpc-app and adds it to the workspace.sln
 nx g @nx-dev-tools/dotnet:grpc my-grpc-app
 
-#Create a project named my-grpc-app in apps/my-grpc-app with the solution at apps/my-grpc-app/MygrpcApp.sln
+#Create a project named my-grpc-app in apps/my-grpc-app with the solution at apps/my-grpc-app/MyGrpcApp.sln
 nx g @nx-dev-tools/dotnet:grpc my-grpc-app --ownSolution=true
 
 #Create a project named my-grpc-app in apps/internal/my-grpc-app and adds it to the workspace.sln
@@ -795,7 +795,7 @@ Creates a dotnet web API project.
 | `tags`               | `string?` | `undefined`           | This is passed to the `tags` option of the underlying [`project` generator](#project)               |
 | `directory`          | `string?` | `undefined`           | This is passed to the `directory` option of the underlying [`project` generator](#project)          |
 | `ownSolution`        | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)        |
-| `isStandaloneConfig` | `boolean` | the workspace default | This is passed to the `isStandaloneConfig` option of the underlying [`project` generator](#project) |
+| `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion`   | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project)   |
 
 #### Generated files:
@@ -912,7 +912,7 @@ Creates an Nx project specifically for a dotnet test project. The type of test p
 | `name`               | `string`  |                       | Required. The name of the project that's being created.                                                                                                                                                                       |
 | `tags`               | `string?` | `undefined`           | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
 | `directory`          | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
-| `isStandaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
+| `standaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
 | `testType`         | `mstest`  | `nunit` | `xunit`                                                                                    | `mstest` | The type of test project to create |
 | `testPrefix`       | `string?` |         | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`             |
 | `frameworkVersion` | `string`  | `LTS`   | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0). |

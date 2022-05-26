@@ -1,18 +1,34 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "$id": "Dotnet",
-  "title": "",
+  "$id": "DotnetGrpcApp",
+  "title": "Create a dotnet grpc application",
+  "description": "Creates a .Net gRPC application project.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/dotnet:grpc my-grpc-app",
+      "description": "Create a project named my-grpc-app in libs/my-grpc-app and adds it to the workspace.sln"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:grpc my-grpc-app --ownSolution=true",
+      "description": "Create a project named my-grpc-app in libs/my-grpc-app with the solution at libs/my-grpc-app/MyGrpcApp.sln"
+    },
+    {
+      "command": "nx g @nx-dev-tools/dotnet:grpc my-grpc-app --directory=internal",
+      "description": "Create a project named my-grpc-app in libs/internal/my-grpc-app and adds it to the workspace.sln"
+    }
+  ],
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "description": "",
+      "description": "The name of the project.",
       "$default": {
         "$source": "argv",
         "index": 0
       },
-      "x-prompt": "What name would you like to use?"
+      "x-prompt": "What name would you like to use for the project?",
+      "pattern": "^[a-zA-Z].*$"
     },
     "tags": {
       "type": "string",
@@ -21,17 +37,17 @@
     },
     "directory": {
       "type": "string",
-      "description": "A directory where the project is placed",
-      "alias": "d"
+      "description": "The directory of the new project.",
+      "alias": "dir"
+    },
+    "standaloneConfig": {
+      "type": "boolean",
+      "description": "Split the project configuration into `<projectRoot>/project.json` rather than including it inside `workspace.json`."
     },
     "ownSolution": {
       "type": "boolean",
       "description": "When set to true, the project will have its own solution file which will be in the project directory. When set to false, it will be added to a solution file at the workspace root.",
       "default": false
-    },
-    "isStandaloneConfig": {
-      "type": "boolean",
-      "description": "should the project use package.json? If false, the project config is inside workspace.json."
     },
     "frameworkVersion": {
       "type": "string",

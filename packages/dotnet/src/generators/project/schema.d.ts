@@ -4,6 +4,6 @@ export interface DotnetGeneratorSchema {
   directory?: string;
   projectType: string;
   ownSolution: boolean;
-  isStandaloneConfig?: boolean;
+  standaloneConfig?: boolean;
   frameworkVersion?: 'latest' | 'LTS';
 }

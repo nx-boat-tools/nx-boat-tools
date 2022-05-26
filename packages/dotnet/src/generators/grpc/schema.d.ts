@@ -3,6 +3,6 @@ export interface GrpcAppGeneratorSchema {
   tags?: string;
   directory?: string;
   ownSolution: boolean;
-  isStandaloneConfig?: boolean;
+  standaloneConfig?: boolean;
   frameworkVersion?: 'latest' | 'LTS';
 }
