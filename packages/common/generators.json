@@ -2,5 +2,11 @@
   "$schema": "http://json-schema.org/schema",
   "name": "common",
   "version": "0.0.1",
-  "generators": {}
+  "generators": {
+    "chain": {
+      "factory": "./src/generators/chain/generator",
+      "schema": "./src/generators/chain/schema.json",
+      "description": "chain generator"
+    }
+  }
 }

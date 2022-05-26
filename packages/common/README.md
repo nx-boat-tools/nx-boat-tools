@@ -20,13 +20,13 @@ Chain execute is an essential building block for the rest of Nx Boat Tools. With
 
 #### Available options:
 
-| name                | type       | default                 | description                                                          |
-| ------------------- | ---------- | ----------------------- | -------------------------------------------------------------------- |
-| `targets`           | `string[]` | `[]`                    | An array containing the other executors to call                      |
-| `preTargets` | `string[]` | `[]`                    | An array containing additional targets to call before the main target block |
-| `postTargets` | `string[]` | `[]`                    | An array containing additional targets to call after the main target block |
-| `stages`            | `object`   |                         | The stage definitions for the chain. See [Using Stages]() below.     |
-| `run`               | `string[]` | all non-explicit stages | An array what stages to run. See [Using Stages]() below.             |
+| name          | type       | default                 | description                                                                 |
+| ------------- | ---------- | ----------------------- | --------------------------------------------------------------------------- |
+| `targets`     | `string[]` | `[]`                    | An array containing the other executors to call                             |
+| `preTargets`  | `string[]` | `[]`                    | An array containing additional targets to call before the main target block |
+| `postTargets` | `string[]` | `[]`                    | An array containing additional targets to call after the main target block  |
+| `stages`      | `object`   |                         | The stage definitions for the chain. See [Using Stages]() below.            |
+| `run`         | `string[]` | all non-explicit stages | An array what stages to run. See [Using Stages]() below.                    |
 
 #### Example:
 
@@ -189,3 +189,106 @@ nx build example --run=special,package
 ```
 
 ## ✍️  Generators
+
+### `chain`
+
+The `chain` generator adds a chain-execute target to an existing Nx project.
+
+#### Available options:
+
+| name          | type     | default | description                                                           |
+| ------------- | -------- | ------- | --------------------------------------------------------------------- |
+| `name`        | `string` |         | Required. The name of the chain-execute target                        |
+| `project`     | `string` |         | Required. The name of the project to add the chain-execute target to. |
+| `preTargets`  | `string` |         | A comma seperated list of pre targets to include in the chain.        |
+| `targets`     | `string` |         | A comma seperated list of pre targets to include in the chain.        |
+| `postTargets` | `string` |         | A comma seperated list of post targets to include in the chain.       |
+
+#### Updates to `workspace.json`:
+
+The project configuration will be updated as follows:
+
+- If a target with the same name that was specified existed previously and:
+  - It was not a `chain-execute` target: it will be renamed to have a `Src` suffix.
+  - It was a `chain-execute` target: the targets, preTargets, and postTargets specified will be appended to the end of any existing targets.
+- If no target wth the name specified previously existed:
+  - The target will then be added to the project as a `chain-execute` with the given targets, preTargets, and postTargets.
+
+🚩  Note: The `chain` generator cannot add the actual targets used in the chain. It can only reference them and will not verify that they exist at the time the chain is created.
+
+The following is an example of what's added to the `workspace.json` for a project when adding a chain-execute target:
+
+```jsonc
+//workspace.json BEFORE
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package"
+          //...
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint"
+          //...
+        },
+        "package": {
+          "executor": "some-package-executor"
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+```jsonc
+//workspace.json AFTER
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package"
+          //...
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint"
+          //...
+        },
+        "package": {
+          "executor": "some-package-executor"
+          //...
+        },
+        "someChain": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "preTargets": ["lint"],
+            "targets": ["build"],
+            "postTargets": ["package"]
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+#### Adding `chain` to a project
+
+The following illustrates how to add a chain-execute target to a project:
+
+```bash
+#Add a chain-execute target named build to a project named my-project
+nx g @nx-dev-tools/common:chain build --project=my-project --preTargets=pre1,pre2 --targets=target --postTargets=post1,post2
+```
