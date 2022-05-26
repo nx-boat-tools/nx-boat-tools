@@ -7,6 +7,11 @@
       "factory": "./src/generators/chain/generator",
       "schema": "./src/generators/chain/schema.json",
       "description": "chain generator"
+    },
+    "chain-stage": {
+      "factory": "./src/generators/chain-stage/generator",
+      "schema": "./src/generators/chain-stage/schema.json",
+      "description": "chain-stage generator"
     }
   }
 }

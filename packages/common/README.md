@@ -292,3 +292,144 @@ The following illustrates how to add a chain-execute target to a project:
 #Add a chain-execute target named build to a project named my-project
 nx g @nx-dev-tools/common:chain build --project=my-project --preTargets=pre1,pre2 --targets=target --postTargets=post1,post2
 ```
+
+### `chain-stage`
+
+The `chain-stage` generator adds a stage to a chain-execute target for an existing Nx project.
+
+#### Available options:
+
+| name          | type     | default | description                                                            |
+| ------------- | -------- | ------- | ---------------------------------------------------------------------- |
+| `name`        | `string` |         | Required. The name of the chain-execute stage                          |
+| `chainTarget` | `string` |         | Required. The name of the chain-execute target                         |
+| `project`     | `string` |         | Required. The name of the project containing the chain-execute target. |
+| `preTargets`  | `string` |         | A comma seperated list of pre targets to include in the stage.         |
+| `targets`     | `string` |         | A comma seperated list of pre targets to include in the stage.         |
+| `postTargets` | `string` |         | A comma seperated list of post targets to include in the stage.        |
+
+#### Updates to `workspace.json`:
+
+The project configuration will be updated as follows:
+
+- If a target with the same name that was specified existed previously and:
+  - It was not a `chain-execute` target: it will be renamed to have a `Src` suffix.
+  - It was a `chain-execute` target: 
+    - The root targets, preTargets, and postTargets will be unaffected
+    - If no stage with the name specified existed previously:
+      - The stage will be appended after any existing stages and will contain the targets, preTargets, and postTargets specified
+    - If a stage with the name specified existed previously:
+      - The targets, preTargets, and postTargets specified will be appended to the end of any existing targets for the stage.
+- If no target wth the name specified previously existed:
+  - The target will then be added to the project as a `chain-execute` with the given stage containing the targets, preTargets, and postTargets specified.
+
+🚩  Note: The `chain-stage` generator cannot add the actual targets used in the chain. It can only reference them and will not verify that they exist at the time the stage is created.
+
+The following is an example of what's added to the `workspace.json` for a project when adding a stage to a chain-execute target:
+
+```jsonc
+//workspace.json BEFORE
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package"
+          //...
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint"
+          //...
+        },
+        "package": {
+          "executor": "some-package-executor"
+        },
+        "pre": {
+          "executor": "some-executor"
+        },
+        "post": {
+          "executor": "some-executor"
+        },
+        "target": {
+          "executor": "some-executor"
+        },
+        "someChain": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "preTargets": ["lint"],
+            "targets": ["build"],
+            "postTargets": ["package"]
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+```jsonc
+//workspace.json AFTER
+
+{
+  //...
+  "projects": {
+    "my-app": {
+      "root": "apps/my-app",
+      "projectType": "application",
+      "sourceRoot": "apps/my-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package"
+          //...
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint"
+          //...
+        },
+        "package": {
+          "executor": "some-package-executor"
+          //...
+        },
+        "pre": {
+          "executor": "some-executor"
+        },
+        "post": {
+          "executor": "some-executor"
+        },
+        "someChain": {
+          "executor": "@nx-boat-tools/common:chain-execute",
+          "options": {
+            "preTargets": ["lint"],
+            "targets": ["build"],
+            "postTargets": ["package"],
+            "stages": {
+              "src": {
+                "preTargets": ["pre"],
+                "targets": ["target"],
+                "postTargets": ["post"],
+              }
+            }
+        },
+        "target": {
+          "executor": "some-executor"
+        }
+      },
+      "tags": ""
+    }
+  }
+}
+```
+
+#### Adding `chain-stage` to a project
+
+The following illustrates how to add a stage to a chain-execute target for a project:
+
+```bash
+#Add a stage named src to the build chain-execute target for a project named my-project
+nx g @nx-dev-tools/common:chain-stage src --chainTarget=build --project=my-project --preTargets=pre1,pre2 --targets=target --postTargets=post1,post2
+```

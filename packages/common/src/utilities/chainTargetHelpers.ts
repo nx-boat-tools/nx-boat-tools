@@ -60,19 +60,49 @@ export function appendToChainTargets(
       projectTargets[target].options.postTargets =
         projectTargets[target].options.postTargets || [];
 
-      projectTargets[target].options.postTargets = projectTargets[
-        target
-      ].options.postTargets.concat(postTargetsToAdd);
+      projectTargets[target].options.postTargets =
+        projectTargets[target].options.postTargets.concat(postTargetsToAdd);
     }
 
     if (stagesToAdd !== undefined && _.keys(stagesToAdd)?.length > 0) {
       projectTargets[target].options.stages =
         projectTargets[target].options.stages || {};
 
-      projectTargets[target].options.stages = _.extend(
-        projectTargets[target].options.stages,
-        stagesToAdd
-      );
+      _.each(_.keys(stagesToAdd), (stage) => {
+        const stageToAdd = stagesToAdd[stage];
+
+        projectTargets[target].options.stages[stage] =
+          projectTargets[target].options.stages[stage] || {};
+
+        if (_.some(stageToAdd.preTargets)) {
+          projectTargets[target].options.stages[stage].preTargets =
+            projectTargets[target].options.stages[stage].preTargets || [];
+
+          projectTargets[target].options.stages[stage].preTargets =
+            projectTargets[target].options.stages[stage].preTargets.concat(
+              stageToAdd.preTargets
+            );
+        }
+
+        if (_.some(stageToAdd.targets)) {
+          projectTargets[target].options.stages[stage].targets =
+            projectTargets[target].options.stages[stage].targets || [];
+
+          projectTargets[target].options.stages[stage].targets = projectTargets[
+            target
+          ].options.stages[stage].targets.concat(stageToAdd.targets);
+        }
+
+        if (_.some(stageToAdd.postTargets)) {
+          projectTargets[target].options.stages[stage].postTargets =
+            projectTargets[target].options.stages[stage].postTargets || [];
+
+          projectTargets[target].options.stages[stage].postTargets =
+            projectTargets[target].options.stages[stage].postTargets.concat(
+              stageToAdd.postTargets
+            );
+        }
+      });
     }
   });
 

@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "CommonChainStage",
+  "title": "Add a stage to a chain-execute target for a project.",
+  "description": "The `chain-stage` generator adds a stage to a chain-execute target for an existing Nx project.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/common:chain-stage src --chainTarget=build --project=my-project --preTargets=pre1,pre2 --targets=target --postTargets=post1,post2",
+      "description": "Add a stage named src to the build chain-execute target for a project named my-project"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the chain-execute stage.",
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the chain-execute stage?",
+      "pattern": "^[a-zA-Z].*$"
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project containing the chain-execute target.",
+      "alias": "p",
+      "$default": {
+        "$source": "projectName"
+      },
+      "x-prompt": "What is the name of the project containing the chain-execute target?"
+    },
+    "chainTarget": {
+      "description": "The name of the chain-execute target.",
+      "alias": "chain",
+      "type": "string",
+      "x-prompt": "What is the name of the chain target to add the stage to?",
+      "pattern": "^[a-zA-Z].*$"
+    },
+    "targets": {
+      "type": "string",
+      "description": "A comma seperated list of targets to include in the chain."
+    },
+    "preTargets": {
+      "type": "string",
+      "description": "A comma seperated list of pre targets to include in the chain."
+    },
+    "postTargets": {
+      "type": "string",
+      "description": "A comma seperated list of post targets to include in the chain."
+    }
+  },
+  "required": ["project", "chainTarget", "name"]
+}
