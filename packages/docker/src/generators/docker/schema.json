@@ -2,17 +2,24 @@
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
   "$id": "Docker",
-  "title": "",
+  "title": "Add docker to a project",
+  "description": "The `docker` generator adds docker support to an existing Nx project. It creates a default `dockerfile` and `.dockerignore` and update the project in the `workspace.json` to include all the appropriate docker targets.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/docker:docker --project=my-project --dockerRepoOrUser=my-dockerhub-user --minikube=false",
+      "description": "Add docker to a project named my-project that publishes to dockerhub for user my-dockerhub-user"
+    }
+  ],
   "type": "object",
   "properties": {
     "project": {
       "type": "string",
-      "description": "",
+      "description": "The name of the project.",
+      "alias": "p",
       "$default": {
-        "$source": "argv",
-        "index": 0
+        "$source": "projectName"
       },
-      "x-prompt": "The name of the project to add docker to"
+      "x-prompt": "What project should docker be added to?"
     },
     "dockerRepoOrUser": {
       "type": "string",

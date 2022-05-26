@@ -491,5 +491,5 @@ The following illustrates how to add a docker support project with various optio
 
 ```bash
 #Add docker to a project named my-project that publishes to dockerhub for user my-dockerhub-user
-nx g @nx-dev-tools/docker:docker my-project --dockerRepoOrUser=my-dockerhub-user --minikube=false
+nx g @nx-dev-tools/docker:docker --project=my-project --dockerRepoOrUser=my-dockerhub-user --minikube=false
 ```
