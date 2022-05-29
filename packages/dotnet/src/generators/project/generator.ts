@@ -11,6 +11,9 @@ import {
   getWorkspaceLayout,
   installPackagesTask,
   names,
+  NxJsonConfiguration,
+  readJson,
+  writeJson
 } from '@nrwl/devkit';
 import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
 import { getVersionForProject } from '@nx-boat-tools/common';
@@ -129,6 +132,15 @@ function getProjectDirectoryPrefix(
     default:
       return workspaceLayout.appsDir;
   }
+}
+
+function updateNxJson(tree: Tree) {
+  const nxJson: NxJsonConfiguration = readJson(tree, 'nx.json');
+  nxJson.plugins = nxJson.plugins || [];
+  if (!nxJson.plugins.some((x) => x === '@nx-boat-tools/dotnet')) {
+    nxJson.plugins.push('@nx-boat-tools/dotnet');
+  }
+  writeJson(tree, 'nx.json', nxJson);
 }
 
 function addFiles(tree: Tree, options: NormalizedSchema) {
@@ -334,6 +346,7 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     projectConfig,
     normalizedOptions.standaloneConfig
   );
+  updateNxJson(tree);
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
   installPackagesTask(

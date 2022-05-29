@@ -796,6 +796,26 @@ describe('dotnet project generator', () => {
             dotnetPackageJson.version
           );
         });
+
+        it('adds plugin to nx.json', async () => {
+          const options: DotnetGeneratorSchema = {
+            name: 'my-project',
+            projectType: projectType,
+            ownSolution: false,
+          };
+
+          await generator(appTree, options);
+          
+          const nxJsonPath = 'nx.json';
+
+          expect(appTree.exists(nxJsonPath)).toBe(true);
+
+          const nxJsonBuffer = appTree.read(nxJsonPath);
+          const nxJson = JSON.parse(nxJsonBuffer.toString());
+
+          expect(nxJson?.plugins?.length).toBe(1);
+          expect(nxJson?.plugins[0]).toBe('@nx-boat-tools/dotnet');
+        });
       }
     );
 

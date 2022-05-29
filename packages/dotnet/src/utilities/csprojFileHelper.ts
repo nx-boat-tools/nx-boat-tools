@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import { create } from 'xmlbuilder2';
 import { readFileSync, writeFileSync } from 'fs';
 
@@ -45,4 +46,46 @@ export async function updateCsprojFile(
   writeFileSync(dotnetProjectPath, xmlString);
 
   console.log('');
+}
+
+export function getProjectReferencesFromCsprojFile(
+  dotnetProjectPath: string
+): Array<string> {
+  const csprojBuffer = readFileSync(dotnetProjectPath);
+
+  if (csprojBuffer === null) {
+    throw new Error(
+      `Unable to read the csproj file specified, '${dotnetProjectPath}'`
+    );
+  }
+
+  const xmlString = csprojBuffer.toString();
+  const xmlDoc = create(xmlString);
+  const doc: any = xmlDoc.end({ format: 'object' });
+
+  if (doc.Project.ItemGroup === undefined) {
+    return [];
+  }
+
+  const itemGroups = !_.isArray(doc.Project.ItemGroup)
+    ? [doc.Project.ItemGroup]
+    : doc.Project.ItemGroup;
+
+  const results: Array<string> = _.flatten(
+    _.map(itemGroups, (itemGroup) => {
+      if (itemGroup.ProjectReference === undefined) {
+        return undefined;
+      }
+
+      const projectRefs = !_.isArray(itemGroup.ProjectReference)
+        ? [itemGroup.ProjectReference]
+        : itemGroup.ProjectReference;
+
+      return _.map(projectRefs, (projectRef) => {
+        return projectRef['@Include'];
+      });
+    })
+  );
+
+  return _.without(results, undefined);
 }
