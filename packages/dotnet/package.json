@@ -1,17 +1,18 @@
 {
   "name": "@nx-boat-tools/dotnet",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-rc.0",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
   "peerDependencies": {
-    "@nx-boat-tools/common": "^0.1.0-alpha.2"
+    "@nx-boat-tools/common": "^0.1.0-rc.0"
   },
   "dependencies": {
+    "glob": "^8.0.3",
     "guid-typescript": "^1.0.9",
-    "minimist": "^1.2.5",
-    "tslib": "^2.0.0",
-    "underscore": "^1.13.1",
+    "minimist": "^1.2.6",
+    "tslib": "^2.4.0",
+    "underscore": "^1.13.3",
     "xmlbuilder2": "^3.0.2"
   }
 }

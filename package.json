@@ -1,6 +1,6 @@
 {
   "name": "nx-boat-tools",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-rc.0",
   "license": "MIT",
   "scripts": {
     "commit": "./node_modules/cz-customizable/standalone.js",
