@@ -195,7 +195,9 @@ describe('Dotnet Test Executor', () => {
     expect(argsArg[2]).toBe('--output');
     expect(argsArg[3]).toBe(path.join(context.root, options.outputPath));
     expect(argsArg[4]).toBe('--results-directory');
-    expect(argsArg[5]).toBe(path.join(context.root, 'coverage/apps/my-project'));
+    expect(argsArg[5]).toBe(
+      path.join(context.root, 'coverage/apps/my-project')
+    );
     expect(argsArg[6]).toBe('--collect');
     expect(argsArg[7]).toBe('"XPlat Code Coverage"');
   });
@@ -212,13 +214,17 @@ describe('Dotnet Test Executor', () => {
       ],
     });
 
-    const expectedCoveragePath = path.join(context.root, 'coverage', options.srcPath);
+    const expectedCoveragePath = path.join(
+      context.root,
+      'coverage',
+      options.srcPath
+    );
     const fakeFs = {};
     fakeFs[path.join(context.root, options.srcPath)] = '';
     fakeFs[expectedCoveragePath] = {
       nestedDir: {
-        'results.xml': 'sample results'
-      }
+        'results.xml': 'sample results',
+      },
     };
 
     console.log('Mocked fs', fakeFs);
@@ -229,7 +235,9 @@ describe('Dotnet Test Executor', () => {
 
     expect(output.success).toBe(true);
 
-    const files = globSync(path.join(expectedCoveragePath, '**', '*'), { nodir: true });
+    const files = globSync(path.join(expectedCoveragePath, '**', '*'), {
+      nodir: true,
+    });
 
     expect(files).toContain(path.join(expectedCoveragePath, 'results.xml'));
   });

@@ -39,7 +39,7 @@ describe('Dotnet Publish Executor', () => {
       outputPath: 'dist/apps/my-project',
       runtimeID: 'someRuntime',
       additionalArgs: '--test=true',
-      configuration: 'Develop' ,
+      configuration: 'Develop',
     };
     const context = createTestExecutorContext({
       configurationName: 'prod',

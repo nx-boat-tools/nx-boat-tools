@@ -2,10 +2,10 @@ import * as _ from 'underscore';
 import * as path from 'path';
 import { ExecutorContext } from '@nrwl/devkit';
 import { copyFileSync, existsSync, rmSync } from 'fs';
+import { sync as globSync } from 'glob';
 import { spawnAsync } from '@nx-boat-tools/common';
 
 import { TestDotnetExecutorSchema } from './schema';
-import { sync as globSync } from 'glob';
 
 interface NormalizedOptions extends TestDotnetExecutorSchema {
   projectName: string;
@@ -89,18 +89,20 @@ export async function runTestCommand(options: NormalizedOptions) {
 function moveCoverageFile(options: NormalizedOptions) {
   console.log('🗜 Collapsing attachements...\n');
 
-  const files = globSync(path.join(options.coveragePath, '**', '*'), { nodir: true });
+  const files = globSync(path.join(options.coveragePath, '**', '*'), {
+    nodir: true,
+  });
 
   let dirs: Array<string> = [];
 
-  _.each(files, file => {
+  _.each(files, (file) => {
     copyFileSync(file, path.join(options.coveragePath, path.basename(file)));
     dirs.push(path.dirname(file));
   });
 
   dirs = _.uniq(dirs);
 
-  _.each(dirs, dir => rmSync(dir, { recursive: true, force: true }));
+  _.each(dirs, (dir) => rmSync(dir, { recursive: true, force: true }));
 }
 
 export default async function run(

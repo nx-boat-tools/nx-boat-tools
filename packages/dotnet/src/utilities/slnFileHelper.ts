@@ -90,7 +90,9 @@ export function appendGlobalSectionToSolution(
   return rootParts.join('');
 }
 
-export function createTestSlnContent(projects: Array<{root: string, name: string}>): string {
+export function createTestSlnContent(
+  projects: Array<{ root: string; name: string }>
+): string {
   const projectSpecs = _.map(projects, (project) => {
     return {
       ...project,

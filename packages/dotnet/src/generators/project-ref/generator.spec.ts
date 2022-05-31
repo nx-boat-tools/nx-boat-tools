@@ -10,17 +10,20 @@ import {
   readProjectConfiguration,
   writeJson,
 } from '@nrwl/devkit';
+import { create } from 'xmlbuilder2';
 import { createTargetConfig, defuse } from '@nx-boat-tools/common';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import { readFileSync } from 'fs';
 
 import generator from './generator';
 import { ProjectRefGeneratorSchema } from './schema';
-import { createTestCsprojContent, getProjectReferencesFromCsprojFile } from '../../utilities/csprojFileHelper';
+import {
+  createTestCsprojContent,
+  getProjectReferencesFromCsprojFile,
+} from '../../utilities/csprojFileHelper';
 import { createTestSlnContent } from '../../utilities/slnFileHelper';
 
 import path = require('path');
-import { create } from 'xmlbuilder2';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
@@ -525,10 +528,7 @@ describe('dotnet project-ref generator', () => {
     addProjectConfiguration(appTree, 'my-lib', referenceConfig);
 
     const targetPath = path.join(targetConfig.sourceRoot, `MyProject.csproj`);
-    const referencePath = path.join(
-      referenceConfig.sourceRoot,
-      `MyLib.csproj`
-    );
+    const referencePath = path.join(referenceConfig.sourceRoot, `MyLib.csproj`);
 
     appTree.write(targetPath, createTestCsprojContent());
     appTree.write(referencePath, createTestCsprojContent());
@@ -545,7 +545,11 @@ describe('dotnet project-ref generator', () => {
 
     expect(doc?.Project?.ItemGroup?.ProjectReference).toBeDefined();
     expect(_.isArray(doc.Project.ItemGroup.ProjectReference)).toBe(false);
-    expect(doc.Project.ItemGroup.ProjectReference['@Include']).toBe(`..\\..\\..\\${referenceConfig.sourceRoot.split(path.sep).join('\\')}\\MyLib.csproj`);
+    expect(doc.Project.ItemGroup.ProjectReference['@Include']).toBe(
+      `..\\..\\..\\${referenceConfig.sourceRoot
+        .split(path.sep)
+        .join('\\')}\\MyLib.csproj`
+    );
   });
 
   it('adds ProjectReference to target csproj (existing project reference)', async () => {
@@ -575,12 +579,12 @@ describe('dotnet project-ref generator', () => {
     addProjectConfiguration(appTree, 'my-lib', referenceConfig);
 
     const targetPath = path.join(targetConfig.sourceRoot, `MyProject.csproj`);
-    const referencePath = path.join(
-      referenceConfig.sourceRoot,
-      `MyLib.csproj`
-    );
+    const referencePath = path.join(referenceConfig.sourceRoot, `MyLib.csproj`);
 
-    appTree.write(targetPath, createTestCsprojContent([], ["ExistingRef.csproj"]));
+    appTree.write(
+      targetPath,
+      createTestCsprojContent([], ['ExistingRef.csproj'])
+    );
     appTree.write(referencePath, createTestCsprojContent());
 
     await generator(appTree, options);
@@ -596,8 +600,14 @@ describe('dotnet project-ref generator', () => {
     expect(doc?.Project?.ItemGroup?.ProjectReference).toBeDefined();
     expect(_.isArray(doc.Project.ItemGroup.ProjectReference)).toBe(true);
     expect(doc.Project.ItemGroup.ProjectReference.length).toBe(2);
-    expect(doc.Project.ItemGroup.ProjectReference[0]['@Include']).toBe('ExistingRef.csproj');
-    expect(doc.Project.ItemGroup.ProjectReference[1]['@Include']).toBe(`..\\..\\..\\${referenceConfig.sourceRoot.split(path.sep).join('\\')}\\MyLib.csproj`);
+    expect(doc.Project.ItemGroup.ProjectReference[0]['@Include']).toBe(
+      'ExistingRef.csproj'
+    );
+    expect(doc.Project.ItemGroup.ProjectReference[1]['@Include']).toBe(
+      `..\\..\\..\\${referenceConfig.sourceRoot
+        .split(path.sep)
+        .join('\\')}\\MyLib.csproj`
+    );
   });
 
   it('adds ProjectReference to target csproj (existing package reference)', async () => {
@@ -627,12 +637,9 @@ describe('dotnet project-ref generator', () => {
     addProjectConfiguration(appTree, 'my-lib', referenceConfig);
 
     const targetPath = path.join(targetConfig.sourceRoot, `MyProject.csproj`);
-    const referencePath = path.join(
-      referenceConfig.sourceRoot,
-      `MyLib.csproj`
-    );
+    const referencePath = path.join(referenceConfig.sourceRoot, `MyLib.csproj`);
 
-    appTree.write(targetPath, createTestCsprojContent(["SomePackage"]));
+    appTree.write(targetPath, createTestCsprojContent(['SomePackage']));
     appTree.write(referencePath, createTestCsprojContent());
 
     await generator(appTree, options);
@@ -648,11 +655,17 @@ describe('dotnet project-ref generator', () => {
 
     expect(doc.Project.ItemGroup[0].PackageReference).toBeDefined();
     expect(_.isArray(doc.Project.ItemGroup[0].PackageReference)).toBe(false);
-    expect(doc.Project.ItemGroup[0].PackageReference['@Include']).toBe('SomePackage');
+    expect(doc.Project.ItemGroup[0].PackageReference['@Include']).toBe(
+      'SomePackage'
+    );
     expect(doc.Project.ItemGroup[0].PackageReference['@Version']).toBe('1.0.0');
 
     expect(doc.Project.ItemGroup[1].ProjectReference).toBeDefined();
     expect(_.isArray(doc.Project.ItemGroup[1].ProjectReference)).toBe(false);
-    expect(doc.Project.ItemGroup[1].ProjectReference['@Include']).toBe(`..\\..\\..\\${referenceConfig.sourceRoot.split(path.sep).join('\\')}\\MyLib.csproj`);
+    expect(doc.Project.ItemGroup[1].ProjectReference['@Include']).toBe(
+      `..\\..\\..\\${referenceConfig.sourceRoot
+        .split(path.sep)
+        .join('\\')}\\MyLib.csproj`
+    );
   });
 });

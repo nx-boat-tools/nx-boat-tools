@@ -11,7 +11,6 @@ import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 
 import generator from './generator';
 import { CommonChainStageGeneratorSchema } from './schema';
-
 import { createTargetConfig } from '../../utilities/executorTestHelpers';
 import { defuse } from '../../utilities/promiseTestHelpers';
 
@@ -39,7 +38,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
 
     addProjectConfiguration(appTree, 'my-project', {
@@ -64,7 +63,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -98,7 +97,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -118,15 +117,9 @@ describe('common chain-stage generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
 
-    expect(
-      config.targets.chainTarget.options?.preTargets
-    ).toBeUndefined();
-    expect(
-      config.targets.chainTarget.options?.targets
-    ).toBeUndefined();
-    expect(
-      config.targets.chainTarget.options?.postTargets
-    ).toBeUndefined();
+    expect(config.targets.chainTarget.options?.preTargets).toBeUndefined();
+    expect(config.targets.chainTarget.options?.targets).toBeUndefined();
+    expect(config.targets.chainTarget.options?.postTargets).toBeUndefined();
 
     expect(config.targets.chainTarget.options?.stages?.src).toBeDefined();
 
@@ -150,12 +143,12 @@ describe('common chain-stage generator', () => {
     expect(
       config.targets.chainTarget.options?.stages?.src?.postTargets?.length
     ).toBe(2);
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[0]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[1]).toBe(
-      'post2'
-    );
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[0]
+    ).toBe('post1');
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[1]
+    ).toBe('post2');
   });
 
   it('creates chain-execute target when target already exists (existing build not chain-execute)', async () => {
@@ -165,7 +158,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -186,17 +179,11 @@ describe('common chain-stage generator', () => {
     expect(config.targets.chainTarget.executor).toBe(
       '@nx-boat-tools/common:chain-execute'
     );
-    
-    expect(
-      config.targets.chainTarget.options?.preTargets
-    ).toBeUndefined();
-    expect(
-      config.targets.chainTarget.options?.postTargets
-    ).toBeUndefined();
 
-    expect(
-      config.targets.chainTarget.options?.targets?.length
-    ).toBe(1);
+    expect(config.targets.chainTarget.options?.preTargets).toBeUndefined();
+    expect(config.targets.chainTarget.options?.postTargets).toBeUndefined();
+
+    expect(config.targets.chainTarget.options?.targets?.length).toBe(1);
     expect(config.targets.chainTarget.options?.targets[0]).toBe(
       'chainTargetSrc'
     );
@@ -223,12 +210,12 @@ describe('common chain-stage generator', () => {
     expect(
       config.targets.chainTarget.options?.stages?.src?.postTargets?.length
     ).toBe(2);
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[0]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[1]).toBe(
-      'post2'
-    );
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[0]
+    ).toBe('post1');
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[1]
+    ).toBe('post2');
   });
 
   it('adds to chain-execute target when target already exists (existing build chain-execute)', async () => {
@@ -238,7 +225,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -272,26 +259,16 @@ describe('common chain-stage generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
 
-    expect(
-      config.targets.chainTarget.options?.preTargets?.length
-    ).toBe(1);
-    expect(config.targets.chainTarget.options?.preTargets[0]).toBe(
-      'lint'
-    );
+    expect(config.targets.chainTarget.options?.preTargets?.length).toBe(1);
+    expect(config.targets.chainTarget.options?.preTargets[0]).toBe('lint');
 
-    expect(
-      config.targets.chainTarget.options?.targets?.length
-    ).toBe(1);
+    expect(config.targets.chainTarget.options?.targets?.length).toBe(1);
     expect(config.targets.chainTarget.options?.targets[0]).toBe(
       'chainTargetSrc'
     );
 
-    expect(
-      config.targets.chainTarget.options?.postTargets?.length
-    ).toBe(1);
-    expect(config.targets.chainTarget.options?.postTargets[0]).toBe(
-      'test'
-    );
+    expect(config.targets.chainTarget.options?.postTargets?.length).toBe(1);
+    expect(config.targets.chainTarget.options?.postTargets[0]).toBe('test');
 
     expect(config.targets.chainTarget.options?.stages?.src).toBeDefined();
 
@@ -315,12 +292,12 @@ describe('common chain-stage generator', () => {
     expect(
       config.targets.chainTarget.options?.stages?.src?.postTargets?.length
     ).toBe(2);
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[0]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[1]).toBe(
-      'post2'
-    );
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[0]
+    ).toBe('post1');
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[1]
+    ).toBe('post2');
   });
 
   it('adds to chain-execute target when target already exists (existing build chain-execute with stage)', async () => {
@@ -330,7 +307,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -368,15 +345,9 @@ describe('common chain-stage generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
 
-    expect(
-      config.targets.chainTarget.options?.preTargets
-    ).toBeUndefined();
-    expect(
-      config.targets.chainTarget.options?.targets
-    ).toBeUndefined();
-    expect(
-      config.targets.chainTarget.options?.postTargets
-    ).toBeUndefined();
+    expect(config.targets.chainTarget.options?.preTargets).toBeUndefined();
+    expect(config.targets.chainTarget.options?.targets).toBeUndefined();
+    expect(config.targets.chainTarget.options?.postTargets).toBeUndefined();
 
     expect(
       config.targets.chainTarget.options?.stages?.src?.preTargets?.length
@@ -404,15 +375,15 @@ describe('common chain-stage generator', () => {
     expect(
       config.targets.chainTarget.options?.stages?.src?.postTargets?.length
     ).toBe(3);
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[0]).toBe(
-      'test'
-    );
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[1]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.stages?.src?.postTargets[2]).toBe(
-      'post2'
-    );
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[0]
+    ).toBe('test');
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[1]
+    ).toBe('post1');
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.postTargets[2]
+    ).toBe('post2');
   });
 
   it('sorts targets alphabetically', async () => {
@@ -422,7 +393,7 @@ describe('common chain-stage generator', () => {
       name: 'src',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',

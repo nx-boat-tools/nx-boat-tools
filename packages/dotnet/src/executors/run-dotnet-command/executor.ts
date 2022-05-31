@@ -87,7 +87,9 @@ export async function runDotnetCommand(
     args.push(`--output ${outputPath}`);
   }
 
-  args.push(configuration === undefined ? '' : `--configuration ${configuration}`);
+  args.push(
+    configuration === undefined ? '' : `--configuration ${configuration}`
+  );
   args.push(runtimeID === undefined ? '' : `--runtime ${runtimeID}`);
   args.push(additionalArgs === undefined ? '' : additionalArgs);
 

@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { Guid } from 'guid-typescript';
 import {
+  NxJsonConfiguration,
   ProjectConfiguration,
   ProjectType,
   Tree,
@@ -11,20 +12,19 @@ import {
   getWorkspaceLayout,
   installPackagesTask,
   names,
-  NxJsonConfiguration,
   readJson,
-  writeJson
+  writeJson,
 } from '@nrwl/devkit';
 import { createTarget } from '@jscutlery/semver/src/generators/install/utils/create-target';
 import { getVersionForProject } from '@nx-boat-tools/common';
 
+import testGenerator from '../test/generator';
 import { DotnetGeneratorSchema } from './schema';
+import { DotnetTestGeneratorSchema } from '../test/schema';
 import {
   appendGlobalSectionToSolution,
   appendProjectLinesToSolution,
 } from '../../utilities/slnFileHelper';
-import testGenerator from '../test/generator';
-import {DotnetTestGeneratorSchema} from '../test/schema';
 
 interface NormalizedSchema extends DotnetGeneratorSchema {
   projectName: string;
@@ -69,7 +69,9 @@ function normalizeOptions(
   )}/${projectDirectory}`;
   const projectSrcPath = path.join(projectRoot, 'src');
   const projectDistPath = path.join('dist', projectRoot);
-  const projectPathFromSln = !options.ownSolution ? `${projectSrcPath}${path.sep}` : `src${path.sep}`;
+  const projectPathFromSln = !options.ownSolution
+    ? `${projectSrcPath}${path.sep}`
+    : `src${path.sep}`;
   const nxProjectType = getNxProjectType(tree, options.projectType);
 
   const parsedTags = options.tags
@@ -267,8 +269,11 @@ function addProjectDependencies(tree: Tree, templateOptions: TemplateOptions) {
   );
 }
 
-async function addTestProject(tree: Tree, options: NormalizedSchema): Promise<void> {
-  if(options.testProjectType === 'none') {
+async function addTestProject(
+  tree: Tree,
+  options: NormalizedSchema
+): Promise<void> {
+  if (options.testProjectType === 'none') {
     return;
   }
 

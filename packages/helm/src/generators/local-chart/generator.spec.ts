@@ -329,9 +329,7 @@ describe('local-chart generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
     expect(config.targets.runHelmChart.options?.targets).toBeUndefined();
-    expect(config.targets.runHelmChart.options?.postTargets?.length).toBe(
-      3
-    );
+    expect(config.targets.runHelmChart.options?.postTargets?.length).toBe(3);
     expect(config.targets.runHelmChart.options?.postTargets[0]).toBe(
       'installHelmChart'
     );
@@ -370,9 +368,7 @@ describe('local-chart generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
     expect(config.targets.runHelmChart.options?.targets).toBeUndefined();
-    expect(config.targets.runHelmChart.options?.postTargets?.length).toBe(
-      3
-    );
+    expect(config.targets.runHelmChart.options?.postTargets?.length).toBe(3);
     expect(config.targets.runHelmChart.options?.postTargets[0]).toBe(
       'installHelmChart'
     );

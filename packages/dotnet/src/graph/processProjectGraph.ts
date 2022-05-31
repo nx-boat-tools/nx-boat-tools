@@ -39,11 +39,11 @@ export function processProjectGraph(
       nodir: true,
     });
 
-    builder.graph.nodes[name].data.files = _.map(files, file => {
-        return {
-            file: file
-        }
-    })
+    builder.graph.nodes[name].data.files = _.map(files, (file) => {
+      return {
+        file: file,
+      };
+    });
 
     const allRefs = _.flatten(
       _.map(files, (file) => {

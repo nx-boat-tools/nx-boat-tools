@@ -91,7 +91,11 @@ export function createTargetConfig(targetsMap?: Array<TargetMap>) {
 
 export function createFakeExecutor() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (summary: TargetSummary, options: { [k: string]: any }, context: ExecutorContext) => {
+  return (
+    summary: TargetSummary,
+    options: { [k: string]: any },
+    context: ExecutorContext
+  ) => {
     console.log(
       `running mocked '${summary.target}' executor for project '${summary.project}' and configuration '${summary.configuration}'`,
       { options, context }

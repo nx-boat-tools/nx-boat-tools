@@ -6,9 +6,9 @@ import {
   updateProjectConfiguration,
 } from '@nrwl/devkit';
 
+import { ChainExecutorStage } from '../../executors/chain-execute/schema';
 import { CommonChainStageGeneratorSchema } from './schema';
 import { appendToChainTargets } from '../../utilities/chainTargetHelpers';
-import { ChainExecutorStage } from '../../executors/chain-execute/schema';
 
 interface NormalizedSchema extends CommonChainStageGeneratorSchema {
   projectConfig: ProjectConfiguration;
@@ -21,7 +21,7 @@ function normalizeOptions(
   tree: Tree,
   options: CommonChainStageGeneratorSchema
 ): NormalizedSchema {
-  const {project, targets, preTargets, postTargets} = options;
+  const { project, targets, preTargets, postTargets } = options;
   const projectConfig = readProjectConfiguration(tree, project);
 
   const targetsList = targets?.split(',') || [];
@@ -33,14 +33,18 @@ function normalizeOptions(
     projectConfig,
     targetsList,
     preTargetsList,
-    postTargetsList
+    postTargetsList,
   };
 }
 
-export default async function (tree: Tree, options: CommonChainStageGeneratorSchema) {
+export default async function (
+  tree: Tree,
+  options: CommonChainStageGeneratorSchema
+) {
   const normalizedOptions = normalizeOptions(tree, options);
 
-  const {name, chainTarget, targetsList, preTargetsList, postTargetsList} = normalizedOptions;
+  const { name, chainTarget, targetsList, preTargetsList, postTargetsList } =
+    normalizedOptions;
 
   const targets = {
     ...appendToChainTargets(normalizedOptions.projectConfig.targets, {
@@ -50,10 +54,10 @@ export default async function (tree: Tree, options: CommonChainStageGeneratorSch
             preTargets: preTargetsList,
             targets: targetsList,
             postTargets: postTargetsList,
-          } as ChainExecutorStage
-        }
+          } as ChainExecutorStage,
+        },
       },
-    })
+    }),
   };
 
   const sortetTargetKeys = _.keys(targets).sort();

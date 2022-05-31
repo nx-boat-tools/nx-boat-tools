@@ -337,15 +337,15 @@ The `docker` generator adds docker support to an existing Nx project. It creates
 
 #### Available options:
 
-| name               | type      | default | description                                                                                  |
-| ------------------ | --------- | ------- | -------------------------------------------------------------------------------------------- |
-| `project`          | `string`  |         | Required. The name of the project to add docker to.                                          |
-| `dockerRepoOrUser` | `string`  |         | Required. This is used for the publish target and is the user or repo to upload the image to |
-| `baseDockerImage` | `string` | | The base docker image to use in the generated dockerfile |
-| `runPortMappings` | `string` | | When running the docker image, this is an comma delimited string used to create port mappings to pass into the container |
-| `runVolumeMounts` | `string` | | When running the docker image, this is an comma delimited string used to create volume mount mappings to pass into the container |
-| `runVariables` | `string` | | When running the docker image, this is an comma delimited string used to set environment variables within the container |
-| `minikube`         | `boolean` |         | Whether or not to add post targets for minikube.                                       |
+| name               | type      | default | description                                                                                                                      |
+| ------------------ | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `project`          | `string`  |         | Required. The name of the project to add docker to.                                                                              |
+| `dockerRepoOrUser` | `string`  |         | Required. This is used for the publish target and is the user or repo to upload the image to                                     |
+| `baseDockerImage`  | `string`  |         | The base docker image to use in the generated dockerfile                                                                         |
+| `runPortMappings`  | `string`  |         | When running the docker image, this is an comma delimited string used to create port mappings to pass into the container         |
+| `runVolumeMounts`  | `string`  |         | When running the docker image, this is an comma delimited string used to create volume mount mappings to pass into the container |
+| `runVariables`     | `string`  |         | When running the docker image, this is an comma delimited string used to set environment variables within the container          |
+| `minikube`         | `boolean` |         | Whether or not to add post targets for minikube.                                                                                 |
 
 #### Generated files:
 

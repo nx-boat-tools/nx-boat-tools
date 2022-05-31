@@ -11,6 +11,7 @@ import {
   createFakeExecutor,
   createTestExecutorContext,
 } from '../../utilities/executorTestHelpers';
+
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 
 const spy = jest.spyOn(devkit, 'runExecutor');

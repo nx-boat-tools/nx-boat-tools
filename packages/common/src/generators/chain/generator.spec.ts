@@ -11,7 +11,6 @@ import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 
 import generator from './generator';
 import { CommonChainGeneratorSchema } from './schema';
-
 import { createTargetConfig } from '../../utilities/executorTestHelpers';
 import { defuse } from '../../utilities/promiseTestHelpers';
 
@@ -38,7 +37,7 @@ describe('commmon chain generator', () => {
       name: 'chainTarget',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
 
     addProjectConfiguration(appTree, 'my-project', {
@@ -62,7 +61,7 @@ describe('commmon chain generator', () => {
       name: 'build',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -95,7 +94,7 @@ describe('commmon chain generator', () => {
       name: 'chainTarget',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -115,32 +114,16 @@ describe('commmon chain generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
 
-    expect(
-      config.targets.chainTarget.options?.preTargets?.length
-    ).toBe(2);
-    expect(config.targets.chainTarget.options?.preTargets[0]).toBe(
-      'pre1'
-    );
-    expect(config.targets.chainTarget.options?.preTargets[1]).toBe(
-      'pre2'
-    );
+    expect(config.targets.chainTarget.options?.preTargets?.length).toBe(2);
+    expect(config.targets.chainTarget.options?.preTargets[0]).toBe('pre1');
+    expect(config.targets.chainTarget.options?.preTargets[1]).toBe('pre2');
 
-    expect(
-      config.targets.chainTarget.options?.targets?.length
-    ).toBe(1);
-    expect(config.targets.chainTarget.options?.targets[0]).toBe(
-      'target1'
-    );
+    expect(config.targets.chainTarget.options?.targets?.length).toBe(1);
+    expect(config.targets.chainTarget.options?.targets[0]).toBe('target1');
 
-    expect(
-      config.targets.chainTarget.options?.postTargets?.length
-    ).toBe(2);
-    expect(config.targets.chainTarget.options?.postTargets[0]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.postTargets[1]).toBe(
-      'post2'
-    );
+    expect(config.targets.chainTarget.options?.postTargets?.length).toBe(2);
+    expect(config.targets.chainTarget.options?.postTargets[0]).toBe('post1');
+    expect(config.targets.chainTarget.options?.postTargets[1]).toBe('post2');
   });
 
   it('creates chain-execute target when target already exists (existing build not chain-execute)', async () => {
@@ -149,7 +132,7 @@ describe('commmon chain generator', () => {
       name: 'chainTarget',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -170,36 +153,20 @@ describe('commmon chain generator', () => {
     expect(config.targets.chainTarget.executor).toBe(
       '@nx-boat-tools/common:chain-execute'
     );
-    
-    expect(
-      config.targets.chainTarget.options?.preTargets?.length
-    ).toBe(2);
-    expect(config.targets.chainTarget.options?.preTargets[0]).toBe(
-      'pre1'
-    );
-    expect(config.targets.chainTarget.options?.preTargets[1]).toBe(
-      'pre2'
-    );
 
-    expect(
-      config.targets.chainTarget.options?.targets?.length
-    ).toBe(2);
+    expect(config.targets.chainTarget.options?.preTargets?.length).toBe(2);
+    expect(config.targets.chainTarget.options?.preTargets[0]).toBe('pre1');
+    expect(config.targets.chainTarget.options?.preTargets[1]).toBe('pre2');
+
+    expect(config.targets.chainTarget.options?.targets?.length).toBe(2);
     expect(config.targets.chainTarget.options?.targets[0]).toBe(
       'chainTargetSrc'
     );
-    expect(config.targets.chainTarget.options?.targets[1]).toBe(
-      'target1'
-    );
+    expect(config.targets.chainTarget.options?.targets[1]).toBe('target1');
 
-    expect(
-      config.targets.chainTarget.options?.postTargets?.length
-    ).toBe(2);
-    expect(config.targets.chainTarget.options?.postTargets[0]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.postTargets[1]).toBe(
-      'post2'
-    );
+    expect(config.targets.chainTarget.options?.postTargets?.length).toBe(2);
+    expect(config.targets.chainTarget.options?.postTargets[0]).toBe('post1');
+    expect(config.targets.chainTarget.options?.postTargets[1]).toBe('post2');
   });
 
   it('adds to chain-execute target when target already exists (existing build chain-execute)', async () => {
@@ -208,7 +175,7 @@ describe('commmon chain generator', () => {
       name: 'chainTarget',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -242,41 +209,21 @@ describe('commmon chain generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
 
-    expect(
-      config.targets.chainTarget.options?.preTargets?.length
-    ).toBe(3);
-    expect(config.targets.chainTarget.options?.preTargets[0]).toBe(
-      'lint'
-    );
-    expect(config.targets.chainTarget.options?.preTargets[1]).toBe(
-      'pre1'
-    );
-    expect(config.targets.chainTarget.options?.preTargets[2]).toBe(
-      'pre2'
-    );
+    expect(config.targets.chainTarget.options?.preTargets?.length).toBe(3);
+    expect(config.targets.chainTarget.options?.preTargets[0]).toBe('lint');
+    expect(config.targets.chainTarget.options?.preTargets[1]).toBe('pre1');
+    expect(config.targets.chainTarget.options?.preTargets[2]).toBe('pre2');
 
-    expect(
-      config.targets.chainTarget.options?.targets?.length
-    ).toBe(2);
+    expect(config.targets.chainTarget.options?.targets?.length).toBe(2);
     expect(config.targets.chainTarget.options?.targets[0]).toBe(
       'chainTargetSrc'
     );
-    expect(config.targets.chainTarget.options?.targets[1]).toBe(
-      'target1'
-    );
+    expect(config.targets.chainTarget.options?.targets[1]).toBe('target1');
 
-    expect(
-      config.targets.chainTarget.options?.postTargets?.length
-    ).toBe(3);
-    expect(config.targets.chainTarget.options?.postTargets[0]).toBe(
-      'test'
-    );
-    expect(config.targets.chainTarget.options?.postTargets[1]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.postTargets[2]).toBe(
-      'post2'
-    );
+    expect(config.targets.chainTarget.options?.postTargets?.length).toBe(3);
+    expect(config.targets.chainTarget.options?.postTargets[0]).toBe('test');
+    expect(config.targets.chainTarget.options?.postTargets[1]).toBe('post1');
+    expect(config.targets.chainTarget.options?.postTargets[2]).toBe('post2');
   });
 
   it('adds to chain-execute target when target already exists (existing build chain-execute with stage)', async () => {
@@ -285,7 +232,7 @@ describe('commmon chain generator', () => {
       name: 'chainTarget',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',
@@ -320,39 +267,27 @@ describe('commmon chain generator', () => {
       '@nx-boat-tools/common:chain-execute'
     );
 
-    expect(
-      config.targets.chainTarget.options?.preTargets?.length
-    ).toBe(2);
-    expect(config.targets.chainTarget.options?.preTargets[0]).toBe(
-      'pre1'
-    );
-    expect(config.targets.chainTarget.options?.preTargets[1]).toBe(
-      'pre2'
-    );
+    expect(config.targets.chainTarget.options?.preTargets?.length).toBe(2);
+    expect(config.targets.chainTarget.options?.preTargets[0]).toBe('pre1');
+    expect(config.targets.chainTarget.options?.preTargets[1]).toBe('pre2');
 
-    expect(
-      config.targets.chainTarget.options?.targets?.length
-    ).toBe(1);
-    expect(config.targets.chainTarget.options?.targets[0]).toBe(
-      'target1'
-    );
+    expect(config.targets.chainTarget.options?.targets?.length).toBe(1);
+    expect(config.targets.chainTarget.options?.targets[0]).toBe('target1');
 
-    expect(
-      config.targets.chainTarget.options?.postTargets?.length
-    ).toBe(2);
-    expect(config.targets.chainTarget.options?.postTargets[0]).toBe(
-      'post1'
-    );
-    expect(config.targets.chainTarget.options?.postTargets[1]).toBe(
-      'post2'
-    );
+    expect(config.targets.chainTarget.options?.postTargets?.length).toBe(2);
+    expect(config.targets.chainTarget.options?.postTargets[0]).toBe('post1');
+    expect(config.targets.chainTarget.options?.postTargets[1]).toBe('post2');
 
     expect(config.targets.chainTarget.options?.stages?.src).toBeDefined();
-    expect(config.targets.chainTarget.options?.stages?.src?.targets?.length).toBe(2);
+    expect(
+      config.targets.chainTarget.options?.stages?.src?.targets?.length
+    ).toBe(2);
     expect(config.targets.chainTarget.options?.stages?.src?.targets[0]).toBe(
       'chainTargetSrc'
     );
-    expect(config.targets.chainTarget.options?.stages?.src?.targets[1]).toBe('test');
+    expect(config.targets.chainTarget.options?.stages?.src?.targets[1]).toBe(
+      'test'
+    );
   });
 
   it('sorts targets alphabetically', async () => {
@@ -361,7 +296,7 @@ describe('commmon chain generator', () => {
       name: 'chainTarget',
       preTargets: 'pre1,pre2',
       targets: 'target1',
-      postTargets: 'post1,post2'
+      postTargets: 'post1,post2',
     };
     const initialConfig: ProjectConfiguration = {
       root: 'apps/my-project',

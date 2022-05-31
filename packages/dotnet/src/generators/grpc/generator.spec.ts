@@ -4,8 +4,8 @@ import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 
 import * as dotnetProjectGenerator from '../project/generator';
 import generator from './generator';
-import { GrpcAppGeneratorSchema } from './schema';
 import { DotnetGeneratorSchema } from '../project/schema';
+import { GrpcAppGeneratorSchema } from './schema';
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
 

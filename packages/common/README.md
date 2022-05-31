@@ -314,7 +314,7 @@ The project configuration will be updated as follows:
 
 - If a target with the same name that was specified existed previously and:
   - It was not a `chain-execute` target: it will be renamed to have a `Src` suffix.
-  - It was a `chain-execute` target: 
+  - It was a `chain-execute` target:
     - The root targets, preTargets, and postTargets will be unaffected
     - If no stage with the name specified existed previously:
       - The stage will be appended after any existing stages and will contain the targets, preTargets, and postTargets specified

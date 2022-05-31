@@ -20,7 +20,7 @@ function normalizeOptions(
   tree: Tree,
   options: CommonChainGeneratorSchema
 ): NormalizedSchema {
-  const {project, targets, preTargets, postTargets} = options;
+  const { project, targets, preTargets, postTargets } = options;
   const projectConfig = readProjectConfiguration(tree, project);
 
   const targetsList = targets?.split(',') || [];
@@ -32,14 +32,18 @@ function normalizeOptions(
     projectConfig,
     targetsList,
     preTargetsList,
-    postTargetsList
+    postTargetsList,
   };
 }
 
-export default async function (tree: Tree, options: CommonChainGeneratorSchema) {
+export default async function (
+  tree: Tree,
+  options: CommonChainGeneratorSchema
+) {
   const normalizedOptions = normalizeOptions(tree, options);
 
-  const {name, targetsList, preTargetsList, postTargetsList} = normalizedOptions;
+  const { name, targetsList, preTargetsList, postTargetsList } =
+    normalizedOptions;
 
   const targets = {
     ...appendToChainTargets(normalizedOptions.projectConfig.targets, {
@@ -48,7 +52,7 @@ export default async function (tree: Tree, options: CommonChainGeneratorSchema) 
         targetsToAdd: targetsList,
         postTargetsToAdd: postTargetsList,
       },
-    })
+    }),
   };
 
   const sortetTargetKeys = _.keys(targets).sort();

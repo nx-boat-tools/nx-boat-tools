@@ -1,19 +1,22 @@
 import * as _ from 'underscore';
 import * as path from 'path';
+import { Guid } from 'guid-typescript';
 import {
   ProjectConfiguration,
   Tree,
+  formatFiles,
   generateFiles,
   names,
   readProjectConfiguration,
   updateProjectConfiguration,
-  formatFiles,
 } from '@nrwl/devkit';
+import { appendToChainTargets } from '@nx-boat-tools/common';
 
 import { DotnetTestGeneratorSchema } from './schema';
-import { appendToChainTargets } from '@nx-boat-tools/common';
-import { appendGlobalSectionToSolution, appendProjectLinesToSolution } from '../../utilities/slnFileHelper';
-import { Guid } from 'guid-typescript';
+import {
+  appendGlobalSectionToSolution,
+  appendProjectLinesToSolution,
+} from '../../utilities/slnFileHelper';
 
 interface NormalizedSchema extends DotnetTestGeneratorSchema {
   pathSep: string;
@@ -37,9 +40,9 @@ function normalizeOptions(
   const projectConfig = readProjectConfiguration(tree, project);
   const { root } = projectConfig;
 
-  testPrefix = (testPrefix === undefined) ? '' : names(testPrefix).className;
+  testPrefix = testPrefix === undefined ? '' : names(testPrefix).className;
 
-  const testSuffix = (testPrefix === '') ? 'Src' : testPrefix;
+  const testSuffix = testPrefix === '' ? 'Src' : testPrefix;
   const testTarget = `test${testSuffix}`;
 
   if (projectConfig.targets[testTarget]) {
@@ -57,7 +60,9 @@ function normalizeOptions(
 
   const isOwnSolution = root === solutionPathDir;
 
-  const projectPathFromSln = !isOwnSolution ? `${projectTestDir}${path.sep}` : `tests${path.sep}`;
+  const projectPathFromSln = !isOwnSolution
+    ? `${projectTestDir}${path.sep}`
+    : `tests${path.sep}`;
   const projectGuid = Guid.create().toString();
 
   const pathSep = path.sep;
@@ -75,16 +80,22 @@ function normalizeOptions(
     projectGuid,
     pathSep,
     testPrefix,
-    testTarget
+    testTarget,
   };
 }
 
-function getSlnPath(tree: Tree, projectName: string, projectConfig: ProjectConfiguration): string {
-
+function getSlnPath(
+  tree: Tree,
+  projectName: string,
+  projectConfig: ProjectConfiguration
+): string {
   const projectClassName = names(projectName).className;
-  const projectSlnPath = path.join(projectConfig.root, `${projectClassName}.sln`);
+  const projectSlnPath = path.join(
+    projectConfig.root,
+    `${projectClassName}.sln`
+  );
 
-  if(tree.exists(projectSlnPath)) {
+  if (tree.exists(projectSlnPath)) {
     return projectSlnPath;
   }
 
@@ -94,11 +105,13 @@ function getSlnPath(tree: Tree, projectName: string, projectConfig: ProjectConfi
   const pkgClassName = names(pkg.name).className;
   const rootSlnPath = path.join('.', `${pkgClassName}.sln`);
 
-  if(tree.exists(rootSlnPath)) {
+  if (tree.exists(rootSlnPath)) {
     return rootSlnPath;
   }
 
-  throw new Error(`Unable to find the solution file for project '${projectName}'`);
+  throw new Error(
+    `Unable to find the solution file for project '${projectName}'`
+  );
 }
 
 function addProjectFiles(tree: Tree, options: NormalizedSchema) {
@@ -148,14 +161,15 @@ function removeTempSolutionFiles(tree: Tree, options: NormalizedSchema) {
 }
 
 function appendProjectToSolution(tree: Tree, options: NormalizedSchema) {
-  const {solutionPath, className} = options;
+  const { solutionPath, className } = options;
 
   const rootSlnBuffer = tree.read(solutionPath);
   const rootSlnContent = rootSlnBuffer === null ? '' : rootSlnBuffer.toString();
 
   const projectSlnPath = path.join('tmp', className, `${className}.sln`);
   const projectSlnBuffer = tree.read(projectSlnPath);
-  const projectSlnContent = projectSlnBuffer === null ? '' : projectSlnBuffer.toString();
+  const projectSlnContent =
+    projectSlnBuffer === null ? '' : projectSlnBuffer.toString();
 
   let result = appendProjectLinesToSolution(rootSlnContent, projectSlnContent);
   result = appendGlobalSectionToSolution(result, projectSlnContent);
@@ -164,10 +178,7 @@ function appendProjectToSolution(tree: Tree, options: NormalizedSchema) {
   tree.write(solutionPath, result);
 }
 
-export default async function (
-  tree: Tree,
-  options: DotnetTestGeneratorSchema
-) {
+export default async function (tree: Tree, options: DotnetTestGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
 
   const { testTarget } = normalizedOptions;
@@ -176,8 +187,8 @@ export default async function (
   const updatedTargets = {
     ...appendToChainTargets(targets, {
       test: {
-        targetsToAdd: [testTarget]
-      }
+        targetsToAdd: [testTarget],
+      },
     }),
     [testTarget]: {
       executor: '@nx-boat-tools/dotnet:test',
@@ -194,7 +205,7 @@ export default async function (
         prod: {
           configuration: 'Release',
         },
-      }
+      },
     },
   };
 

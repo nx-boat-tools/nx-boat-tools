@@ -953,8 +953,7 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.postTargets
-        .length
+      config.targets.package.options?.stages?.dockerImage?.postTargets.length
     ).toBe(1);
     expect(
       config.targets.package.options?.stages?.dockerImage?.postTargets[0]
@@ -990,8 +989,7 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.postTargets
-        .length
+      config.targets.package.options?.stages?.dockerImage?.postTargets.length
     ).toBe(1);
     expect(
       config.targets.package.options?.stages?.dockerImage?.postTargets[0]
@@ -1037,8 +1035,7 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.postTargets
-        .length
+      config.targets.package.options?.stages?.dockerImage?.postTargets.length
     ).toBe(1);
     expect(
       config.targets.package.options?.stages?.dockerImage?.postTargets[0]
@@ -1097,8 +1094,7 @@ describe('docker generator', () => {
 
     expect(config.targets.package.options?.stages?.dockerImage).toBeDefined();
     expect(
-      config.targets.package.options?.stages?.dockerImage?.postTargets
-        ?.length
+      config.targets.package.options?.stages?.dockerImage?.postTargets?.length
     ).toBe(1);
     expect(
       config.targets.package.options?.stages?.dockerImage?.postTargets[0]

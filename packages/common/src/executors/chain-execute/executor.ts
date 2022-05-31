@@ -4,10 +4,10 @@ import {
   readProjectConfiguration,
   runExecutor,
 } from '@nrwl/devkit';
+import { FsTree } from 'nx/src/generators/tree';
 
 import { ChainExecutorSchema } from './schema';
 import { asyncIteratorToArray } from '../../utilities/iterableHelpers';
-import { FsTree } from 'nx/src/generators/tree';
 
 type TargetSpecification = {
   project: string;
@@ -31,7 +31,7 @@ const negotiateTargetConfigurations = (
     return targets;
   }
 
-  console.log('\n🤝 Negotiating target configurations...\n')
+  console.log('\n🤝 Negotiating target configurations...\n');
 
   const tree = new FsTree(context.root, false);
   const projectConfig = readProjectConfiguration(tree, context.projectName);
@@ -122,8 +122,11 @@ export default async function (
   _.each(targetsToRun, (target) => {
     stack = stack
       .then(async () => {
-        const targetString = (target.configuration !== undefined) ? `${target.target}:${target.configuration}` : target.target;
-        
+        const targetString =
+          target.configuration !== undefined
+            ? `${target.target}:${target.configuration}`
+            : target.target;
+
         console.log(`\n⛓ Running chained target '${targetString}'...\n`);
 
         const asyncResults = await runExecutor(
