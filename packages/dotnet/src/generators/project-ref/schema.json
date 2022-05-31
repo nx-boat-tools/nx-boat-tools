@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "DotnetProjectRef",
+  "title": "Add a project reference to a project",
+  "description": "The `project-ref` generator adds a dotnet project reference from one existing Nx dotnet project to another.",
+  "examples": [
+    {
+      "command": "nx g @nx-dev-tools/dotnet:project-ref --project=my-project --reference=some-lib",
+      "description": "Adds a project reference from the project named my-project to the project named some-lib"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "The name of the project to add the reference to.",
+      "alias": "p",
+      "$default": {
+        "$source": "projectName"
+      },
+      "x-prompt": "What project should a reference be added to?"
+    },
+    "reference": {
+      "type": "string",
+      "description": "The name of the project to be referenced.",
+      "alias": "ref",
+      "x-prompt": "What project should be referenced?"
+    }
+  },
+  "required": ["project", "reference"]
+}

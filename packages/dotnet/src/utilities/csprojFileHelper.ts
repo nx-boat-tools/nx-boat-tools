@@ -2,13 +2,41 @@ import * as _ from 'underscore';
 import { create } from 'xmlbuilder2';
 import { readFileSync, writeFileSync } from 'fs';
 
-export function createTestCsprojContent(): string {
+export function createTestCsprojContent(
+  packageRefs?: Array<string>,
+  projectRefs?: Array<string>
+): string {
+  packageRefs ??= [];
+  projectRefs ??= [];
+
+  packageRefs = _.map(packageRefs, (ref) => {
+    return `
+    <PackageReference Include="${ref}" Version="1.0.0" />`;
+  });
+  projectRefs = _.map(projectRefs, (ref) => {
+    return `
+    <ProjectReference Include="${ref}" />`;
+  });
+
+  const packageRefGroup = !_.some(packageRefs)
+    ? ''
+    : `
+  <ItemGroup>${packageRefs.join('')}
+  </ItemGroup>`;
+  const projectRefGroup = !_.some(projectRefs)
+    ? ''
+    : `
+  <ItemGroup>${projectRefs.join('')}
+  </ItemGroup>`;
+
   return `
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+  ${packageRefGroup}
+  ${projectRefGroup}
 
 </Project>
     `;

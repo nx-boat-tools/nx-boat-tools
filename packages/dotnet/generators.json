@@ -28,6 +28,11 @@
       "schema": "./src/generators/test/schema.json",
       "description": "dotnet test generator"
     },
+    "project-ref": {
+      "factory": "./src/generators/project-ref/generator",
+      "schema": "./src/generators/project-ref/schema.json",
+      "description": "dotnet project-ref generator"
+    },
     "webapi": {
       "factory": "./src/generators/webapi/generator",
       "schema": "./src/generators/webapi/schema.json",
