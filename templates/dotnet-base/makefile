@@ -3,7 +3,7 @@ LTSFrameworkVersion = "6.0"
 
 default: 
 	make version template=$(template) out-dir=$(out-dir)/latest framework-version=${LatestFrameworkVersion}
-	echo '{ "sdk": { "version": "6.0.101" }}' > global.json
+	echo '{ "sdk": { "version": "6.0.101", "rollForward": "feature" }}' > global.json
 	make version template=$(template) out-dir=$(out-dir)/LTS framework-version=${LTSFrameworkVersion}
 	rm -rf global.json
 

@@ -21,6 +21,13 @@ jobs:
         with:
           node-version: '17'
           cache: 'yarn'
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: | 
+            6.0.x
+            7.0.x
+          include-prerelease: true
       - name: Create build artifacts
         run: |
           git config --global user.email "hale.killian@gmail.com"
