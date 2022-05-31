@@ -51,14 +51,17 @@ artifacts:
 	mkdir -p $(ARTIFACTS_DIR)
 
 	yarn install --immutable
-	yarn dlx nx affected --base=$(last_version_hash) --target=updateDependencies
+	yarn dlx nx affected --base=$(last_version_hash) --target=updateDependencies --pathPrefix=''
 	yarn dlx nx affected --base=$(last_version_hash) --target=copyTemplates
 	yarn dlx nx affected:build --base=$(last_version_hash) --parallel=5
 
 	echo
 	for f in $$(find "$(PACKAGES_DIST_DIR)" -type d -maxdepth 1 ! -name "packages"); do echo 📦 Zipping $$f...; package="$$(basename $$f)_$(current_version).zip"; zip -q -r $(ARTIFACTS_DIR)/$$package $$f; done;
-	
+
+ifneq (,$(wildcard RELEASE_VERSION))
 	rm RELEASE_VERSION
+endif
+
 	echo $(current_version) >> RELEASE_VERSION
 
 .PHONY: version
@@ -70,7 +73,8 @@ version:
 	yarn install --immutable;
 
 	$(eval current_version = $(shell npm pkg get version))
-	$(eval new_version = $(shell yarn dlx -q semver -i patch $(current_version)))
+	# $(eval new_version = $(shell yarn dlx -q semver -i patch $(current_version)))
+	$(eval new_version = $(shell yarn dlx -q semver -i prerelease --preid=rc $(current_version)))
 
 ifeq ($(tag), true)
 	git tag v$(current_version);
@@ -81,9 +85,9 @@ ifdef commit-branch
 endif
 
 	npm version $(new_version) --commit-hooks=false --git-tag-version=false;
-	yarn dlx nx run-many --target=version --all --parallel=5 --to='$(new_version)' --git-tag-version=false
+	yarn dlx nx run-many --target=version --all --parallel=5 --to='$(new_version)' --git-tag-version=false --pathPrefix=''
 
-	yarn dlx nx run-many --target=updateDependencies --all --parallel=5
+	yarn dlx nx run-many --target=updateDependencies --all --parallel=5 --pathPrefix=''
 
 ifeq ($(commit), true)
 	git add .

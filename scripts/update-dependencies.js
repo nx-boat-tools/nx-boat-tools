@@ -17,12 +17,10 @@ console.log(
 );
 
 if (root === undefined) {
-  console.log('1');
   throw new Error('You must specify the workspace root!');
 }
 
 if (projectDir === undefined) {
-  console.log('2');
   throw new Error('You must specify a projectDir!');
 }
 
