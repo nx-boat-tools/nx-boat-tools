@@ -12,13 +12,24 @@ import { createTargetConfig, defuse } from '@nx-boat-tools/common';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import { readFileSync } from 'fs';
 
+import * as dotnetTestGenerator from '../test/generator';
 import generator from './generator';
 import { DotnetGeneratorSchema } from './schema';
+import { DotnetTestGeneratorSchema } from '../test/schema';
 import { readProjectsFromSolutionContent } from '../../utilities/slnFileHelper';
 
 import path = require('path');
 
 console = new Console(process.stdout, process.stderr); //mockFs messes with the console. Adding this before the fs is mocked fixes it
+
+const spy = jest.spyOn(dotnetTestGenerator, 'default');
+const mockedTestGenerator = jest.fn(
+  (tree: Tree, options: DotnetTestGeneratorSchema): Promise<void> => {
+    console.log('Called mock dotnet test generator', options);
+
+    return Promise.resolve();
+  }
+);
 
 const appProjectTypes = ['console', 'grpc', 'webapi'];
 const libProjectTypes = ['classlib'];
@@ -30,6 +41,14 @@ describe('dotnet project generator', () => {
       (projectType) => {
         let appTree: Tree;
 
+        beforeAll(() => {
+          spy.mockImplementation(mockedTestGenerator);
+        });
+
+        afterAll(() => {
+          mockedTestGenerator.mockRestore();
+        });
+
         beforeEach(() => {
           appTree = createTreeWithEmptyWorkspace(1);
 
@@ -39,6 +58,7 @@ describe('dotnet project generator', () => {
         });
 
         afterEach(() => {
+          mockedTestGenerator.mockClear();
           mockFs.restore();
 
           console.log(
@@ -76,6 +96,14 @@ describe('dotnet project generator', () => {
       (projectType) => {
         let appTree: Tree;
 
+        beforeAll(() => {
+          spy.mockImplementation(mockedTestGenerator);
+        });
+
+        afterAll(() => {
+          mockedTestGenerator.mockRestore();
+        });
+
         beforeEach(() => {
           appTree = createTreeWithEmptyWorkspace(2);
 
@@ -85,6 +113,7 @@ describe('dotnet project generator', () => {
         });
 
         afterEach(() => {
+          mockedTestGenerator.mockClear();
           mockFs.restore();
 
           console.log(
@@ -165,6 +194,14 @@ describe('dotnet project generator', () => {
         let appTree: Tree;
         let packageJsonName: string;
 
+        beforeAll(() => {
+          spy.mockImplementation(mockedTestGenerator);
+        });
+
+        afterAll(() => {
+          mockedTestGenerator.mockRestore();
+        });
+
         beforeEach(() => {
           appTree = createTreeWithEmptyWorkspace(workspaceVersion);
 
@@ -179,6 +216,7 @@ describe('dotnet project generator', () => {
         });
 
         afterEach(() => {
+          mockedTestGenerator.mockClear();
           mockFs.restore();
 
           console.log(
@@ -234,7 +272,9 @@ describe('dotnet project generator', () => {
           expect(config.targets.build.options?.configuration).toBe('Debug');
 
           expect(config.targets.build.configurations?.prod).toBeDefined();
-          expect(config.targets.build.configurations?.prod?.configuration).toBe('Release');
+          expect(config.targets.build.configurations?.prod?.configuration).toBe(
+            'Release'
+          );
         });
 
         it('adds build to project config (ownSolution true)', async () => {
@@ -263,7 +303,9 @@ describe('dotnet project generator', () => {
           expect(config.targets.build.options?.configuration).toBe('Debug');
 
           expect(config.targets.build.configurations?.prod).toBeDefined();
-          expect(config.targets.build.configurations?.prod?.configuration).toBe('Release');
+          expect(config.targets.build.configurations?.prod?.configuration).toBe(
+            'Release'
+          );
         });
 
         it('adds clean to project config (ownSolution false)', async () => {
@@ -292,7 +334,9 @@ describe('dotnet project generator', () => {
           expect(config.targets.clean.options?.configuration).toBe('Debug');
 
           expect(config.targets.clean.configurations?.prod).toBeDefined();
-          expect(config.targets.clean.configurations?.prod?.configuration).toBe('Release');
+          expect(config.targets.clean.configurations?.prod?.configuration).toBe(
+            'Release'
+          );
         });
 
         it('adds clean to project config (ownSolution true)', async () => {
@@ -321,7 +365,9 @@ describe('dotnet project generator', () => {
           expect(config.targets.clean.options?.configuration).toBe('Debug');
 
           expect(config.targets.clean.configurations?.prod).toBeDefined();
-          expect(config.targets.clean.configurations?.prod?.configuration).toBe('Release');
+          expect(config.targets.clean.configurations?.prod?.configuration).toBe(
+            'Release'
+          );
         });
 
         it('adds package to project config (ownSolution false)', async () => {
@@ -350,7 +396,9 @@ describe('dotnet project generator', () => {
           expect(config.targets.package.options?.configuration).toBe('Debug');
 
           expect(config.targets.package.configurations?.prod).toBeDefined();
-          expect(config.targets.package.configurations?.prod?.configuration).toBe('Release');
+          expect(
+            config.targets.package.configurations?.prod?.configuration
+          ).toBe('Release');
         });
 
         it('adds package to project config (ownSolution true)', async () => {
@@ -379,7 +427,9 @@ describe('dotnet project generator', () => {
           expect(config.targets.package.options?.configuration).toBe('Debug');
 
           expect(config.targets.package.configurations?.prod).toBeDefined();
-          expect(config.targets.package.configurations?.prod?.configuration).toBe('Release');
+          expect(
+            config.targets.package.configurations?.prod?.configuration
+          ).toBe('Release');
         });
 
         it('adds dotnetVersion to project config (ownSolution false)', async () => {
@@ -555,7 +605,7 @@ describe('dotnet project generator', () => {
             directory: 'grouped',
             projectType: projectType,
             ownSolution: false,
-            frameworkVersion: 'latest'
+            frameworkVersion: 'latest',
           };
 
           await generator(appTree, options);
@@ -574,7 +624,9 @@ describe('dotnet project generator', () => {
 
           const csprojContents = appTree.read(projectPath);
 
-          expect(csprojContents.indexOf('<TargetFramework>net7.0</TargetFramework>')).toBeGreaterThan(0)
+          expect(
+            csprojContents.indexOf('<TargetFramework>net7.0</TargetFramework>')
+          ).toBeGreaterThan(0);
         });
 
         it('adds csproj to project for framework version (LTS)', async () => {
@@ -583,7 +635,7 @@ describe('dotnet project generator', () => {
             directory: 'grouped',
             projectType: projectType,
             ownSolution: false,
-            frameworkVersion: 'LTS'
+            frameworkVersion: 'LTS',
           };
 
           await generator(appTree, options);
@@ -602,7 +654,9 @@ describe('dotnet project generator', () => {
 
           const csprojContents = appTree.read(projectPath);
 
-          expect(csprojContents.indexOf('<TargetFramework>net6.0</TargetFramework>')).toBeGreaterThan(0)
+          expect(
+            csprojContents.indexOf('<TargetFramework>net6.0</TargetFramework>')
+          ).toBeGreaterThan(0);
         });
 
         it('adds csproj to project with directory (ownSolition false)', async () => {
@@ -805,7 +859,7 @@ describe('dotnet project generator', () => {
           };
 
           await generator(appTree, options);
-          
+
           const nxJsonPath = 'nx.json';
 
           expect(appTree.exists(nxJsonPath)).toBe(true);
@@ -816,11 +870,57 @@ describe('dotnet project generator', () => {
           expect(nxJson?.plugins?.length).toBe(1);
           expect(nxJson?.plugins[0]).toBe('@nx-boat-tools/dotnet');
         });
+
+        it('does not call test generator when testProjectType is none', async () => {
+          const options: DotnetGeneratorSchema = {
+            name: 'my-project',
+            projectType: projectType,
+            ownSolution: false,
+            testProjectType: 'none',
+          };
+
+          await generator(appTree, options);
+
+          expect(mockedTestGenerator.mock.calls.length).toBe(0);
+        });
+
+        each(['mstest', 'nunit', 'xunit', undefined]).it(
+          'call test generator when (testProjectType %s)',
+          async (testProjectType) => {
+            const options: DotnetGeneratorSchema = {
+              name: 'my-project',
+              projectType: projectType,
+              ownSolution: false,
+              testProjectType: testProjectType,
+              frameworkVersion: 'latest',
+            };
+
+            await generator(appTree, options);
+
+            expect(mockedTestGenerator.mock.calls.length).toBe(1);
+
+            const firstCall: any[] = mockedTestGenerator.mock.calls[0]; //eslint-disable-line
+            const schemaArg: DotnetTestGeneratorSchema = firstCall[1];
+
+            expect(schemaArg.project).toBe(options.name);
+            expect(schemaArg.testType).toBe(testProjectType);
+            expect(schemaArg.testPrefix).toBeUndefined();
+            expect(schemaArg.frameworkVersion).toBe(options.frameworkVersion);
+          }
+        );
       }
     );
 
     each([...appProjectTypes]).describe('projectType %s', (projectType) => {
       let appTree: Tree;
+
+      beforeAll(() => {
+        spy.mockImplementation(mockedTestGenerator);
+      });
+
+      afterAll(() => {
+        mockedTestGenerator.mockRestore();
+      });
 
       beforeEach(() => {
         appTree = createTreeWithEmptyWorkspace(2);
@@ -831,6 +931,7 @@ describe('dotnet project generator', () => {
       });
 
       afterEach(() => {
+        mockedTestGenerator.mockClear();
         mockFs.restore();
 
         console.log(
@@ -886,7 +987,9 @@ describe('dotnet project generator', () => {
         const config = readProjectConfiguration(appTree, 'my-project');
 
         expect(config?.targets?.runSrc).toBeDefined();
-        expect(config.targets.runSrc.executor).toBe('@nx-boat-tools/dotnet:run');
+        expect(config.targets.runSrc.executor).toBe(
+          '@nx-boat-tools/dotnet:run'
+        );
 
         expect(config.targets.runSrc.options?.srcPath).toBe(
           `${config.sourceRoot}/${projectNames.className}.csproj`
@@ -897,7 +1000,9 @@ describe('dotnet project generator', () => {
         expect(config.targets.runSrc.options?.configuration).toBe('Debug');
 
         expect(config.targets.runSrc.configurations?.prod).toBeDefined();
-        expect(config.targets.runSrc.configurations?.prod?.configuration).toBe('Release');
+        expect(config.targets.runSrc.configurations?.prod?.configuration).toBe(
+          'Release'
+        );
       });
 
       it('adds runSrc to project config (ownSolution true)', async () => {
@@ -913,7 +1018,9 @@ describe('dotnet project generator', () => {
         const config = readProjectConfiguration(appTree, 'my-project');
 
         expect(config?.targets?.runSrc).toBeDefined();
-        expect(config.targets.runSrc.executor).toBe('@nx-boat-tools/dotnet:run');
+        expect(config.targets.runSrc.executor).toBe(
+          '@nx-boat-tools/dotnet:run'
+        );
 
         expect(config.targets.runSrc.options?.srcPath).toBe(
           `${config.root}/${projectNames.className}.sln`
@@ -924,12 +1031,22 @@ describe('dotnet project generator', () => {
         expect(config.targets.runSrc.options?.configuration).toBe('Debug');
 
         expect(config.targets.runSrc.configurations?.prod).toBeDefined();
-        expect(config.targets.runSrc.configurations?.prod?.configuration).toBe('Release');
+        expect(config.targets.runSrc.configurations?.prod?.configuration).toBe(
+          'Release'
+        );
       });
     });
 
     each([...libProjectTypes]).describe('projectType %s', (projectType) => {
       let appTree: Tree;
+
+      beforeAll(() => {
+        spy.mockImplementation(mockedTestGenerator);
+      });
+
+      afterAll(() => {
+        mockedTestGenerator.mockRestore();
+      });
 
       beforeEach(() => {
         appTree = createTreeWithEmptyWorkspace(2);
@@ -940,6 +1057,7 @@ describe('dotnet project generator', () => {
       });
 
       afterEach(() => {
+        mockedTestGenerator.mockClear();
         mockFs.restore();
 
         console.log(

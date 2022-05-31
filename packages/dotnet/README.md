@@ -582,6 +582,7 @@ The `project` generator is the heart of all of the dotnet generators. Its job is
 | `ownSolution`      | `boolean` | `false`               | When set to `true`, the project will have its own solution file which will be in the project directory. When set to `false`, it will be added to a solution file at the workspace root.                                                                                                                  |
 | `standaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                                                                                               |
 | `frameworkVersion` | `string`  | `LTS`                 | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0).                                                                                                                                                                                                               |
+| `testProjectType`  | `string`  | `mstest`              | The type of test project to create. Either `mstest`,`nunit`, `xunit`, or `none`.                                                                                                                                                                                                                         |
 
 #### Generated files:
 
@@ -699,6 +700,7 @@ Creates a dotnet class library project.
 | `ownSolution`      | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)      |
 | `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion` | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project) |
+| `testProjectType`  | `string`  | `mstest`              | The type of test project to create. Either `mstest`,`nunit`, `xunit`, or `none`.                  |
 
 #### Generated files:
 
@@ -733,6 +735,7 @@ Creates a dotnet console application project.
 | `ownSolution`      | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)      |
 | `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion` | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project) |
+| `testProjectType`  | `string`  | `mstest`              | The type of test project to create. Either `mstest`,`nunit`, `xunit`, or `none`.                  |
 
 #### Generated files:
 
@@ -767,6 +770,7 @@ Creates a dotnet grpc application project.
 | `ownSolution`      | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)      |
 | `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion` | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project) |
+| `testProjectType`  | `string`  | `mstest`              | The type of test project to create. Either `mstest`,`nunit`, `xunit`, or `none`.                  |
 
 #### Generated files:
 
@@ -801,6 +805,7 @@ Creates a dotnet web API project.
 | `ownSolution`      | `boolean` | `false`               | This is passed to the `ownSolution` option of the underlying [`project` generator](#project)      |
 | `standaloneConfig` | `boolean` | the workspace default | This is passed to the `standaloneConfig` option of the underlying [`project` generator](#project) |
 | `frameworkVersion` | `string`  | `LTS`                 | This is passed to the `frameworkVersion` option of the underlying [`project` generator](#project) |
+| `testProjectType`  | `string`  | `mstest`              | The type of test project to create. Either `mstest`,`nunit`, `xunit`, or `none`.                  |
 
 #### Generated files:
 
@@ -827,12 +832,12 @@ Adds a dotnet test project to an existing Nx project. The type of test project c
 
 #### Available options:
 
-| name               | type      | default | description                                                                                |
-| ------------------ | --------- | ------- | ------------------------------------------------------------------------------------------ | -------- | ---------------------------------- |
-| `project`          | `string`  |         | Required. The name of the Nx project to add tests to                                       |
-| `testType`         | `mstest`  | `nunit` | `xunit`                                                                                    | `mstest` | The type of test project to create |
-| `testPrefix`       | `string?` |         | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`             |
-| `frameworkVersion` | `string`  | `LTS`   | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0). |
+| name               | type      | default  | description                                                                                |
+| ------------------ | --------- | -------- | ------------------------------------------------------------------------------------------ |
+| `project`          | `string`  |          | Required. The name of the Nx project to add tests to                                       |
+| `frameworkVersion` | `string`  | `LTS`    | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0). |
+| `testType`         | `string`  | `mstest` | The type of test project to create. Either `mstest`,`nunit`,or `xunit`.                    |
+| `testPrefix`       | `string?` |          | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`             |
 
 #### Generated files:
 
@@ -912,14 +917,14 @@ Creates an Nx project specifically for a dotnet test project. The type of test p
 #### Available options:
 
 | name               | type      | default               | description                                                                                                                                                                                                                   |
-| ------------------ | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------- |
+| ------------------ | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`             | `string`  |                       | Required. The name of the project that's being created.                                                                                                                                                                       |
 | `tags`             | `string?` | `undefined`           | Tags to be used when adding the project to the `workspace.json`. More information about tags can be found [here](https://nx.dev/l/a/structure/monorepo-tags)                                                                  |
 | `directory`        | `string?` | `undefined`           | This can be used to nest the project into additional folders inside of the `apps` or `libs` folder. Insead of going to `apps/{projectName}`, for example, the project can be created at `apps/{directoryValue}/{projectName}` |
 | `standaloneConfig` | `boolean` | the workspace default | Should the project use package.json? If false, the project config is inside workspace.json                                                                                                                                    |
-| `testType`         | `mstest`  | `nunit`               | `xunit`                                                                                                                                                                                                                       | `mstest` | The type of test project to create |
-| `testPrefix`       | `string?` |                       | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`                                                                                                                                                |
 | `frameworkVersion` | `string`  | `LTS`                 | The .Net Framework version to use. Valid options are either `latest` (7.0) or `LTS` (6.0).                                                                                                                                    |
+| `testType`         | `string`  | `mstest`              | The type of test project to create. Either `mstest`,`nunit`,or `xunit`. create                                                                                                                                                |
+| `testPrefix`       | `string?` |                       | An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`                                                                                                                                                |
 
 #### Generated files:
 

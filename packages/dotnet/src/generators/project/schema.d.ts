@@ -6,4 +6,5 @@ export interface DotnetGeneratorSchema {
   ownSolution: boolean;
   standaloneConfig?: boolean;
   frameworkVersion?: 'latest' | 'LTS';
+  testProjectType?: 'mstest' | 'nunit' | 'xunit' | 'none';
 }

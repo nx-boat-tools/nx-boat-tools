@@ -5,4 +5,5 @@ export interface ConsoleAppGeneratorSchema {
   ownSolution: boolean;
   standaloneConfig?: boolean;
   frameworkVersion?: 'latest' | 'LTS';
+  testProjectType?: 'mstest' | 'nunit' | 'xunit' | 'none';
 }

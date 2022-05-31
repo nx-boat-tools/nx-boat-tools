@@ -5,4 +5,5 @@ export interface GrpcAppGeneratorSchema {
   ownSolution: boolean;
   standaloneConfig?: boolean;
   frameworkVersion?: 'latest' | 'LTS';
+  testProjectType?: 'mstest' | 'nunit' | 'xunit' | 'none';
 }

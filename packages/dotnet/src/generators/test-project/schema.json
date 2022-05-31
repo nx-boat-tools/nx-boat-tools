@@ -44,10 +44,6 @@
       "type": "boolean",
       "description": "Split the project configuration into `<projectRoot>/project.json` rather than including it inside `workspace.json`."
     },
-    "projectType": {
-      "type": "string",
-      "description": "This identifies what type of project to create. The values should be the same values as what's passed to the TEMPLATE argument of the dotnet new command"
-    },
     "frameworkVersion": {
       "type": "string",
       "description": "The .Net Framework version to use. Valid options are either `latest` or `LTS`.",
@@ -56,6 +52,10 @@
     "testPrefix": {
       "type": "string",
       "description": "An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`"
+    },
+    "testType": {
+      "type": "string",
+      "description": "TThe type of test project to create. Either `mstest`,`nunit`,or `xunit`."
     }
   },
   "required": ["name"]

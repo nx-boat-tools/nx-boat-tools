@@ -57,6 +57,11 @@
       "type": "string",
       "description": "The .Net Framework version to use. Valid options are either `latest` or `LTS`.",
       "default": "LTS"
+    },
+    "testProjectType": {
+      "type": "string",
+      "description": "The type of test project to create. Either `mstest`,`nunit`,or `xunit`.",
+      "default": "mstest"
     }
   },
   "required": ["name", "projectType"]

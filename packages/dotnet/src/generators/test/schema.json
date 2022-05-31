@@ -29,11 +29,6 @@
       },
       "x-prompt": "What project should tests be added to?"
     },
-    "testType": {
-      "type": "string",
-      "description": "The name of the project.",
-      "default": "mstest"
-    },
     "frameworkVersion": {
       "type": "string",
       "description": "The .Net Framework version to use. Valid options are either `latest` or `LTS`.",
@@ -42,6 +37,11 @@
     "testPrefix": {
       "type": "string",
       "description": "An optional prefix to give the tests. Ex: `integration` for `IntegrationTests`"
+    },
+    "testType": {
+      "type": "string",
+      "description": "The type of test project to create. Either `mstest`,`nunit`,or `xunit`.",
+      "default": "mstest"
     }
   },
   "required": ["project"]

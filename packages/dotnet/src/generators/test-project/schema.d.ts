@@ -3,7 +3,7 @@ export interface DotnetTestProjectGeneratorSchema {
   tags?: string;
   directory?: string;
   standaloneConfig?: boolean;
+  frameworkVersion?: 'latest' | 'LTS';
   testPrefix?: string;
   testType: 'mstest' | 'nunit' | 'xunit';
-  frameworkVersion?: 'latest' | 'LTS';
 }

@@ -23,6 +23,8 @@ import {
   appendGlobalSectionToSolution,
   appendProjectLinesToSolution,
 } from '../../utilities/slnFileHelper';
+import testGenerator from '../test/generator';
+import {DotnetTestGeneratorSchema} from '../test/schema';
 
 interface NormalizedSchema extends DotnetGeneratorSchema {
   projectName: string;
@@ -265,6 +267,18 @@ function addProjectDependencies(tree: Tree, templateOptions: TemplateOptions) {
   );
 }
 
+async function addTestProject(tree: Tree, options: NormalizedSchema): Promise<void> {
+  if(options.testProjectType === 'none') {
+    return;
+  }
+
+  await testGenerator(tree, {
+    project: options.name,
+    testType: options.testProjectType,
+    frameworkVersion: options.frameworkVersion,
+  });
+}
+
 export default async function (tree: Tree, options: DotnetGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const configurations = {
@@ -354,4 +368,5 @@ export default async function (tree: Tree, options: DotnetGeneratorSchema) {
     false,
     path.join(normalizedOptions.rootDir, normalizedOptions.projectRoot)
   );
+  await addTestProject(tree, normalizedOptions);
 }
