@@ -9,5 +9,6 @@
     "dotnet-e2e": "e2e/dotnet-e2e",
     "helm": "packages/helm",
     "helm-e2e": "e2e/helm-e2e"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }
