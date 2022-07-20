@@ -1,9 +1,10 @@
 .DS_Store
 
 .git/
-docker/
+scripts/
 
 makefile
+
 tsconfig.json
 tslint.json
 *.ts
@@ -11,3 +12,8 @@ tslint.json
 
 npm-debug.log
 npm-error.log
+
+.cz-config.js
+.yarnrc.yml
+.yarn/
+.husky/

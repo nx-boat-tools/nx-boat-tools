@@ -95,7 +95,7 @@ ifeq ($(commit), true)
 	git push -u origin $(PUSH_BRANCH)
 endif
 
-.PHONY: templates
+.PHONY: clean
 clean:
 	rm -rfd ./build
 	rm -rfd ./coverage
