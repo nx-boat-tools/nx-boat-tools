@@ -37,7 +37,7 @@
     "guid-typescript": "^1.0.9",
     "minimist": "^1.2.6",
     "tslib": "^2.4.0",
-    "underscore": "^1.13.4",
+    "underscore": "^1.13.6",
     "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
