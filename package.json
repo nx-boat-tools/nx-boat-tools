@@ -67,7 +67,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^6.9.1",
     "dotenv": "~16.0.1",
-    "eslint": "8.20.0",
+    "eslint": "8.30.0",
     "eslint-config-prettier": "8.5.0",
     "husky": "^8.0.1",
     "import-sort-style-renke": "^6.0.0",
